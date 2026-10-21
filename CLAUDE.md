@@ -55,6 +55,15 @@ key (perron), and one shared limiter when it counts per IP (moneybird).
   and mcp-http serves MCP on `/<name>` and `/<name>/mcp`.
 - Images: `ghcr.io/ultimatelemon/mcp-integrations/<name>`, built and deployed
   per server by GitHub Actions only when that server changed.
+- CI: `.github/workflows/deploy-<name>.yml` on `ultimatelemon/shared-actions`
+  `@v2`, on GitHub-hosted runners (`runs-on: ubuntu-latest`,
+  `container-image: ''`, `buildkit-endpoint: ''`): the cluster runners admit
+  private repositories only. The deploy step needs the repository secret
+  `DOKPLOY_DEPLOY_URL_<NAME>` (the app's deploy webhook in Dokploy).
+- Dokploy project "Model Context Protocols": apps `perron` (with
+  `perron-redis` and volume `perron-data` on `/app/data`) and `moneybird`.
+  `moneybird-postgres` is left over from the old OAuth mode and unused.
+- Push over SSH: the HTTPS credential lacks the `workflow` scope.
 
 ## Adding a server
 
