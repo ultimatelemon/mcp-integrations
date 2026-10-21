@@ -1,0 +1,176 @@
+{
+  "bron": "DVS",
+  "ritnummer": 3529,
+  "station": "UT",
+  "type": "VIRM",
+  "vervoerder": "NS",
+  "spoor": "15",
+  "materieeldelen": [
+    {
+      "materieelnummer": 8676,
+      "type": "VIRMm1 VI",
+      "faciliteiten": [
+        "WIFI",
+        "TOILET",
+        "STILTE",
+        "FIETS",
+        "STROOM"
+      ],
+      "afbeelding": "https://vt.ns-mlab.nl/v1/images/virmm1_6.png",
+      "breedte": 3376,
+      "hoogte": 119,
+      "zitplaatsen": {
+        "zitplaatsEersteKlas": 120,
+        "zitplaatsTweedeKlas": 425,
+        "klapstoelEersteKlas": 3,
+        "klapstoelTweedeKlas": 3,
+        "fietsplekken": 6
+      },
+      "eindbestemming": "VL",
+      "bakken": [
+        {},
+        {},
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    {
+      "materieelnummer": 9590,
+      "type": "VIRM IV",
+      "faciliteiten": [
+        "WIFI",
+        "TOILET",
+        "STILTE",
+        "FIETS"
+      ],
+      "afbeelding": "https://vt.ns-mlab.nl/v1/images/virm_4.png",
+      "breedte": 2259,
+      "hoogte": 119,
+      "zitplaatsen": {
+        "zitplaatsEersteKlas": 64,
+        "zitplaatsTweedeKlas": 310,
+        "klapstoelEersteKlas": 0,
+        "klapstoelTweedeKlas": 0,
+        "fietsplekken": 6
+      },
+      "eindbestemming": "EHV",
+      "bakken": [
+        {},
+        {},
+        {},
+        {}
+      ]
+    }
+  ],
+  "ingekort": false,
+  "lengte": 10,
+  "lengteInMeters": 269,
+  "lengteInPixels": 5635,
+  "perronVoorzieningen": [
+    {
+      "type": "PERRONLETTER",
+      "paddingLeft": 524,
+      "width": 509,
+      "description": "A"
+    },
+    {
+      "type": "PERRONLETTER",
+      "paddingLeft": 1033,
+      "width": 505,
+      "description": "B"
+    },
+    {
+      "type": "PERRONLETTER",
+      "paddingLeft": 1538,
+      "width": 503,
+      "description": "C"
+    },
+    {
+      "type": "PERRONLETTER",
+      "paddingLeft": 2040,
+      "width": 505,
+      "description": "D"
+    },
+    {
+      "type": "TRAP",
+      "paddingLeft": 2040,
+      "width": 0,
+      "description": ""
+    },
+    {
+      "type": "ROLTRAP",
+      "paddingLeft": 2344,
+      "width": 0,
+      "description": ""
+    },
+    {
+      "type": "PERRONLETTER",
+      "paddingLeft": 2545,
+      "width": 505,
+      "description": "E"
+    },
+    {
+      "type": "PERRONLETTER",
+      "paddingLeft": 3050,
+      "width": 522,
+      "description": "F"
+    },
+    {
+      "type": "LIFT",
+      "paddingLeft": 3050,
+      "width": 0,
+      "description": ""
+    },
+    {
+      "type": "PERRONLETTER",
+      "paddingLeft": 3572,
+      "width": 492,
+      "description": "G"
+    },
+    {
+      "type": "ROLTRAP",
+      "paddingLeft": 3572,
+      "width": 0,
+      "description": ""
+    },
+    {
+      "type": "TRAP",
+      "paddingLeft": 3871,
+      "width": 0,
+      "description": ""
+    },
+    {
+      "type": "PERRONLETTER",
+      "paddingLeft": 4064,
+      "width": 520,
+      "description": "H"
+    },
+    {
+      "type": "TRAP",
+      "paddingLeft": 4332,
+      "width": 0,
+      "description": ""
+    },
+    {
+      "type": "PERRONLETTER",
+      "paddingLeft": 4583,
+      "width": 501,
+      "description": "J"
+    },
+    {
+      "type": "PERRONLETTER",
+      "paddingLeft": 5084,
+      "width": 507,
+      "description": "K"
+    },
+    {
+      "type": "PERRONLETTER",
+      "paddingLeft": 5591,
+      "width": 509,
+      "description": "L"
+    }
+  ],
+  "rijrichting": "LINKS"
+}

@@ -1,0 +1,12 @@
+{
+  "payload": {
+    "totalPriceInCents": 1470,
+    "priceDifferenceInCentsBetweenFirstAndSecondClass": 1176,
+    "operatorName": "NS",
+    "travelDiscount": "NO_DISCOUNT",
+    "travelClass": "SECOND_CLASS",
+    "travelProducts": [
+      "ETICKET_ENKELE_REIS"
+    ]
+  }
+}

@@ -1,0 +1,1421 @@
+[
+  {
+    "id": "6068091",
+    "isActive": true,
+    "title": "Sittard - Heerlen.",
+    "topic": "disruption_6068091_en",
+    "type": "DISRUPTION",
+    "registrationTime": "2026-10-06T09:22:29+0200",
+    "releaseTime": "2026-10-06T09:22:29+0200",
+    "local": false,
+    "titleSections": [
+      [
+        {
+          "type": "STATION",
+          "value": "Sittard"
+        },
+        {
+          "type": "ICON",
+          "value": "DISRUPTION"
+        },
+        {
+          "type": "STATION",
+          "value": "Heerlen"
+        }
+      ]
+    ],
+    "start": "2026-10-06T08:06:00+0200",
+    "end": "2026-10-06T09:30:00+0200",
+    "phase": {
+      "id": "4",
+      "label": "Disruption passed"
+    },
+    "impact": {
+      "value": 3
+    },
+    "expectedDuration": {
+      "description": "The trains will run again around 9:30.",
+      "endTime": "2026-10-06T09:30:00+0200"
+    },
+    "publicationSections": [
+      {
+        "section": {
+          "stations": [
+            {
+              "uicCode": "8400564",
+              "stationCode": "STD",
+              "name": "Sittard",
+              "coordinate": {
+                "lat": 51.0016670227051,
+                "lng": 5.85861110687256
+              },
+              "countryCode": "NL"
+            },
+            {
+              "uicCode": "8400246",
+              "stationCode": "GLN",
+              "name": "Geleen Oost",
+              "coordinate": {
+                "lat": 50.9669456481934,
+                "lng": 5.84305572509766
+              },
+              "countryCode": "NL"
+            },
+            {
+              "uicCode": "8400572",
+              "stationCode": "SBK",
+              "name": "Spaubeek",
+              "coordinate": {
+                "lat": 50.94327,
+                "lng": 5.850529
+              },
+              "countryCode": "NL"
+            },
+            {
+              "uicCode": "8400554",
+              "stationCode": "SN",
+              "name": "Schinnen",
+              "coordinate": {
+                "lat": 50.9391670227051,
+                "lng": 5.87444448471069
+              },
+              "countryCode": "NL"
+            },
+            {
+              "uicCode": "8400467",
+              "stationCode": "NH",
+              "name": "Nuth",
+              "coordinate": {
+                "lat": 50.9194450378418,
+                "lng": 5.89277791976929
+              },
+              "countryCode": "NL"
+            },
+            {
+              "uicCode": "8400326",
+              "stationCode": "HB",
+              "name": "Hoensbroek",
+              "coordinate": {
+                "lat": 50.9055557250977,
+                "lng": 5.93055534362793
+              },
+              "countryCode": "NL"
+            },
+            {
+              "uicCode": "8400307",
+              "stationCode": "HRL",
+              "name": "Heerlen",
+              "coordinate": {
+                "lat": 50.8908348083496,
+                "lng": 5.97499990463257
+              },
+              "countryCode": "NL"
+            }
+          ],
+          "direction": "BOTH",
+          "operators": [
+            "NS"
+          ]
+        },
+        "consequence": {
+          "section": {
+            "stations": [
+              {
+                "uicCode": "8400564",
+                "stationCode": "STD",
+                "name": "Sittard",
+                "coordinate": {
+                  "lat": 51.0016670227051,
+                  "lng": 5.85861110687256
+                },
+                "countryCode": "NL"
+              },
+              {
+                "uicCode": "8400246",
+                "stationCode": "GLN",
+                "name": "Geleen Oost",
+                "coordinate": {
+                  "lat": 50.9669456481934,
+                  "lng": 5.84305572509766
+                },
+                "countryCode": "NL"
+              },
+              {
+                "uicCode": "8400572",
+                "stationCode": "SBK",
+                "name": "Spaubeek",
+                "coordinate": {
+                  "lat": 50.94327,
+                  "lng": 5.850529
+                },
+                "countryCode": "NL"
+              },
+              {
+                "uicCode": "8400554",
+                "stationCode": "SN",
+                "name": "Schinnen",
+                "coordinate": {
+                  "lat": 50.9391670227051,
+                  "lng": 5.87444448471069
+                },
+                "countryCode": "NL"
+              },
+              {
+                "uicCode": "8400467",
+                "stationCode": "NH",
+                "name": "Nuth",
+                "coordinate": {
+                  "lat": 50.9194450378418,
+                  "lng": 5.89277791976929
+                },
+                "countryCode": "NL"
+              },
+              {
+                "uicCode": "8400326",
+                "stationCode": "HB",
+                "name": "Hoensbroek",
+                "coordinate": {
+                  "lat": 50.9055557250977,
+                  "lng": 5.93055534362793
+                },
+                "countryCode": "NL"
+              },
+              {
+                "uicCode": "8400307",
+                "stationCode": "HRL",
+                "name": "Heerlen",
+                "coordinate": {
+                  "lat": 50.8908348083496,
+                  "lng": 5.97499990463257
+                },
+                "countryCode": "NL"
+              }
+            ],
+            "direction": "BOTH",
+            "operators": [
+              "NS"
+            ]
+          },
+          "description": "restrictions lifted",
+          "level": "LESS_TRAINS"
+        },
+        "sectionType": "NL"
+      }
+    ],
+    "timespans": [
+      {
+        "start": "2026-10-06T08:06:00+0200",
+        "end": "2026-10-06T09:30:00+0200",
+        "period": "Tuesday, October 6, 8:06 until Tuesday, October 6, 9:30.",
+        "situation": {
+          "label": "Between Heerlen and Sittard the restrictions are lifted."
+        },
+        "cause": {
+          "label": "signal failure",
+          "type": "OTHER"
+        },
+        "additionalTravelTime": {
+          "label": "The delay is decreasing.",
+          "shortLabel": "Delay is decreasing."
+        },
+        "advices": []
+      }
+    ],
+    "alternativeTransportTimespans": [],
+    "summaryAdditionalTravelTime": {
+      "label": "The delay is decreasing.",
+      "shortLabel": "Delay is decreasing."
+    }
+  },
+  {
+    "id": "7006841",
+    "isActive": true,
+    "title": "Alkmaar - Hoorn.",
+    "type": "MAINTENANCE",
+    "registrationTime": "2026-10-01T12:25:15+0200",
+    "releaseTime": "2026-10-01T12:25:15+0200",
+    "local": false,
+    "titleSections": [
+      [
+        {
+          "type": "STATION",
+          "value": "Alkmaar"
+        },
+        {
+          "type": "STATION",
+          "value": "Heerhugowaard"
+        },
+        {
+          "type": "ICON",
+          "value": "MAINTENANCE"
+        },
+        {
+          "type": "STATION",
+          "value": "Hoorn"
+        }
+      ]
+    ],
+    "start": "2026-10-05T04:00:00+0200",
+    "end": "2026-10-12T02:00:00+0200",
+    "period": "Monday, October 5, 4:00 until Monday, October 12, 2:00.",
+    "impact": {
+      "value": 5
+    },
+    "publicationSections": [
+      {
+        "section": {
+          "stations": [
+            {
+              "uicCode": "8400050",
+              "stationCode": "AMR",
+              "name": "Alkmaar",
+              "coordinate": {
+                "lat": 52.6377792358398,
+                "lng": 4.73972225189209
+              },
+              "countryCode": "NL"
+            },
+            {
+              "uicCode": "8400052",
+              "stationCode": "AMRN",
+              "name": "Alkmaar Noord",
+              "coordinate": {
+                "lat": 52.6438903808594,
+                "lng": 4.76416683197022
+              },
+              "countryCode": "NL"
+            },
+            {
+              "uicCode": "8400306",
+              "stationCode": "HWD",
+              "name": "Heerhugowaard",
+              "coordinate": {
+                "lat": 52.6697235107422,
+                "lng": 4.82277774810791
+              },
+              "countryCode": "NL"
+            },
+            {
+              "uicCode": "8400480",
+              "stationCode": "OBD",
+              "name": "Obdam",
+              "coordinate": {
+                "lat": 52.6780548095703,
+                "lng": 4.90722227096558
+              },
+              "countryCode": "NL"
+            },
+            {
+              "uicCode": "8400337",
+              "stationCode": "HN",
+              "name": "Hoorn",
+              "coordinate": {
+                "lat": 52.6447219848633,
+                "lng": 5.05555534362793
+              },
+              "countryCode": "NL"
+            }
+          ],
+          "direction": "BOTH",
+          "operators": [
+            "NS"
+          ]
+        },
+        "consequence": {
+          "section": {
+            "stations": [
+              {
+                "uicCode": "8400306",
+                "stationCode": "HWD",
+                "name": "Heerhugowaard",
+                "coordinate": {
+                  "lat": 52.6697235107422,
+                  "lng": 4.82277774810791
+                },
+                "countryCode": "NL"
+              },
+              {
+                "uicCode": "8400480",
+                "stationCode": "OBD",
+                "name": "Obdam",
+                "coordinate": {
+                  "lat": 52.6780548095703,
+                  "lng": 4.90722227096558
+                },
+                "countryCode": "NL"
+              },
+              {
+                "uicCode": "8400337",
+                "stationCode": "HN",
+                "name": "Hoorn",
+                "coordinate": {
+                  "lat": 52.6447219848633,
+                  "lng": 5.05555534362793
+                },
+                "countryCode": "NL"
+              }
+            ],
+            "direction": "BOTH",
+            "operators": [
+              "NS"
+            ]
+          },
+          "description": "buses are running",
+          "level": "LESS_TRAINS"
+        },
+        "sectionType": "NL"
+      }
+    ],
+    "timespans": [
+      {
+        "start": "2026-10-05T04:00:00+0200",
+        "end": "2026-10-12T02:00:00+0200",
+        "period": "Monday, October 5, 4:00 until Monday, October 12, 2:00.",
+        "situation": {
+          "label": "Due to engineering works: between Heerhugowaard and Hoorn buses are running."
+        },
+        "cause": {
+          "label": "engineering works",
+          "type": "OTHER"
+        },
+        "additionalTravelTime": {
+          "label": "The additional journey time varies per journey.",
+          "shortLabel": "Additional journey time varies per journey."
+        },
+        "alternativeTransport": {
+          "label": "make use of the alternative transport",
+          "shortLabel": "use alternative transport"
+        },
+        "advices": []
+      }
+    ],
+    "alternativeTransportTimespans": [
+      {
+        "start": "2026-10-05T04:00:00+0200",
+        "end": "2026-10-12T02:00:00+0200",
+        "alternativeTransport": {
+          "location": [
+            {
+              "station": {
+                "uicCode": "8400306",
+                "stationCode": "HWD",
+                "name": "Heerhugowaard",
+                "coordinate": {
+                  "lat": 52.6697235107422,
+                  "lng": 4.82277774810791
+                },
+                "countryCode": "NL"
+              },
+              "description": "from bus station"
+            },
+            {
+              "station": {
+                "uicCode": "8400337",
+                "stationCode": "HN",
+                "name": "Hoorn",
+                "coordinate": {
+                  "lat": 52.6447219848633,
+                  "lng": 5.05555534362793
+                },
+                "countryCode": "NL"
+              },
+              "description": "from back side of the station"
+            }
+          ],
+          "label": "Express buses are running between Heerhugowaard and Hoorn.",
+          "shortLabel": "Express buses are running Heerhugowaard - Hoorn."
+        }
+      },
+      {
+        "start": "2026-10-05T04:00:00+0200",
+        "end": "2026-10-12T02:00:00+0200",
+        "alternativeTransport": {
+          "location": [
+            {
+              "station": {
+                "uicCode": "8400306",
+                "stationCode": "HWD",
+                "name": "Heerhugowaard",
+                "coordinate": {
+                  "lat": 52.6697235107422,
+                  "lng": 4.82277774810791
+                },
+                "countryCode": "NL"
+              },
+              "description": "from bus station"
+            },
+            {
+              "station": {
+                "uicCode": "8400480",
+                "stationCode": "OBD",
+                "name": "Obdam",
+                "coordinate": {
+                  "lat": 52.6780548095703,
+                  "lng": 4.90722227096558
+                },
+                "countryCode": "NL"
+              },
+              "description": "from the front side of the station, Kiss & Ride"
+            }
+          ],
+          "label": "Taxi buses are running between Heerhugowaard and Obdam.",
+          "shortLabel": "Taxi buses are running Heerhugowaard - Obdam."
+        }
+      },
+      {
+        "start": "2026-10-05T04:00:00+0200",
+        "end": "2026-10-12T02:00:00+0200",
+        "alternativeTransport": {
+          "location": [
+            {
+              "station": {
+                "uicCode": "8400480",
+                "stationCode": "OBD",
+                "name": "Obdam",
+                "coordinate": {
+                  "lat": 52.6780548095703,
+                  "lng": 4.90722227096558
+                },
+                "countryCode": "NL"
+              },
+              "description": "from the front side of the station, Kiss & Ride"
+            },
+            {
+              "station": {
+                "uicCode": "8400337",
+                "stationCode": "HN",
+                "name": "Hoorn",
+                "coordinate": {
+                  "lat": 52.6447219848633,
+                  "lng": 5.05555534362793
+                },
+                "countryCode": "NL"
+              },
+              "description": "from back side of the station"
+            }
+          ],
+          "label": "Taxi buses are running between Obdam and Hoorn.",
+          "shortLabel": "Taxi buses are running Obdam - Hoorn."
+        }
+      }
+    ],
+    "summaryAdditionalTravelTime": {
+      "label": "The additional journey time varies per journey.",
+      "shortLabel": "Additional journey time varies per journey."
+    }
+  },
+  {
+    "id": "7008203",
+    "isActive": true,
+    "title": "Rotterdam - Breda - Brussel.",
+    "type": "MAINTENANCE",
+    "registrationTime": "2026-10-05T09:38:31+0200",
+    "releaseTime": "2026-10-05T09:38:31+0200",
+    "local": false,
+    "titleSections": [
+      [
+        {
+          "type": "STATION",
+          "value": "Rotterdam C."
+        },
+        {
+          "type": "STATION",
+          "value": "Antwerpen-C."
+        },
+        {
+          "type": "ICON",
+          "value": "MAINTENANCE"
+        },
+        {
+          "type": "STATION",
+          "value": "Brussel-Zuid"
+        }
+      ]
+    ],
+    "start": "2026-10-05T05:00:00+0200",
+    "end": "2026-10-10T01:00:00+0200",
+    "period": "Monday, October 5, 5:00 until Saturday, October 10, 1:00.",
+    "impact": {
+      "value": 2
+    },
+    "publicationSections": [
+      {
+        "section": {
+          "stations": [
+            {
+              "uicCode": "8400530",
+              "stationCode": "RTD",
+              "name": "Rotterdam Centraal",
+              "coordinate": {
+                "lat": 51.9249992370605,
+                "lng": 4.46888875961304
+              },
+              "countryCode": "NL"
+            },
+            {
+              "uicCode": "8400529",
+              "stationCode": "RTB",
+              "name": "Rotterdam Blaak",
+              "coordinate": {
+                "lat": 51.9202766418457,
+                "lng": 4.48888874053955
+              },
+              "countryCode": "NL"
+            },
+            {
+              "uicCode": "8400533",
+              "stationCode": "RTZ",
+              "name": "Rotterdam Zuid",
+              "coordinate": {
+                "lat": 51.9044456481934,
+                "lng": 4.51027774810791
+              },
+              "countryCode": "NL"
+            },
+            {
+              "uicCode": "8400542",
+              "stationCode": "RLB",
+              "name": "Rotterdam Lombardijen",
+              "coordinate": {
+                "lat": 51.8800010681152,
+                "lng": 4.53138875961304
+              },
+              "countryCode": "NL"
+            },
+            {
+              "uicCode": "8400132",
+              "stationCode": "BDPB",
+              "name": "Breda-Prinsenbeek",
+              "coordinate": {
+                "lat": 51.606388092041,
+                "lng": 4.72083330154419
+              },
+              "countryCode": "NL"
+            },
+            {
+              "uicCode": "8400131",
+              "stationCode": "BD",
+              "name": "Breda",
+              "coordinate": {
+                "lat": 51.5955543518066,
+                "lng": 4.78000020980835
+              },
+              "countryCode": "NL"
+            },
+            {
+              "uicCode": "8821105",
+              "stationCode": "NDKP",
+              "name": "Noorderkempen",
+              "coordinate": {
+                "lat": 51.358088,
+                "lng": 4.633977
+              },
+              "countryCode": "B"
+            },
+            {
+              "uicCode": "8821063",
+              "stationCode": "ATWLB",
+              "name": "Antwerpen-Luchtbal",
+              "coordinate": {
+                "lat": 51.2449375,
+                "lng": 4.4251543
+              },
+              "countryCode": "B"
+            },
+            {
+              "uicCode": "8821006",
+              "stationCode": "ATW",
+              "name": "Antwerpen-Centraal",
+              "coordinate": {
+                "lat": 51.21686,
+                "lng": 4.421242
+              },
+              "countryCode": "B"
+            },
+            {
+              "uicCode": "8821121",
+              "stationCode": "BERCH",
+              "name": "Antwerpen-Berchem",
+              "coordinate": {
+                "lat": 51.198914,
+                "lng": 4.4332
+              },
+              "countryCode": "B"
+            },
+            {
+              "uicCode": "8822004",
+              "stationCode": "MECH",
+              "name": "Mechelen",
+              "coordinate": {
+                "lat": 51.01758,
+                "lng": 4.48313
+              },
+              "countryCode": "B"
+            },
+            {
+              "uicCode": "8812005",
+              "stationCode": "BRUSN",
+              "name": "Brussel-Noord",
+              "coordinate": {
+                "lat": 50.859658,
+                "lng": 4.360854
+              },
+              "countryCode": "B"
+            },
+            {
+              "uicCode": "8813003",
+              "stationCode": "BRUSC",
+              "name": "Brussel-Centraal",
+              "coordinate": {
+                "lat": 50.845175,
+                "lng": 4.357131
+              },
+              "countryCode": "B"
+            },
+            {
+              "uicCode": "8814001",
+              "stationCode": "BRUSZ",
+              "name": "Brussel-Zuid",
+              "coordinate": {
+                "lat": 50.836782,
+                "lng": 4.336922
+              },
+              "countryCode": "B"
+            }
+          ],
+          "direction": "BOTH",
+          "operators": [
+            "NS International"
+          ]
+        },
+        "consequence": {
+          "section": {
+            "stations": [
+              {
+                "uicCode": "8821006",
+                "stationCode": "ATW",
+                "name": "Antwerpen-Centraal",
+                "coordinate": {
+                  "lat": 51.21686,
+                  "lng": 4.421242
+                },
+                "countryCode": "B"
+              },
+              {
+                "uicCode": "8821121",
+                "stationCode": "BERCH",
+                "name": "Antwerpen-Berchem",
+                "coordinate": {
+                  "lat": 51.198914,
+                  "lng": 4.4332
+                },
+                "countryCode": "B"
+              },
+              {
+                "uicCode": "8822004",
+                "stationCode": "MECH",
+                "name": "Mechelen",
+                "coordinate": {
+                  "lat": 51.01758,
+                  "lng": 4.48313
+                },
+                "countryCode": "B"
+              },
+              {
+                "uicCode": "8812005",
+                "stationCode": "BRUSN",
+                "name": "Brussel-Noord",
+                "coordinate": {
+                  "lat": 50.859658,
+                  "lng": 4.360854
+                },
+                "countryCode": "B"
+              },
+              {
+                "uicCode": "8813003",
+                "stationCode": "BRUSC",
+                "name": "Brussel-Centraal",
+                "coordinate": {
+                  "lat": 50.845175,
+                  "lng": 4.357131
+                },
+                "countryCode": "B"
+              },
+              {
+                "uicCode": "8814001",
+                "stationCode": "BRUSZ",
+                "name": "Brussel-Zuid",
+                "coordinate": {
+                  "lat": 50.836782,
+                  "lng": 4.336922
+                },
+                "countryCode": "B"
+              }
+            ],
+            "direction": "BOTH",
+            "operators": [
+              "NS International"
+            ]
+          },
+          "description": "timetable adjusted",
+          "level": "LESS_TRAINS"
+        },
+        "sectionType": "HSL"
+      }
+    ],
+    "timespans": [
+      {
+        "start": "2026-10-05T05:00:00+0200",
+        "end": "2026-10-10T01:00:00+0200",
+        "period": "Monday, October 5, 5:00 until Saturday, October 10, 1:00.",
+        "situation": {
+          "label": "Due to engineering works: between Antwerp Central St. and Brussels South the timetable has been adjusted."
+        },
+        "cause": {
+          "label": "engineering works",
+          "type": "OTHER"
+        },
+        "additionalTravelTime": {
+          "label": "The additional journey time varies per journey.",
+          "shortLabel": "Additional journey time varies per journey."
+        },
+        "advices": [
+          "EuroCity trains do not stop at Brussels Airport Zaventem. Please visit nmbs.be for more information."
+        ]
+      }
+    ],
+    "alternativeTransportTimespans": [],
+    "summaryAdditionalTravelTime": {
+      "label": "The additional journey time varies per journey.",
+      "shortLabel": "Additional journey time varies per journey."
+    }
+  },
+  {
+    "id": "7008314",
+    "isActive": true,
+    "title": "Amsterdam - Schiphol - Rotterdam.",
+    "type": "MAINTENANCE",
+    "registrationTime": "2026-08-28T10:30:00+0200",
+    "releaseTime": "2026-08-28T10:30:00+0200",
+    "local": false,
+    "titleSections": [
+      [
+        {
+          "type": "STATION",
+          "value": "Amsterdam Zuid"
+        },
+        {
+          "type": "ICON",
+          "value": "MAINTENANCE"
+        },
+        {
+          "type": "STATION",
+          "value": "Schiphol Airport"
+        },
+        {
+          "type": "STATION",
+          "value": "Rotterdam C."
+        }
+      ]
+    ],
+    "start": "2026-10-06T06:00:00+0200",
+    "end": "2026-10-07T07:30:00+0200",
+    "period": "Tuesday, October 6, 6:00 until Wednesday, October 7, 7:30.",
+    "impact": {
+      "value": 2
+    },
+    "publicationSections": [
+      {
+        "section": {
+          "stations": [
+            {
+              "uicCode": "8400061",
+              "stationCode": "ASDZ",
+              "name": "Amsterdam Zuid",
+              "coordinate": {
+                "lat": 52.338889,
+                "lng": 4.872356
+              },
+              "countryCode": "NL"
+            },
+            {
+              "uicCode": "8400561",
+              "stationCode": "SHL",
+              "name": "Schiphol Airport",
+              "coordinate": {
+                "lat": 52.3094444274902,
+                "lng": 4.76194429397583
+              },
+              "countryCode": "NL"
+            },
+            {
+              "uicCode": "8400332",
+              "stationCode": "HFD",
+              "name": "Hoofddorp",
+              "coordinate": {
+                "lat": 52.2933349609375,
+                "lng": 4.70055532455444
+              },
+              "countryCode": "NL"
+            },
+            {
+              "uicCode": "8400530",
+              "stationCode": "RTD",
+              "name": "Rotterdam Centraal",
+              "coordinate": {
+                "lat": 51.9249992370605,
+                "lng": 4.46888875961304
+              },
+              "countryCode": "NL"
+            }
+          ],
+          "direction": "BOTH",
+          "operators": [
+            "NS International"
+          ]
+        },
+        "consequence": {
+          "section": {
+            "stations": [
+              {
+                "uicCode": "8400061",
+                "stationCode": "ASDZ",
+                "name": "Amsterdam Zuid",
+                "coordinate": {
+                  "lat": 52.338889,
+                  "lng": 4.872356
+                },
+                "countryCode": "NL"
+              },
+              {
+                "uicCode": "8400561",
+                "stationCode": "SHL",
+                "name": "Schiphol Airport",
+                "coordinate": {
+                  "lat": 52.3094444274902,
+                  "lng": 4.76194429397583
+                },
+                "countryCode": "NL"
+              }
+            ],
+            "direction": "BOTH",
+            "operators": [
+              "NS International"
+            ]
+          },
+          "description": "adjusted international schedule",
+          "level": "LESS_TRAINS"
+        },
+        "sectionType": "HSL"
+      }
+    ],
+    "timespans": [
+      {
+        "start": "2026-10-07T06:00:00+0200",
+        "end": "2026-10-07T07:30:00+0200",
+        "period": "Wednesday, October 7, 6:00 until Wednesday, October 7, 7:30.",
+        "situation": {
+          "label": "Due to engineering works: between Amsterdam South and Schiphol Airport the international schedule has been adjusted."
+        },
+        "cause": {
+          "label": "engineering works",
+          "type": "OTHER"
+        },
+        "additionalTravelTime": {
+          "label": "The additional journey time varies per journey.",
+          "shortLabel": "Additional journey time varies per journey."
+        },
+        "advices": [
+          "Eurocity Direct services 9512 and 9516 depart from Amsterdam Central Station instead of Amsterdam Zuid."
+        ]
+      }
+    ],
+    "alternativeTransportTimespans": []
+  },
+  {
+    "id": "7008291",
+    "isActive": true,
+    "title": "Amsterdam - Hannover - Berlin.",
+    "type": "MAINTENANCE",
+    "registrationTime": "2026-08-20T09:53:12+0200",
+    "releaseTime": "2026-08-20T09:53:12+0200",
+    "local": false,
+    "titleSections": [
+      [
+        {
+          "type": "STATION",
+          "value": "Amsterdam C."
+        },
+        {
+          "type": "ICON",
+          "value": "MAINTENANCE"
+        },
+        {
+          "type": "STATION",
+          "value": "Hilversum"
+        },
+        {
+          "type": "STATION",
+          "value": "Berlin Hbf"
+        }
+      ]
+    ],
+    "start": "2026-10-06T07:50:00+0200",
+    "end": "2026-10-06T10:25:00+0200",
+    "period": "Tuesday, October 6, 7:50 until Tuesday, October 6, 10:25.",
+    "impact": {
+      "value": 2
+    },
+    "publicationSections": [
+      {
+        "section": {
+          "stations": [
+            {
+              "uicCode": "8400058",
+              "stationCode": "ASD",
+              "name": "Amsterdam Centraal",
+              "coordinate": {
+                "lat": 52.3788871765137,
+                "lng": 4.90027761459351
+              },
+              "countryCode": "NL"
+            },
+            {
+              "uicCode": "8400060",
+              "stationCode": "ASDM",
+              "name": "Amsterdam Muiderpoort",
+              "coordinate": {
+                "lat": 52.3605537414551,
+                "lng": 4.93111133575439
+              },
+              "countryCode": "NL"
+            },
+            {
+              "uicCode": "8400235",
+              "stationCode": "ASSP",
+              "name": "Amsterdam Science Park",
+              "coordinate": {
+                "lat": 52.35274,
+                "lng": 4.94855
+              },
+              "countryCode": "NL"
+            },
+            {
+              "uicCode": "8400165",
+              "stationCode": "DMN",
+              "name": "Diemen",
+              "coordinate": {
+                "lat": 52.34515,
+                "lng": 4.967566
+              },
+              "countryCode": "NL"
+            },
+            {
+              "uicCode": "8400685",
+              "stationCode": "WP",
+              "name": "Weesp",
+              "coordinate": {
+                "lat": 52.3127784729004,
+                "lng": 5.04305553436279
+              },
+              "countryCode": "NL"
+            },
+            {
+              "uicCode": "8400452",
+              "stationCode": "NDB",
+              "name": "Naarden-Bussum",
+              "coordinate": {
+                "lat": 52.2802772521973,
+                "lng": 5.15694427490234
+              },
+              "countryCode": "NL"
+            },
+            {
+              "uicCode": "8400145",
+              "stationCode": "BSMZ",
+              "name": "Bussum Zuid",
+              "coordinate": {
+                "lat": 52.2658348083496,
+                "lng": 5.16305541992188
+              },
+              "countryCode": "NL"
+            },
+            {
+              "uicCode": "8400324",
+              "stationCode": "HVSM",
+              "name": "Hilversum Media Park",
+              "coordinate": {
+                "lat": 52.2380561828613,
+                "lng": 5.17388868331909
+              },
+              "countryCode": "NL"
+            },
+            {
+              "uicCode": "8400322",
+              "stationCode": "HVS",
+              "name": "Hilversum",
+              "coordinate": {
+                "lat": 52.2258338928223,
+                "lng": 5.18194437026978
+              },
+              "countryCode": "NL"
+            },
+            {
+              "uicCode": "8400086",
+              "stationCode": "BRN",
+              "name": "Baarn",
+              "coordinate": {
+                "lat": 52.2083320617676,
+                "lng": 5.28083324432373
+              },
+              "countryCode": "NL"
+            },
+            {
+              "uicCode": "8400055",
+              "stationCode": "AMF",
+              "name": "Amersfoort Centraal",
+              "coordinate": {
+                "lat": 52.1538887023926,
+                "lng": 5.37055540084839
+              },
+              "countryCode": "NL"
+            },
+            {
+              "uicCode": "8400490",
+              "stationCode": "HVL",
+              "name": "Hoevelaken",
+              "coordinate": {
+                "lat": 52.16652,
+                "lng": 5.45718
+              },
+              "countryCode": "NL"
+            },
+            {
+              "uicCode": "8400066",
+              "stationCode": "APD",
+              "name": "Apeldoorn",
+              "coordinate": {
+                "lat": 52.2091674804687,
+                "lng": 5.97027778625488
+              },
+              "countryCode": "NL"
+            },
+            {
+              "uicCode": "8400229",
+              "stationCode": "APDO",
+              "name": "Apeldoorn Osseveld",
+              "coordinate": {
+                "lat": 52.2152786254883,
+                "lng": 6.00444459915161
+              },
+              "countryCode": "NL"
+            },
+            {
+              "uicCode": "8400599",
+              "stationCode": "TWL",
+              "name": "Twello",
+              "coordinate": {
+                "lat": 52.2377777099609,
+                "lng": 6.09861087799072
+              },
+              "countryCode": "NL"
+            },
+            {
+              "uicCode": "8400173",
+              "stationCode": "DV",
+              "name": "Deventer",
+              "coordinate": {
+                "lat": 52.2574996948242,
+                "lng": 6.16055536270142
+              },
+              "countryCode": "NL"
+            },
+            {
+              "uicCode": "8400185",
+              "stationCode": "DVC",
+              "name": "Deventer Colmschate",
+              "coordinate": {
+                "lat": 52.2502784729004,
+                "lng": 6.21444463729858
+              },
+              "countryCode": "NL"
+            },
+            {
+              "uicCode": "8400328",
+              "stationCode": "HON",
+              "name": "Holten",
+              "coordinate": {
+                "lat": 52.2838897705078,
+                "lng": 6.42027759552002
+              },
+              "countryCode": "NL"
+            },
+            {
+              "uicCode": "8400538",
+              "stationCode": "RSN",
+              "name": "Rijssen",
+              "coordinate": {
+                "lat": 52.3122215270996,
+                "lng": 6.52027797698975
+              },
+              "countryCode": "NL"
+            },
+            {
+              "uicCode": "8400691",
+              "stationCode": "WDN",
+              "name": "Wierden",
+              "coordinate": {
+                "lat": 52.3613891601562,
+                "lng": 6.59166669845581
+              },
+              "countryCode": "NL"
+            },
+            {
+              "uicCode": "8400051",
+              "stationCode": "AML",
+              "name": "Almelo",
+              "coordinate": {
+                "lat": 52.3580551147461,
+                "lng": 6.65388870239258
+              },
+              "countryCode": "NL"
+            },
+            {
+              "uicCode": "8400520",
+              "stationCode": "AMRI",
+              "name": "Almelo de Riet",
+              "coordinate": {
+                "lat": 52.3419456481934,
+                "lng": 6.66666650772095
+              },
+              "countryCode": "NL"
+            },
+            {
+              "uicCode": "8400124",
+              "stationCode": "BN",
+              "name": "Borne",
+              "coordinate": {
+                "lat": 52.2988891601562,
+                "lng": 6.74805545806885
+              },
+              "countryCode": "NL"
+            },
+            {
+              "uicCode": "8400316",
+              "stationCode": "HGL",
+              "name": "Hengelo",
+              "coordinate": {
+                "lat": 52.2616653442383,
+                "lng": 6.79388904571533
+              },
+              "countryCode": "NL"
+            },
+            {
+              "uicCode": "8400312",
+              "stationCode": "HGLO",
+              "name": "Hengelo Oost",
+              "coordinate": {
+                "lat": 52.2688903808594,
+                "lng": 6.81944465637207
+              },
+              "countryCode": "NL"
+            },
+            {
+              "uicCode": "8400483",
+              "stationCode": "ODZ",
+              "name": "Oldenzaal",
+              "coordinate": {
+                "lat": 52.3063888549805,
+                "lng": 6.93472242355347
+              },
+              "countryCode": "NL"
+            },
+            {
+              "uicCode": "8021156",
+              "stationCode": "BH",
+              "name": "Bad Bentheim",
+              "coordinate": {
+                "lat": 52.309685595156,
+                "lng": 7.15853691101074
+              },
+              "countryCode": "D"
+            },
+            {
+              "uicCode": "8021067",
+              "stationCode": "RHEINE",
+              "name": "Rheine",
+              "coordinate": {
+                "lat": 52.276299,
+                "lng": 7.434255
+              },
+              "countryCode": "D"
+            },
+            {
+              "uicCode": "8021025",
+              "stationCode": "OSNH",
+              "name": "Osnabrück Hbf",
+              "coordinate": {
+                "lat": 52.272851,
+                "lng": 8.061781
+              },
+              "countryCode": "D"
+            },
+            {
+              "uicCode": "8013552",
+              "stationCode": "HANN",
+              "name": "Hannover Hbf",
+              "coordinate": {
+                "lat": 52.3770401,
+                "lng": 9.7416759
+              },
+              "countryCode": "D"
+            },
+            {
+              "uicCode": "8065969",
+              "stationCode": "BERHBL",
+              "name": "Berlin Hbf",
+              "coordinate": {
+                "lat": 52.52503,
+                "lng": 13.36946
+              },
+              "countryCode": "D"
+            }
+          ],
+          "direction": "BOTH",
+          "operators": [
+            "NS International"
+          ]
+        },
+        "consequence": {
+          "section": {
+            "stations": [
+              {
+                "uicCode": "8400058",
+                "stationCode": "ASD",
+                "name": "Amsterdam Centraal",
+                "coordinate": {
+                  "lat": 52.3788871765137,
+                  "lng": 4.90027761459351
+                },
+                "countryCode": "NL"
+              },
+              {
+                "uicCode": "8400060",
+                "stationCode": "ASDM",
+                "name": "Amsterdam Muiderpoort",
+                "coordinate": {
+                  "lat": 52.3605537414551,
+                  "lng": 4.93111133575439
+                },
+                "countryCode": "NL"
+              },
+              {
+                "uicCode": "8400235",
+                "stationCode": "ASSP",
+                "name": "Amsterdam Science Park",
+                "coordinate": {
+                  "lat": 52.35274,
+                  "lng": 4.94855
+                },
+                "countryCode": "NL"
+              },
+              {
+                "uicCode": "8400165",
+                "stationCode": "DMN",
+                "name": "Diemen",
+                "coordinate": {
+                  "lat": 52.34515,
+                  "lng": 4.967566
+                },
+                "countryCode": "NL"
+              },
+              {
+                "uicCode": "8400685",
+                "stationCode": "WP",
+                "name": "Weesp",
+                "coordinate": {
+                  "lat": 52.3127784729004,
+                  "lng": 5.04305553436279
+                },
+                "countryCode": "NL"
+              },
+              {
+                "uicCode": "8400452",
+                "stationCode": "NDB",
+                "name": "Naarden-Bussum",
+                "coordinate": {
+                  "lat": 52.2802772521973,
+                  "lng": 5.15694427490234
+                },
+                "countryCode": "NL"
+              },
+              {
+                "uicCode": "8400145",
+                "stationCode": "BSMZ",
+                "name": "Bussum Zuid",
+                "coordinate": {
+                  "lat": 52.2658348083496,
+                  "lng": 5.16305541992188
+                },
+                "countryCode": "NL"
+              },
+              {
+                "uicCode": "8400324",
+                "stationCode": "HVSM",
+                "name": "Hilversum Media Park",
+                "coordinate": {
+                  "lat": 52.2380561828613,
+                  "lng": 5.17388868331909
+                },
+                "countryCode": "NL"
+              },
+              {
+                "uicCode": "8400322",
+                "stationCode": "HVS",
+                "name": "Hilversum",
+                "coordinate": {
+                  "lat": 52.2258338928223,
+                  "lng": 5.18194437026978
+                },
+                "countryCode": "NL"
+              }
+            ],
+            "direction": "BOTH",
+            "operators": [
+              "NS International"
+            ]
+          },
+          "description": "adjusted international schedule",
+          "level": "LESS_TRAINS"
+        },
+        "sectionType": "NEIGHBORING_COUNTRY"
+      }
+    ],
+    "timespans": [
+      {
+        "start": "2026-10-06T07:50:00+0200",
+        "end": "2026-10-06T10:25:00+0200",
+        "period": "Tuesday, October 6, 7:50 until Tuesday, October 6, 10:25.",
+        "situation": {
+          "label": "Due to engineering works: between Amsterdam Central St. and Hilversum the international schedule has been adjusted."
+        },
+        "cause": {
+          "label": "engineering works",
+          "type": "OTHER"
+        },
+        "additionalTravelTime": {
+          "label": "The additional journey time varies per journey.",
+          "shortLabel": "Additional journey time varies per journey."
+        },
+        "advices": [
+          "ICE 143 and 145 depart from Amersfoort Central Station. Amsterdam Central Station and Hilversum are not served by this train."
+        ]
+      }
+    ],
+    "alternativeTransportTimespans": [],
+    "summaryAdditionalTravelTime": {
+      "label": "The additional journey time varies per journey.",
+      "shortLabel": "Additional journey time varies per journey."
+    }
+  }
+]

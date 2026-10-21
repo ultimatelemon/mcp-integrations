@@ -1,0 +1,3236 @@
+{
+  "payload": [
+    {
+      "type": "stationfacility",
+      "name": "Bagagekluizen",
+      "stationFacilityType": "SERVICE",
+      "nearbyMeMarkerIconName": "lockers",
+      "identifiers": [],
+      "categories": [
+        "Services",
+        "station-service"
+      ],
+      "locations": [
+        {
+          "distance": 89.87157354916259,
+          "name": "Bagagekluizen station Utrecht Centraal",
+          "stationCode": "UT",
+          "lat": 52.089529,
+          "lng": 5.109632,
+          "open": "Yes",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bagagekluizen-21"
+          },
+          "thumbnail": {
+            "uri": "/api/v1/location/thumbnail/52.089529,5.109632"
+          },
+          "infoUrl": "https://www.ns.nl/reisinformatie/bagage/bagage-op-station.html",
+          "description": "Station Utrecht Centraal ",
+          "openingHours": [
+            {
+              "dayOfWeek": 1,
+              "startTime": "05:00",
+              "endTime": "01:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 2,
+              "startTime": "05:00",
+              "endTime": "01:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 3,
+              "startTime": "05:00",
+              "endTime": "01:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 4,
+              "startTime": "05:00",
+              "endTime": "01:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 5,
+              "startTime": "05:00",
+              "endTime": "01:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 6,
+              "startTime": "05:00",
+              "endTime": "01:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 7,
+              "startTime": "05:00",
+              "endTime": "01:00",
+              "closesNextDay": true
+            }
+          ],
+          "extra": {},
+          "infoImages": [
+            {
+              "name": "locationInfo_Bagagekluizen-21_Memo",
+              "link": {
+                "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-Bagagekluizen_Header_20240325-101424.jpg"
+              },
+              "title": "Memo",
+              "body": "Op dit station kunt u uw bagage makkelijk en veilig opbergen in een bagagekluis. "
+            },
+            {
+              "name": "locationInfo_Bagagekluizen-21_TariefToelichting",
+              "link": {
+                "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-Bagagekluizen_Header_20240325-101424.jpg"
+              },
+              "title": "Tarief Toelichting",
+              "body": "Kijk voor meer informatie over de bagagekluizen en actuele prijzen per locatie op www.ns.nl/bagagekluizen"
+            }
+          ],
+          "apps": [],
+          "sites": [],
+          "extraInfo": [],
+          "nearbyMeLocationId": {
+            "value": "Bagagekluizen-21",
+            "type": "stationfacility"
+          },
+          "nextOpeningTime": "Open - until 01:00 hours",
+          "street": "",
+          "houseNumber": "",
+          "postalCode": "",
+          "city": ""
+        }
+      ],
+      "primaryColor": "ffcc33",
+      "open": "Yes",
+      "openingHours": [
+        {
+          "dayOfWeek": 1,
+          "startTime": "05:00",
+          "endTime": "01:00",
+          "closesNextDay": true
+        },
+        {
+          "dayOfWeek": 2,
+          "startTime": "05:00",
+          "endTime": "01:00",
+          "closesNextDay": true
+        },
+        {
+          "dayOfWeek": 3,
+          "startTime": "05:00",
+          "endTime": "01:00",
+          "closesNextDay": true
+        },
+        {
+          "dayOfWeek": 4,
+          "startTime": "05:00",
+          "endTime": "01:00",
+          "closesNextDay": true
+        },
+        {
+          "dayOfWeek": 5,
+          "startTime": "05:00",
+          "endTime": "01:00",
+          "closesNextDay": true
+        },
+        {
+          "dayOfWeek": 6,
+          "startTime": "05:00",
+          "endTime": "01:00",
+          "closesNextDay": true
+        },
+        {
+          "dayOfWeek": 7,
+          "startTime": "05:00",
+          "endTime": "01:00",
+          "closesNextDay": true
+        }
+      ],
+      "keywords": [],
+      "stationBound": false,
+      "headerImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-Bagagekluizen_Header_20240325-101424.jpg"
+      },
+      "advertImages": [],
+      "infoImages": [],
+      "nextOpeningTime": "Open - until 01:00 hours"
+    },
+    {
+      "type": "stationfacility",
+      "name": "Lift",
+      "stationFacilityType": "ASSISTANCE",
+      "nearbyMeMarkerIconName": "elevator",
+      "identifiers": [
+        "lift"
+      ],
+      "categories": [
+        "Services",
+        "station-service",
+        "stationfacility",
+        "station-assistance"
+      ],
+      "locations": [
+        {
+          "distance": 60.793286328142365,
+          "name": "Lift Spoor 14/15",
+          "stationCode": "UT",
+          "lat": 52.0892688444664,
+          "lng": 5.109740568729723,
+          "open": "Yes",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/NL:CHB:LiftEquipment:8400621_009"
+          },
+          "description": "Lift Spoor 14/15",
+          "extra": {},
+          "infoImages": [],
+          "apps": [],
+          "sites": [],
+          "extraInfo": [],
+          "nearbyMeLocationId": {
+            "value": "NL:CHB:LiftEquipment:8400621_009",
+            "type": "stationfacility"
+          },
+          "nextOpeningTime": "Available"
+        },
+        {
+          "distance": 65.16060992363165,
+          "name": "Lift Spoor 11/12",
+          "stationCode": "UT",
+          "lat": 52.0893793613824,
+          "lng": 5.110053768109401,
+          "open": "Yes",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/NL:CHB:LiftEquipment:8400621_010"
+          },
+          "description": "Lift Spoor 11/12",
+          "extra": {},
+          "infoImages": [],
+          "apps": [],
+          "sites": [],
+          "extraInfo": [],
+          "nearbyMeLocationId": {
+            "value": "NL:CHB:LiftEquipment:8400621_010",
+            "type": "stationfacility"
+          },
+          "nextOpeningTime": "Available"
+        }
+      ],
+      "listLogoImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-Lift_logo_20170615-151930.png"
+      },
+      "primaryColor": "000000",
+      "open": "Yes",
+      "keywords": [],
+      "stationBound": true,
+      "headerImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-Lift_Header_20180802-111438.JPG"
+      },
+      "advertImages": [],
+      "infoImages": [],
+      "nextOpeningTime": ""
+    },
+    {
+      "type": "stationfacility",
+      "name": "Geleidelijnen",
+      "stationFacilityType": "ASSISTANCE",
+      "nearbyMeMarkerIconName": "info",
+      "identifiers": [
+        "stationinfoBlacklist"
+      ],
+      "categories": [
+        "Services",
+        "station-service",
+        "stationfacility",
+        "station-service",
+        "station-assistance"
+      ],
+      "locations": [
+        {
+          "name": "Geleidelijnen ",
+          "stationCode": "UT",
+          "location": {},
+          "open": "Unknown",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Geleidelijnen-324"
+          },
+          "infoUrl": "http://www.ns.nl/geleidelijnen/",
+          "description": "Utrecht Centraal",
+          "extra": {},
+          "infoImages": [
+            {
+              "name": "locationInfo_Geleidelijnen-324_Memo",
+              "link": {
+                "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-Geleidelijnen_Header_20180410-151744.JPG"
+              },
+              "title": "Memo",
+              "body": "Op dit station zijn geleidelijnen aanwezig.\r\n\r\nWilt u meer informatie over het reizen met een visuele beperking , klik dan hier. \r\n\r\nhttps://www.ns.nl/reisinformatie/reizen-met-een-beperking/visuele-beperking\r\n"
+            }
+          ],
+          "apps": [],
+          "sites": [],
+          "extraInfo": [],
+          "nearbyMeLocationId": {
+            "value": "Geleidelijnen-324",
+            "type": "stationfacility"
+          },
+          "nextOpeningTime": "Opening hours unknown",
+          "sapId": "//"
+        }
+      ],
+      "listLogoImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-Geleidelijnen_logo_20230420-131716.png"
+      },
+      "primaryColor": "000000",
+      "open": "Unknown",
+      "keywords": [],
+      "stationBound": true,
+      "headerImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-Geleidelijnen_Header_20180410-151744.JPG"
+      },
+      "advertImages": [],
+      "infoImages": [],
+      "nextOpeningTime": ""
+    },
+    {
+      "type": "stationfacility",
+      "name": "Wachtruimte",
+      "stationFacilityType": "SERVICE",
+      "nearbyMeMarkerIconName": "waiting-room",
+      "identifiers": [],
+      "categories": [
+        "Services",
+        "station-service",
+        "stationfacility",
+        "station-service"
+      ],
+      "locations": [
+        {
+          "name": "Wachtruimte ",
+          "stationCode": "UT",
+          "location": {},
+          "open": "Unknown",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Wachtruimte-66"
+          },
+          "description": "Perrons ",
+          "extra": {},
+          "infoImages": [],
+          "apps": [],
+          "sites": [],
+          "extraInfo": [],
+          "nearbyMeLocationId": {
+            "value": "Wachtruimte-66",
+            "type": "stationfacility"
+          },
+          "nextOpeningTime": "Opening hours unknown",
+          "sapId": "//"
+        }
+      ],
+      "listLogoImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-Wachtruimte_logo_20180813-153115.JPG"
+      },
+      "primaryColor": "000000",
+      "open": "Unknown",
+      "keywords": [],
+      "stationBound": true,
+      "headerImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-Wachtruimte_Header_20240325-102239.jpg"
+      },
+      "advertImages": [],
+      "infoImages": [],
+      "nextOpeningTime": ""
+    },
+    {
+      "type": "stationfacility",
+      "name": "Bemenste fietsenstalling",
+      "stationFacilityType": "SERVICE",
+      "nearbyMeMarkerIconName": "bike",
+      "identifiers": [
+        "fietsenstalling"
+      ],
+      "categories": [
+        "Services",
+        "station-service"
+      ],
+      "locations": [
+        {
+          "distance": 87.9625122625367,
+          "name": "Bemenste fietsenstalling Utrecht Centraal Stationsplein",
+          "stationCode": "UT",
+          "lat": 52.089548,
+          "lng": 5.109781,
+          "open": "Yes",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenste%20fietsenstalling-ut020"
+          },
+          "thumbnail": {
+            "uri": "/api/v1/location/thumbnail/52.089548,5.109781"
+          },
+          "infoUrl": "http://www.ns.nl/deur-tot-deur/ns-fietsenstalling/bewaakte-fietsenstalling-met-service.html",
+          "description": "Station Utrecht Centraal Stationsplein",
+          "openingHours": [
+            {
+              "dayOfWeek": 1,
+              "startTime": "00:00",
+              "endTime": "24:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 2,
+              "startTime": "00:00",
+              "endTime": "24:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 3,
+              "startTime": "00:00",
+              "endTime": "24:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 4,
+              "startTime": "00:00",
+              "endTime": "24:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 5,
+              "startTime": "00:00",
+              "endTime": "24:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 6,
+              "startTime": "00:00",
+              "endTime": "24:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 7,
+              "startTime": "00:00",
+              "endTime": "24:00",
+              "closesNextDay": true
+            }
+          ],
+          "extra": {
+            "jafInStalling": "0",
+            "regime": "1e 24 uur gratis",
+            "locationCode": "ut020"
+          },
+          "infoImages": [
+            {
+              "name": "locationInfo_Bemenste fietsenstalling-ut020_Memo",
+              "link": {
+                "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-Bemenstefietsenstalling_Header_20240325-101616.jpg"
+              },
+              "title": "Memo",
+              "body": "Bewaakte bemenste fietsenstalling \r\n"
+            },
+            {
+              "name": "locationInfo_Bemenste fietsenstalling-ut020_TariefToelichting",
+              "link": {
+                "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-Bemenstefietsenstalling_Header_20240325-101616.jpg"
+              },
+              "title": "Tarief Toelichting",
+              "body": "In fietsenstalling Stationsplein kunt u uw fiets elke eerste 24 uur gratis stallen, na 24 uur betaalt u € 1,40 per 24 uur. Een jaarabonnement koopt u online voor € 80. U gebruikt uw OV-chipkaart om uw fiets te stallen. Fietsenstalling Stationsplein is 24 uur per dag open. Buitenmodel fietsen, zoals bakfietsen of ligfietsen kunt u hier alleen met een jaarabonnement stallen. "
+            }
+          ],
+          "apps": [],
+          "sites": [],
+          "extraInfo": [],
+          "nearbyMeLocationId": {
+            "value": "Bemenste fietsenstalling-ut020",
+            "type": "stationfacility"
+          },
+          "nextOpeningTime": "Open: whole day (24 hours)",
+          "street": "Stationsplein ",
+          "houseNumber": "2",
+          "postalCode": "3511 GD",
+          "city": "Utrecht"
+        },
+        {
+          "distance": 213.96335454095293,
+          "name": "Bemenste fietsenstalling Utrecht Centraal Jaarbeursplein",
+          "stationCode": "UT",
+          "lat": 52.08918,
+          "lng": 5.10713,
+          "open": "Yes",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenste%20fietsenstalling-ut016"
+          },
+          "thumbnail": {
+            "uri": "/api/v1/location/thumbnail/52.08918,5.10713"
+          },
+          "infoUrl": "http://www.ns.nl/deur-tot-deur/ns-fietsenstalling/bewaakte-fietsenstalling-met-service.html",
+          "description": "Utrecht Centraal Jaarbeursplein",
+          "openingHours": [
+            {
+              "dayOfWeek": 1,
+              "startTime": "00:00",
+              "endTime": "24:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 2,
+              "startTime": "00:00",
+              "endTime": "24:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 3,
+              "startTime": "00:00",
+              "endTime": "24:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 4,
+              "startTime": "00:00",
+              "endTime": "24:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 5,
+              "startTime": "00:00",
+              "endTime": "24:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 6,
+              "startTime": "00:00",
+              "endTime": "24:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 7,
+              "startTime": "00:00",
+              "endTime": "24:00",
+              "closesNextDay": true
+            }
+          ],
+          "extra": {
+            "jafInStalling": "0",
+            "regime": "1e 24 uur gratis",
+            "locationCode": "ut016"
+          },
+          "infoImages": [
+            {
+              "name": "locationInfo_Bemenste fietsenstalling-ut016_Memo",
+              "link": {
+                "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-Bemenstefietsenstalling_Header_20240325-101616.jpg"
+              },
+              "title": "Memo",
+              "body": "Deze fietsenstalling gaat op 28 februari 2025 weer open."
+            },
+            {
+              "name": "locationInfo_Bemenste fietsenstalling-ut016_Storing",
+              "link": {
+                "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-Bemenstefietsenstalling_Header_20240325-101616.jpg"
+              },
+              "title": "Storing",
+              "body": "Deze fietsenstalling gaat op 28 februari 2025 weer open."
+            },
+            {
+              "name": "locationInfo_Bemenste fietsenstalling-ut016_TariefToelichting",
+              "link": {
+                "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-Bemenstefietsenstalling_Header_20240325-101616.jpg"
+              },
+              "title": "Tarief Toelichting",
+              "body": "In fietsenstalling Jaarbeursplein kunt u uw fiets elke eerste 24 uur gratis stallen, na 24 uur betaalt u € 1,35 per 24 uur. Een jaarabonnement koopt u online voor € 80. U gebruikt uw OV-chipkaart om uw fiets te stallen. Deze stalling heeft een beperkt aantal plekken voor buitenmodelfietsen. Wij verwijzen u graag naar de Sijpestein stalling (50 meter verder)."
+            }
+          ],
+          "apps": [],
+          "sites": [],
+          "extraInfo": [],
+          "nearbyMeLocationId": {
+            "value": "Bemenste fietsenstalling-ut016",
+            "type": "stationfacility"
+          },
+          "nextOpeningTime": "Open: whole day (24 hours)",
+          "street": "Stationsplein ",
+          "houseNumber": "1",
+          "postalCode": "3521 AL",
+          "city": "Utrecht"
+        }
+      ],
+      "listLogoImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-Bemenstefietsenstalling_logo_20170915-084720.png"
+      },
+      "primaryColor": "000000",
+      "open": "Yes",
+      "openingHours": [
+        {
+          "dayOfWeek": 1,
+          "startTime": "00:00",
+          "endTime": "00:00",
+          "closesNextDay": true
+        },
+        {
+          "dayOfWeek": 2,
+          "startTime": "00:00",
+          "endTime": "00:00",
+          "closesNextDay": true
+        },
+        {
+          "dayOfWeek": 3,
+          "startTime": "00:00",
+          "endTime": "00:00",
+          "closesNextDay": true
+        },
+        {
+          "dayOfWeek": 4,
+          "startTime": "00:00",
+          "endTime": "00:00",
+          "closesNextDay": true
+        },
+        {
+          "dayOfWeek": 5,
+          "startTime": "00:00",
+          "endTime": "00:00",
+          "closesNextDay": true
+        },
+        {
+          "dayOfWeek": 6,
+          "startTime": "00:00",
+          "endTime": "00:00",
+          "closesNextDay": true
+        },
+        {
+          "dayOfWeek": 7,
+          "startTime": "00:00",
+          "endTime": "00:00",
+          "closesNextDay": true
+        }
+      ],
+      "keywords": [
+        "Fiets & Service",
+        "fietsenstalling",
+        "fietsverhuur",
+        "OV-producten",
+        "fiets"
+      ],
+      "stationBound": false,
+      "headerImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-Bemenstefietsenstalling_Header_20240325-101616.jpg"
+      },
+      "advertImages": [],
+      "infoImages": [
+        {
+          "name": "info_1",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-Bemenstefietsenstalling_info_1_20240325-101601.jpg"
+          },
+          "title": "Bemenste fietsenstalling",
+          "subtitle": "",
+          "body": "<p>Op dit station kunt u uw fiets stallen in een bewaakte fietsenstalling met service.&nbsp;In de meeste stallingen kunt u uw fiets laten repareren en een OV-fiets huren. Ook kunt u hier gebruik maken van Stallen op rekening. <a href=\"http://www.ns.nl/stallen-op-rekening\">www.ns.nl/stallen-op-rekening</a></p>\n<p>Meer informatie over bewaakte fietsenstallingen met service:&nbsp;<a href=\"http://www.ns.nl/fietsenstalling\">www.ns.nl/fietsenstalling</a> </p>",
+          "buttonText": "website",
+          "buttonLink": "www.ns.nl/fietsenstalling"
+        }
+      ],
+      "nextOpeningTime": "All 4 locations are open"
+    },
+    {
+      "type": "stationfacility",
+      "name": "Fiets & Service",
+      "stationFacilityType": "SERVICE",
+      "nearbyMeMarkerIconName": "bike",
+      "identifiers": [],
+      "categories": [
+        "Services",
+        "station-service",
+        "Services",
+        "stationfacility",
+        "servicerich",
+        "station-service"
+      ],
+      "locations": [
+        {
+          "distance": 318.35794224736924,
+          "name": "Fiets & Service Utrecht Centraal Stationsplein",
+          "stationCode": "UT",
+          "lat": 52.091659,
+          "lng": 5.109952,
+          "open": "Yes",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Fiets%20&%20Service-15"
+          },
+          "thumbnail": {
+            "uri": "/api/v1/location/thumbnail/52.091659,5.109952"
+          },
+          "infoUrl": "https://www.ns.nl/fietsenstallingen/fiets-en-service.html",
+          "description": "station Utrecht Centraal Stationsplein",
+          "openingHours": [
+            {
+              "dayOfWeek": 1,
+              "startTime": "07:00",
+              "endTime": "19:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 2,
+              "startTime": "07:00",
+              "endTime": "19:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 3,
+              "startTime": "07:00",
+              "endTime": "19:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 4,
+              "startTime": "07:00",
+              "endTime": "19:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 5,
+              "startTime": "07:00",
+              "endTime": "19:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 6,
+              "startTime": "10:00",
+              "endTime": "18:00",
+              "closesNextDay": false
+            }
+          ],
+          "extra": {},
+          "infoImages": [],
+          "apps": [],
+          "sites": [],
+          "extraInfo": [],
+          "nearbyMeLocationId": {
+            "value": "Fiets & Service-15",
+            "type": "stationfacility"
+          },
+          "nextOpeningTime": "Open - until 19:00 hours",
+          "street": "Stationsplein ",
+          "houseNumber": "2",
+          "postalCode": "3511 GD",
+          "city": "Utrecht "
+        }
+      ],
+      "listLogoImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-FietsService_logo_20170915-093231.jpg"
+      },
+      "primaryColor": "000000",
+      "open": "Yes",
+      "openingHours": [
+        {
+          "dayOfWeek": 1,
+          "startTime": "07:00",
+          "endTime": "19:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 2,
+          "startTime": "07:00",
+          "endTime": "19:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 3,
+          "startTime": "07:00",
+          "endTime": "19:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 4,
+          "startTime": "07:00",
+          "endTime": "19:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 5,
+          "startTime": "07:00",
+          "endTime": "19:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 6,
+          "startTime": "10:00",
+          "endTime": "18:00",
+          "closesNextDay": false
+        }
+      ],
+      "keywords": [],
+      "stationBound": false,
+      "headerImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-FietsService_Header_20240325-101721.jpg"
+      },
+      "advertImages": [],
+      "infoImages": [],
+      "nextOpeningTime": "Open - until 19:00 hours"
+    },
+    {
+      "type": "station-retail",
+      "name": "AH to go",
+      "stationFacilityType": "FOOD_AND_DRINK",
+      "nearbyMeMarkerIconName": "food-drinks",
+      "identifiers": [],
+      "categories": [
+        "Eten & Drinken",
+        "station-foodAndDrink"
+      ],
+      "locations": [
+        {
+          "distance": 104.72856942563185,
+          "name": "UT - AH to go - Jaarbeurszijde",
+          "stationCode": "UT",
+          "lat": 52.08921,
+          "lng": 5.10882,
+          "open": "Yes",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/station-retail/AH%20to%20go-16"
+          },
+          "thumbnail": {
+            "uri": "/api/v1/location/thumbnail/52.08921,5.10882"
+          },
+          "description": "Jaarbeurszijde",
+          "openingHours": [
+            {
+              "dayOfWeek": 1,
+              "startTime": "06:00",
+              "endTime": "01:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 2,
+              "startTime": "06:00",
+              "endTime": "01:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 3,
+              "startTime": "06:00",
+              "endTime": "01:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 4,
+              "startTime": "06:00",
+              "endTime": "01:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 5,
+              "startTime": "06:00",
+              "endTime": "01:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 6,
+              "startTime": "07:00",
+              "endTime": "01:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 7,
+              "startTime": "07:00",
+              "endTime": "01:00",
+              "closesNextDay": true
+            }
+          ],
+          "extra": {},
+          "infoImages": [],
+          "apps": [],
+          "sites": [],
+          "extraInfo": [],
+          "nearbyMeLocationId": {
+            "value": "AH to go-16",
+            "type": "station-retail"
+          },
+          "nextOpeningTime": "Open - until 01:00 hours",
+          "street": "Stationshal ",
+          "houseNumber": "4B",
+          "postalCode": "3511CE",
+          "city": "Utrecht"
+        },
+        {
+          "distance": 92.64367847883811,
+          "name": "UT - AH to go - Bij spoor 6/7",
+          "stationCode": "UT",
+          "lat": 52.08949,
+          "lng": 5.11096,
+          "open": "Yes",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/station-retail/AH%20to%20go-3"
+          },
+          "thumbnail": {
+            "uri": "/api/v1/location/thumbnail/52.08949,5.11096"
+          },
+          "description": "Bij spoor 6/7",
+          "openingHours": [
+            {
+              "dayOfWeek": 1,
+              "startTime": "06:30",
+              "endTime": "01:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 2,
+              "startTime": "06:30",
+              "endTime": "01:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 3,
+              "startTime": "06:30",
+              "endTime": "01:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 4,
+              "startTime": "06:30",
+              "endTime": "01:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 5,
+              "startTime": "06:30",
+              "endTime": "01:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 6,
+              "startTime": "07:00",
+              "endTime": "01:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 7,
+              "startTime": "08:00",
+              "endTime": "01:00",
+              "closesNextDay": true
+            }
+          ],
+          "extra": {},
+          "infoImages": [],
+          "apps": [],
+          "sites": [],
+          "extraInfo": [],
+          "nearbyMeLocationId": {
+            "value": "AH to go-3",
+            "type": "station-retail"
+          },
+          "nextOpeningTime": "Open - until 01:00 hours",
+          "street": "Stationshal ",
+          "houseNumber": "8A",
+          "postalCode": "3511CE",
+          "city": "Utrecht"
+        }
+      ],
+      "listLogoImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/station-retail/resource/img-2.0-AHtogo_logo_20211019-133313.jpg"
+      },
+      "primaryColor": "00A3E0",
+      "open": "Yes",
+      "openingHours": [
+        {
+          "dayOfWeek": 1,
+          "startTime": "06:00",
+          "endTime": "01:00",
+          "closesNextDay": true
+        },
+        {
+          "dayOfWeek": 2,
+          "startTime": "06:00",
+          "endTime": "01:00",
+          "closesNextDay": true
+        },
+        {
+          "dayOfWeek": 3,
+          "startTime": "06:00",
+          "endTime": "01:00",
+          "closesNextDay": true
+        },
+        {
+          "dayOfWeek": 4,
+          "startTime": "06:00",
+          "endTime": "01:00",
+          "closesNextDay": true
+        },
+        {
+          "dayOfWeek": 5,
+          "startTime": "06:00",
+          "endTime": "01:00",
+          "closesNextDay": true
+        },
+        {
+          "dayOfWeek": 6,
+          "startTime": "07:00",
+          "endTime": "01:00",
+          "closesNextDay": true
+        },
+        {
+          "dayOfWeek": 7,
+          "startTime": "07:00",
+          "endTime": "01:00",
+          "closesNextDay": true
+        }
+      ],
+      "keywords": [
+        "alcoholische dranken",
+        "appel",
+        "appelflap",
+        "avondeten",
+        "banaan",
+        "batterijen",
+        "belegde broodjes",
+        "bier",
+        "bloemen",
+        "brood",
+        "cadeau",
+        "cappuccino",
+        "chips",
+        "chocolade",
+        "Coca-Cola",
+        "croissant",
+        "deodorant",
+        "diner",
+        "drinken",
+        "espresso",
+        "eten",
+        "frisdrank",
+        "fruit",
+        "gebak",
+        "ijs",
+        "ijskoffie",
+        "jus d'orange",
+        "kaasbroodje",
+        "kant-en-klaar",
+        "kauwgom",
+        "koek",
+        "koffie",
+        "lunch",
+        "maaltijd",
+        "middageten",
+        "muffin",
+        "nootjes",
+        "ontbijt",
+        "paracetamol",
+        "paraplu",
+        "pepermunt",
+        "pleisters",
+        "Red Bull",
+        "salades",
+        "sandwiches",
+        "saucijzenbroodje",
+        "sigaretten",
+        "snack",
+        "snoep",
+        "tabak",
+        "telefoonkaarten",
+        "thee",
+        "tijdschriften",
+        "tussendoortje",
+        "vruchtensap",
+        "warme chocolademelk",
+        "water",
+        "wc",
+        "wijn",
+        "wraps"
+      ],
+      "stationBound": false,
+      "headerImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/station-retail/resource/img-2.0-AH-to-go_Header_20141126-161124.jpg"
+      },
+      "advertImages": [],
+      "infoImages": [
+        {
+          "name": "info_2",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/station-retail/resource/img-2.0-AHtogo_info_2_20220517-174428.jpg"
+          },
+          "title": "Over AH to go",
+          "subtitle": "",
+          "body": "<H1 style=\"MARGIN: auto 0cm\"><FONT face=Calibri>\r\n<P class=MsoNormal style=\"MARGIN: 0cm\"><FONT size=3>AH to go op het station is een gemakswinkel met snelle en gezonde oplossingen voor op het werk, thuis of onderweg. De winkel heeft veel vers eten en drinken. Gemak, kwaliteit en versheid zijn de kenmerken van de AH to go-artikelen. </FONT><SPAN style='FONT-SIZE: 9pt; FONT-FAMILY: \"Arial\",sans-serif; COLOR: #002060; mso-bidi-font-family: \"Times New Roman\"; mso-bidi-theme-font: minor-bidi; mso-bidi-font-size: 11.0pt'><?xml:namespace prefix = \"o\" ns = \"urn:schemas-microsoft-com:office:office\" /><o:p></o:p></SPAN></P></FONT></H1>",
+          "buttonText": "",
+          "buttonLink": ""
+        }
+      ],
+      "nextOpeningTime": "All 3 locations are open"
+    },
+    {
+      "type": "station-retail",
+      "name": "Bar Beton",
+      "stationFacilityType": "FOOD_AND_DRINK",
+      "nearbyMeMarkerIconName": "food-drinks",
+      "identifiers": [],
+      "categories": [
+        "Eten & Drinken",
+        "station-foodAndDrink"
+      ],
+      "locations": [
+        {
+          "distance": 122.62323143241963,
+          "name": "Op de 1e verdieping",
+          "stationCode": "UT",
+          "lat": 52.089248,
+          "lng": 5.10856,
+          "open": "Yes",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/station-retail/Bar%20Beton-1"
+          },
+          "thumbnail": {
+            "uri": "/api/v1/location/thumbnail/52.089248,5.10856"
+          },
+          "description": "Op de 1e verdieping",
+          "openingHours": [
+            {
+              "dayOfWeek": 1,
+              "startTime": "08:00",
+              "endTime": "21:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 2,
+              "startTime": "08:00",
+              "endTime": "21:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 3,
+              "startTime": "08:00",
+              "endTime": "21:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 4,
+              "startTime": "08:00",
+              "endTime": "21:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 5,
+              "startTime": "08:00",
+              "endTime": "21:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 6,
+              "startTime": "09:00",
+              "endTime": "19:00",
+              "closesNextDay": false
+            }
+          ],
+          "extra": {},
+          "infoImages": [],
+          "apps": [],
+          "sites": [],
+          "extraInfo": [],
+          "nearbyMeLocationId": {
+            "value": "Bar Beton-1",
+            "type": "station-retail"
+          },
+          "nextOpeningTime": "Open - until 21:00 hours",
+          "sapId": "6000/UT0000/405"
+        }
+      ],
+      "listLogoImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/station-retail/resource/img-2.0-BarBeton_logo_20160321-130226.jpg"
+      },
+      "primaryColor": "00000",
+      "open": "Yes",
+      "openingHours": [
+        {
+          "dayOfWeek": 1,
+          "startTime": "08:00",
+          "endTime": "21:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 2,
+          "startTime": "08:00",
+          "endTime": "21:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 3,
+          "startTime": "08:00",
+          "endTime": "21:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 4,
+          "startTime": "08:00",
+          "endTime": "21:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 5,
+          "startTime": "08:00",
+          "endTime": "21:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 6,
+          "startTime": "09:00",
+          "endTime": "19:00",
+          "closesNextDay": false
+        }
+      ],
+      "keywords": [
+        "drinken",
+        "eten"
+      ],
+      "stationBound": false,
+      "headerImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/station-retail/resource/img-2.0-BarBeton_Header_20160321-130405.jpg"
+      },
+      "advertImages": [],
+      "infoImages": [
+        {
+          "name": "info_1",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/station-retail/resource/img-2.0-BarBeton_info_1_20160321-130618.jpg"
+          },
+          "title": "Bar Beton",
+          "subtitle": "over ons",
+          "body": "<p>Bar Beton biedt op een drietal&nbsp;stations vergader- en trainingszalen en horeca met een unieke inrichting en uitstekende service. Verzorgd, sfeervol en sympathiek.&nbsp;De&nbsp; dynamische vergader- en ontmoetingslocaties bevinden zich&nbsp;op de stations Den Haag Centraal, Amersfoort Centraal en Utrecht Centraal.</p>",
+          "buttonText": "klik hier voor meer info",
+          "buttonLink": "http://www.bar-beton.nl"
+        }
+      ],
+      "nextOpeningTime": "Open - until 21:00 hours"
+    },
+    {
+      "type": "station-retail",
+      "name": "BLOEM!",
+      "stationFacilityType": "SHOP",
+      "nearbyMeMarkerIconName": "shop",
+      "identifiers": [],
+      "categories": [
+        "Winkelen",
+        "station-shop"
+      ],
+      "locations": [
+        {
+          "distance": 82.29183918921264,
+          "name": "Stationshal",
+          "stationCode": "UT",
+          "lat": 52.089441,
+          "lng": 5.110802,
+          "open": "Yes",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/station-retail/BLOEM!-1"
+          },
+          "thumbnail": {
+            "uri": "/api/v1/location/thumbnail/52.089441,5.110802"
+          },
+          "description": "Stationshal",
+          "openingHours": [
+            {
+              "dayOfWeek": 1,
+              "startTime": "07:30",
+              "endTime": "21:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 2,
+              "startTime": "07:30",
+              "endTime": "21:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 3,
+              "startTime": "07:30",
+              "endTime": "21:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 4,
+              "startTime": "07:30",
+              "endTime": "21:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 5,
+              "startTime": "07:30",
+              "endTime": "21:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 6,
+              "startTime": "07:30",
+              "endTime": "21:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 7,
+              "startTime": "08:30",
+              "endTime": "19:00",
+              "closesNextDay": false
+            }
+          ],
+          "extra": {},
+          "infoImages": [],
+          "apps": [],
+          "sites": [],
+          "extraInfo": [],
+          "nearbyMeLocationId": {
+            "value": "BLOEM!-1",
+            "type": "station-retail"
+          },
+          "nextOpeningTime": "Open - until 21:00 hours",
+          "sapId": "6000/UT0000/404"
+        }
+      ],
+      "listLogoImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/station-retail/resource/img-2.0-Bloem_logo_20150416-155922.jpg"
+      },
+      "primaryColor": "000000",
+      "open": "Yes",
+      "openingHours": [
+        {
+          "dayOfWeek": 1,
+          "startTime": "07:30",
+          "endTime": "21:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 2,
+          "startTime": "07:30",
+          "endTime": "21:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 3,
+          "startTime": "07:30",
+          "endTime": "21:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 4,
+          "startTime": "07:30",
+          "endTime": "21:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 5,
+          "startTime": "07:30",
+          "endTime": "21:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 6,
+          "startTime": "07:30",
+          "endTime": "21:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 7,
+          "startTime": "08:30",
+          "endTime": "19:00",
+          "closesNextDay": false
+        }
+      ],
+      "keywords": [
+        "bloemen"
+      ],
+      "stationBound": false,
+      "headerImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/station-retail/resource/img-2.0-Bloem_Header_20150416-155858.jpg"
+      },
+      "advertImages": [],
+      "infoImages": [
+        {
+          "name": "info_1",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/station-retail/resource/img-2.0-Bloem_info_1_20150504-154915.jpg"
+          },
+          "title": "Trendy Bloemenwinkel",
+          "subtitle": "",
+          "body": "<p>We houden van bloemen en planten om jou daarmee verwennen, want daar krijgen wij energie van. Dus we doen er alles aan om je van allerlei moois te voorzien: originele boeketten, hippe planten en cadeaus waar je blij van wordt. We maken boeketten voor alle gelegenheden, weten van alles af van mooie planten en verrassen je graag met een bijzonder cadeau. En met speciale wensen kun je ook altijd bij BLOEM! terecht, want we houden wel van een uitdaging!</p>\n<p><br>&nbsp;</p>",
+          "buttonText": "klik hier voor de website",
+          "buttonLink": "http://bloemenzaak.nl"
+        },
+        {
+          "name": "info_2",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/station-retail/resource/img-2.0-Bloem_info_2_20150506-151341.jpg"
+          },
+          "title": "Blijf op de hoogte.....",
+          "subtitle": "",
+          "body": "Blijf op de hoogte van de laatste nieuwtjes en acties en volg ons op Facebook!",
+          "buttonText": "klik hier",
+          "buttonLink": "https://www.facebook.com/bloemenzaak?sk=wall"
+        }
+      ],
+      "nextOpeningTime": "Open - until 21:00 hours"
+    },
+    {
+      "type": "station-retail",
+      "name": "Bruna",
+      "stationFacilityType": "SHOP",
+      "nearbyMeMarkerIconName": "shop",
+      "identifiers": [],
+      "categories": [
+        "Winkelen",
+        "station-shop"
+      ],
+      "locations": [
+        {
+          "distance": 96.27992499773745,
+          "name": "Bruna - Utrecht CS Hal",
+          "stationCode": "UT",
+          "lat": 52.089662,
+          "lng": 5.110067,
+          "open": "Yes",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/station-retail/Bruna-3"
+          },
+          "thumbnail": {
+            "uri": "/api/v1/location/thumbnail/52.089662,5.110067"
+          },
+          "openingHours": [
+            {
+              "dayOfWeek": 1,
+              "startTime": "07:00",
+              "endTime": "21:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 2,
+              "startTime": "07:00",
+              "endTime": "21:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 3,
+              "startTime": "07:00",
+              "endTime": "21:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 4,
+              "startTime": "07:00",
+              "endTime": "21:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 5,
+              "startTime": "07:00",
+              "endTime": "21:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 6,
+              "startTime": "07:30",
+              "endTime": "21:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 7,
+              "startTime": "09:00",
+              "endTime": "20:00",
+              "closesNextDay": false
+            }
+          ],
+          "extra": {},
+          "infoImages": [],
+          "apps": [],
+          "sites": [],
+          "extraInfo": [],
+          "nearbyMeLocationId": {
+            "value": "Bruna-3",
+            "type": "station-retail"
+          },
+          "nextOpeningTime": "Open - until 21:00 hours",
+          "sapId": "6000/UT0000/382"
+        }
+      ],
+      "listLogoImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/station-retail/resource/img-2.0-AKO_logo_20141201-090820.jpg"
+      },
+      "primaryColor": "ee3124",
+      "open": "Yes",
+      "openingHours": [
+        {
+          "dayOfWeek": 1,
+          "startTime": "07:00",
+          "endTime": "21:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 2,
+          "startTime": "07:00",
+          "endTime": "21:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 3,
+          "startTime": "07:00",
+          "endTime": "21:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 4,
+          "startTime": "07:00",
+          "endTime": "21:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 5,
+          "startTime": "07:00",
+          "endTime": "21:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 6,
+          "startTime": "07:30",
+          "endTime": "21:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 7,
+          "startTime": "09:00",
+          "endTime": "20:00",
+          "closesNextDay": false
+        }
+      ],
+      "keywords": [
+        "boeken",
+        "cadeau",
+        "krant",
+        "tijdschriften"
+      ],
+      "stationBound": false,
+      "headerImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/station-retail/resource/img-2.0-AKO_Header_20141201-090839.JPG"
+      },
+      "advertImages": [],
+      "infoImages": [],
+      "nextOpeningTime": "Open - until 21:00 hours"
+    },
+    {
+      "type": "station-retail",
+      "name": "Burger King",
+      "stationFacilityType": "FOOD_AND_DRINK",
+      "nearbyMeMarkerIconName": "food-drinks",
+      "identifiers": [],
+      "categories": [
+        "Eten & Drinken",
+        "station-foodAndDrink"
+      ],
+      "locations": [
+        {
+          "distance": 101.26564524902858,
+          "name": "Burger King - Utrecht Centraal - Fast Food Court",
+          "stationCode": "UT",
+          "lat": 52.089444,
+          "lng": 5.109152,
+          "open": "Yes",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/station-retail/Burger%20King-5"
+          },
+          "thumbnail": {
+            "uri": "/api/v1/location/thumbnail/52.089444,5.109152"
+          },
+          "description": "Stationshal - Fast Foodcourt",
+          "openingHours": [
+            {
+              "dayOfWeek": 1,
+              "startTime": "09:00",
+              "endTime": "24:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 2,
+              "startTime": "09:00",
+              "endTime": "24:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 3,
+              "startTime": "09:00",
+              "endTime": "24:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 4,
+              "startTime": "09:00",
+              "endTime": "24:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 5,
+              "startTime": "09:00",
+              "endTime": "24:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 6,
+              "startTime": "09:00",
+              "endTime": "24:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 7,
+              "startTime": "09:00",
+              "endTime": "24:00",
+              "closesNextDay": false
+            }
+          ],
+          "extra": {},
+          "infoImages": [],
+          "apps": [],
+          "sites": [],
+          "extraInfo": [],
+          "nearbyMeLocationId": {
+            "value": "Burger King-5",
+            "type": "station-retail"
+          },
+          "nextOpeningTime": "Open - until 24:00 hours",
+          "sapId": "6000/UT0000/374"
+        }
+      ],
+      "listLogoImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/station-retail/resource/img-2.0-BurgerKing_logo_20260615-131542.png"
+      },
+      "primaryColor": "e2231a",
+      "open": "Yes",
+      "openingHours": [
+        {
+          "dayOfWeek": 1,
+          "startTime": "09:00",
+          "endTime": "00:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 2,
+          "startTime": "09:00",
+          "endTime": "00:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 3,
+          "startTime": "09:00",
+          "endTime": "00:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 4,
+          "startTime": "09:00",
+          "endTime": "00:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 5,
+          "startTime": "09:00",
+          "endTime": "00:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 6,
+          "startTime": "09:00",
+          "endTime": "00:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 7,
+          "startTime": "09:00",
+          "endTime": "00:00",
+          "closesNextDay": false
+        }
+      ],
+      "keywords": [
+        "belegde broodjes",
+        "Coca-Cola",
+        "drinken",
+        "eten",
+        "frisdrank",
+        "ijs",
+        "koffie",
+        "lunch",
+        "maaltijd",
+        "middageten",
+        "ontbijt",
+        "snack"
+      ],
+      "stationBound": false,
+      "advertImages": [],
+      "infoImages": [
+        {
+          "name": "info_1",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/station-retail/resource/img-2.0-Burgerking_info_1_20160722-150353.jpg"
+          },
+          "title": "Burger King",
+          "subtitle": "Home of the Whopper",
+          "body": "Al ruim 60 jaar serveert Burger King wereldwijd kwalitatief hoogwaardige producten, bereid met de beste ingrediënten. Of je nu trek hebt in een hamburger met friet, een salade of snack, het kan allemaal bij Burger King. Daarnaast is het betaalbaar, snel en ongecompliceerd.",
+          "buttonText": "Website",
+          "buttonLink": "http://www.burgerking.nl"
+        }
+      ],
+      "nextOpeningTime": "Open - until 00:00 hours"
+    },
+    {
+      "type": "station-retail",
+      "name": "Dudok Patisserie",
+      "stationFacilityType": "FOOD_AND_DRINK",
+      "nearbyMeMarkerIconName": "food-drinks",
+      "identifiers": [],
+      "categories": [
+        "Winkelen",
+        "Eten & Drinken",
+        "station-foodAndDrink",
+        "station-shop"
+      ],
+      "locations": [
+        {
+          "distance": 88.26254284032255,
+          "name": "Dudok Utrecht Centraal stationshal",
+          "stationCode": "UT",
+          "lat": 52.089402,
+          "lng": 5.111042,
+          "open": "Unknown",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/station-retail/Dudok%20Patisserie-1"
+          },
+          "thumbnail": {
+            "uri": "/api/v1/location/thumbnail/52.089402,5.111042"
+          },
+          "extra": {},
+          "infoImages": [],
+          "apps": [],
+          "sites": [],
+          "extraInfo": [],
+          "nearbyMeLocationId": {
+            "value": "Dudok Patisserie-1",
+            "type": "station-retail"
+          },
+          "nextOpeningTime": "Opening hours unknown",
+          "sapId": "//"
+        }
+      ],
+      "listLogoImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/station-retail/resource/img-2.0-DudokPatisserie_logo_20160308-150135.jpg"
+      },
+      "primaryColor": "00000",
+      "open": "Unknown",
+      "keywords": [
+        "drinken",
+        "espresso",
+        "gebak",
+        "koffie"
+      ],
+      "stationBound": false,
+      "headerImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/station-retail/resource/img-2.0-DudokPatisserie_Header_20160308-150155.jpg"
+      },
+      "advertImages": [],
+      "infoImages": [
+        {
+          "name": "info_1",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/station-retail/resource/img-2.0-DudokPatisserie_info_1_20160308-150212.jpg"
+          },
+          "title": "Dudok Patisserie",
+          "subtitle": "",
+          "body": "De lekkerste appeltaart van Nederland komt uit de bakkerij van Dudok Patisserie. Naast Dudok Original appeltaart verkopen wij een breed assortiment taarten, zoals chocoladetruffeltaart, wortelnotentaart en citroenmeringuetaart. Maar ook andere lekkernijen als muffins, cookies en scones komen uit onze Dudok Patisserie. Onze taarten zijn altijd vers en bestaan uit 100% natuurlijke ingrediënten. ",
+          "buttonText": "Klik hier voor meer info",
+          "buttonLink": "http://www.dudok.nl/dudok_patisserie"
+        }
+      ],
+      "nextOpeningTime": ""
+    },
+    {
+      "type": "station-retail",
+      "name": "Etos",
+      "stationFacilityType": "SHOP",
+      "nearbyMeMarkerIconName": "shop",
+      "identifiers": [],
+      "categories": [
+        "Winkelen",
+        "station-shop"
+      ],
+      "locations": [
+        {
+          "distance": 91.63851947846435,
+          "name": "Etos Utrecht",
+          "stationCode": "UT",
+          "lat": 52.089607,
+          "lng": 5.109928,
+          "open": "Yes",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/station-retail/Etos-15"
+          },
+          "thumbnail": {
+            "uri": "/api/v1/location/thumbnail/52.089607,5.109928"
+          },
+          "description": "Stationshal ",
+          "openingHours": [
+            {
+              "dayOfWeek": 1,
+              "startTime": "07:00",
+              "endTime": "21:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 2,
+              "startTime": "07:00",
+              "endTime": "21:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 3,
+              "startTime": "07:00",
+              "endTime": "21:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 4,
+              "startTime": "07:00",
+              "endTime": "21:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 5,
+              "startTime": "07:00",
+              "endTime": "21:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 6,
+              "startTime": "10:00",
+              "endTime": "19:30",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 7,
+              "startTime": "10:00",
+              "endTime": "19:30",
+              "closesNextDay": false
+            }
+          ],
+          "extra": {},
+          "infoImages": [],
+          "apps": [],
+          "sites": [],
+          "extraInfo": [],
+          "nearbyMeLocationId": {
+            "value": "Etos-15",
+            "type": "station-retail"
+          },
+          "nextOpeningTime": "Open - until 21:00 hours",
+          "sapId": "6000/UT0000/381"
+        }
+      ],
+      "listLogoImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/station-retail/resource/img-2.0-Etos_logo_20150914-141334.jpg"
+      },
+      "primaryColor": "6710977",
+      "open": "Yes",
+      "openingHours": [
+        {
+          "dayOfWeek": 1,
+          "startTime": "07:00",
+          "endTime": "21:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 2,
+          "startTime": "07:00",
+          "endTime": "21:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 3,
+          "startTime": "07:00",
+          "endTime": "21:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 4,
+          "startTime": "07:00",
+          "endTime": "21:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 5,
+          "startTime": "07:00",
+          "endTime": "21:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 6,
+          "startTime": "10:00",
+          "endTime": "19:30",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 7,
+          "startTime": "10:00",
+          "endTime": "19:30",
+          "closesNextDay": false
+        }
+      ],
+      "keywords": [
+        "deodorant",
+        "nagellak",
+        "paracetamol",
+        "pleisters",
+        "snoep"
+      ],
+      "stationBound": false,
+      "headerImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/station-retail/resource/img-2.0-Etos_Header_20150106-125116.jpg"
+      },
+      "advertImages": [],
+      "infoImages": [
+        {
+          "name": "info_1",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/station-retail/resource/img-2.0-Etos_advert_1_20150507-112335.jpg"
+          },
+          "title": "Etos",
+          "subtitle": "",
+          "body": "<P>Etos maakt persoonlijke verzorging bereikbaar voor iedereen in Nederland. We geloven dat met een goede verzorging de wereld aan je voeten ligt. Elke dag staan 5.000 medewerkers klaar om klanten te verwelkomen en hen een deskundig en betrouwbaar advies te geven.</P>",
+          "buttonText": "Website",
+          "buttonLink": "www.etos.nl"
+        }
+      ],
+      "nextOpeningTime": "Open - until 21:00 hours"
+    },
+    {
+      "type": "stationfacility",
+      "name": "GWK Travelex",
+      "stationFacilityType": "SERVICE",
+      "nearbyMeMarkerIconName": "money",
+      "identifiers": [],
+      "categories": [
+        "Services",
+        "station-service"
+      ],
+      "locations": [
+        {
+          "distance": 105.14144354150048,
+          "name": "GWK Travelex - Utrecht ",
+          "stationCode": "UT",
+          "lat": 52.088624,
+          "lng": 5.108688,
+          "open": "No",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/GWK%20Travelex-27"
+          },
+          "thumbnail": {
+            "uri": "/api/v1/location/thumbnail/52.088624,5.108688"
+          },
+          "description": "Stationshal",
+          "openingHours": [
+            {
+              "dayOfWeek": 1,
+              "startTime": "10:00",
+              "endTime": "17:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 2,
+              "startTime": "10:00",
+              "endTime": "17:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 3,
+              "startTime": "10:00",
+              "endTime": "17:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 4,
+              "startTime": "10:00",
+              "endTime": "17:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 5,
+              "startTime": "10:00",
+              "endTime": "17:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 6,
+              "startTime": "10:00",
+              "endTime": "17:00",
+              "closesNextDay": false
+            }
+          ],
+          "extra": {},
+          "infoImages": [],
+          "apps": [],
+          "sites": [],
+          "extraInfo": [],
+          "nearbyMeLocationId": {
+            "value": "GWK Travelex-27",
+            "type": "stationfacility"
+          },
+          "nextOpeningTime": "Closed - opens at 10:00 hours",
+          "street": "Stationshal",
+          "houseNumber": "11",
+          "postalCode": "3511 CE",
+          "city": "Utrecht"
+        }
+      ],
+      "listLogoImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-GWKTravelex_logo_20220817-111217.png"
+      },
+      "primaryColor": "330099",
+      "open": "No",
+      "openingHours": [
+        {
+          "dayOfWeek": 1,
+          "startTime": "10:00",
+          "endTime": "17:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 2,
+          "startTime": "10:00",
+          "endTime": "17:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 3,
+          "startTime": "10:00",
+          "endTime": "17:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 4,
+          "startTime": "10:00",
+          "endTime": "17:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 5,
+          "startTime": "10:00",
+          "endTime": "17:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 6,
+          "startTime": "10:00",
+          "endTime": "17:00",
+          "closesNextDay": false
+        }
+      ],
+      "keywords": [
+        "geld"
+      ],
+      "stationBound": false,
+      "headerImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-GWKKantoren_Header_20141208-214716.jpg"
+      },
+      "advertImages": [],
+      "infoImages": [
+        {
+          "name": "info_1",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-GWKTravelex_info_1_20220817-111441.png"
+          },
+          "title": "Buitenlands geld",
+          "subtitle": "Valuta beschikbaar",
+          "body": "<P class=xmsonormal style=\"MARGIN: 0cm\"><FONT face=Calibri>GWK Travelex is de wereldleider op het gebied van valutawisseldiensten met meer dan 40 locaties in Nederland. Om te profiteren van de meest aantrekkelijke wisselkoersen en 0% commissie, bestelt u online voordat u op reis gaat!</FONT></P>\r\n<P class=xmsonormal style=\"MARGIN: 0cm\"><FONT face=Calibri>Bestel direct! </FONT></P>\r\n<P class=xmsonormal style=\"MARGIN: 0cm\"><FONT face=Calibri><A href=\"https://www.gwktravelex.nl/?utm_source=NS_app&amp;utm_medium=referral&amp;utm_campaign=CTA_currency\">https://www.gwktravelex.nl/?utm_source=NS_app&amp;utm_medium=referral&amp;utm_campaign=CTA_currency</A><?xml:namespace prefix = \"o\" ns = \"urn:schemas-microsoft-com:office:office\" /><o:p></o:p></FONT></P>\r\n<P class=xmsonormal style=\"MARGIN: 0cm\"><SPAN lang=EN-GB style=\"mso-ansi-language: EN-GB; mso-fareast-language: EN-US\"><FONT face=Calibri></FONT><o:p></o:p></SPAN>&nbsp;</P>",
+          "buttonText": "",
+          "buttonLink": ""
+        },
+        {
+          "name": "info_3",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-GWKTravelex_info_3_20220817-111556.png"
+          },
+          "title": "Contant geld storten en rekeningen betalen",
+          "subtitle": "Met Mr. Pay!",
+          "body": "<P class=xmsonormal style=\"MARGIN: 0cm\"><FONT face=Calibri>Met Mr. Pay by GWK Travelex kunt u uw contant geld op uw eigen bankrekening storten of uw rekeningen contant betalen van een geselecteerd aantal partnerbedrijven op een van onze locaties. Het is snel, gemakkelijk en veilig!</FONT></P>\r\n<P class=xmsonormal style=\"MARGIN: 0cm\"><A href=\"https://www.gwktravelex.nl/mr-pay?utm_source=NS_app&amp;utm_medium=referral&amp;utm_campaign=CTA_mr_pay\">Mr. Pay by Travelex | Uw Contant Geld Oplossing (gwktravelex.nl)</A><?xml:namespace prefix = \"o\" ns = \"urn:schemas-microsoft-com:office:office\" /><o:p></o:p></P>",
+          "buttonText": "",
+          "buttonLink": ""
+        },
+        {
+          "name": "info_4",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-GWKTravelex_info_4_20220817-111648.png"
+          },
+          "title": "Valuta Terugkoopgarantie",
+          "subtitle": "Buitenlands geld over na uw reis?",
+          "body": "<P class=xmsonormal style=\"MARGIN: 0cm\"><FONT face=Calibri>Voor slechts € 4,95 kunt u uw overgebleven valuta na uw reis omwisselen zonder extra kosten en met behoud van dezelfde wisselkoers! De Terugkoopgarantie is geldig tot 45 dagen na uw aankoop en tot een bedrag van € 4.500.</FONT></P>\r\n<P class=xmsonormal style=\"MARGIN: 0cm\"><A href=\"https://www.gwktravelex.nl/buitenlands-geld-wisselen/valuta-terugkoopgarantie?utm_source=NS_app&amp;utm_medium=referral&amp;utm_campaign=CTA_buyback_guarantee\">https://www.gwktravelex.nl/buitenlands-geld-wisselen/valuta-terugkoopgarantie?utm_source=NS_app&amp;utm_medium=referral&amp;utm_campaign=CTA_buyback_guarantee</A></P>\r\n<P class=xmsonormal style=\"MARGIN: 0cm\"><?xml:namespace prefix = \"o\" ns = \"urn:schemas-microsoft-com:office:office\" /><o:p></o:p>&nbsp;</P>",
+          "buttonText": "",
+          "buttonLink": ""
+        }
+      ],
+      "nextOpeningTime": "Closed - opens at 10:00 hours"
+    },
+    {
+      "type": "station-retail",
+      "name": "HEMA",
+      "stationFacilityType": "SHOP",
+      "nearbyMeMarkerIconName": "shop",
+      "identifiers": [],
+      "categories": [
+        "Winkelen",
+        "station-shop"
+      ],
+      "locations": [
+        {
+          "distance": 88.8586419320408,
+          "name": "UT - HEMA - Stationshal",
+          "stationCode": "UT",
+          "lat": 52.089523,
+          "lng": 5.109646,
+          "open": "Yes",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/station-retail/HEMA-0"
+          },
+          "thumbnail": {
+            "uri": "/api/v1/location/thumbnail/52.089523,5.109646"
+          },
+          "description": "Stationshal",
+          "openingHours": [
+            {
+              "dayOfWeek": 1,
+              "startTime": "07:00",
+              "endTime": "22:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 2,
+              "startTime": "07:00",
+              "endTime": "22:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 3,
+              "startTime": "07:00",
+              "endTime": "22:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 4,
+              "startTime": "07:00",
+              "endTime": "22:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 5,
+              "startTime": "07:00",
+              "endTime": "22:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 6,
+              "startTime": "07:00",
+              "endTime": "22:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 7,
+              "startTime": "08:00",
+              "endTime": "22:00",
+              "closesNextDay": false
+            }
+          ],
+          "extra": {},
+          "infoImages": [],
+          "apps": [],
+          "sites": [],
+          "extraInfo": [],
+          "nearbyMeLocationId": {
+            "value": "HEMA-0",
+            "type": "station-retail"
+          },
+          "nextOpeningTime": "Open - until 22:00 hours",
+          "street": "Stationsplein 6A",
+          "houseNumber": "",
+          "postalCode": "3511CE",
+          "city": "Utrecht"
+        }
+      ],
+      "listLogoImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/station-retail/resource/img-2.0-HEMA_logo_20141126-171747.jpg"
+      },
+      "primaryColor": "e2231a",
+      "open": "Yes",
+      "openingHours": [
+        {
+          "dayOfWeek": 1,
+          "startTime": "07:00",
+          "endTime": "22:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 2,
+          "startTime": "07:00",
+          "endTime": "22:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 3,
+          "startTime": "07:00",
+          "endTime": "22:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 4,
+          "startTime": "07:00",
+          "endTime": "22:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 5,
+          "startTime": "07:00",
+          "endTime": "22:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 6,
+          "startTime": "07:00",
+          "endTime": "22:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 7,
+          "startTime": "08:00",
+          "endTime": "22:00",
+          "closesNextDay": false
+        }
+      ],
+      "keywords": [
+        "agenda",
+        "alcoholische dranken",
+        "appel",
+        "batterijen",
+        "belegde broodjes",
+        "brood",
+        "cadeau",
+        "drinken",
+        "frisdrank"
+      ],
+      "stationBound": false,
+      "headerImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/station-retail/resource/img-2.0-HEMA_Header_20141126-171803.jpg"
+      },
+      "advertImages": [],
+      "infoImages": [
+        {
+          "name": "info_1",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/station-retail/resource/img-2.0-HEMA_info_1_20141209-104955.jpg"
+          },
+          "title": "Echt HEMA",
+          "subtitle": "het plezier van de kleine dingen",
+          "body": "<P>Een leuk en makkelijk leven hoeft helemaal niet duur te zijn, vindt HEMA. </P>\r\n<P>De medewerkers staan altijd voor je klaar: trots, betrokken, met hart voor hún HEMA. </P>\r\n<P>Dat maakt HEMA uniek. Echt HEMA</P>",
+          "buttonText": "hema.nl",
+          "buttonLink": "http://www.hema.nl/"
+        },
+        {
+          "name": "info_2",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/station-retail/resource/img-2.0-HEMA_info_2_20141128-104342.jpg"
+          },
+          "title": "Taarten",
+          "subtitle": "voor elke gelegenheid ",
+          "body": "<p>De heerlijkste taarten vind je ook op het station bij HEMA. HEMA heeft voor elke smaak de perfecte taart. Bovendien profiteer je altijd van lage prijzen.</p>",
+          "buttonText": "",
+          "buttonLink": ""
+        }
+      ],
+      "nextOpeningTime": "Open - until 22:00 hours"
+    },
+    {
+      "type": "station-retail",
+      "name": "Julia's",
+      "stationFacilityType": "FOOD_AND_DRINK",
+      "nearbyMeMarkerIconName": "food-drinks",
+      "identifiers": [],
+      "categories": [
+        "Eten & Drinken",
+        "station-foodAndDrink"
+      ],
+      "locations": [
+        {
+          "distance": 109.61513746009105,
+          "name": "UT - Julia's - Fresh Food Court",
+          "stationCode": "UT",
+          "lat": 52.089779,
+          "lng": 5.110388,
+          "open": "Yes",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/station-retail/Julia's-7"
+          },
+          "thumbnail": {
+            "uri": "/api/v1/location/thumbnail/52.089779,5.110388"
+          },
+          "description": "Fresh Food Court",
+          "openingHours": [
+            {
+              "dayOfWeek": 1,
+              "startTime": "05:30",
+              "endTime": "23:30",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 2,
+              "startTime": "05:30",
+              "endTime": "23:30",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 3,
+              "startTime": "05:30",
+              "endTime": "23:30",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 4,
+              "startTime": "05:30",
+              "endTime": "00:30",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 5,
+              "startTime": "05:30",
+              "endTime": "00:30",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 6,
+              "startTime": "05:30",
+              "endTime": "00:30",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 7,
+              "startTime": "05:30",
+              "endTime": "23:30",
+              "closesNextDay": false
+            }
+          ],
+          "extra": {},
+          "infoImages": [],
+          "apps": [],
+          "sites": [],
+          "extraInfo": [],
+          "nearbyMeLocationId": {
+            "value": "Julia's-7",
+            "type": "station-retail"
+          },
+          "nextOpeningTime": "Open - until 23:30 hours",
+          "street": "Stationshal 4 A",
+          "houseNumber": "",
+          "postalCode": "3511CE",
+          "city": "Utrecht"
+        }
+      ],
+      "listLogoImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/station-retail/resource/img-2.0-Julias_logo_20151020-162704.jpg"
+      },
+      "primaryColor": "98c21d",
+      "open": "Yes",
+      "openingHours": [
+        {
+          "dayOfWeek": 1,
+          "startTime": "05:30",
+          "endTime": "23:30",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 2,
+          "startTime": "05:30",
+          "endTime": "23:30",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 3,
+          "startTime": "05:30",
+          "endTime": "23:30",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 4,
+          "startTime": "05:30",
+          "endTime": "00:30",
+          "closesNextDay": true
+        },
+        {
+          "dayOfWeek": 5,
+          "startTime": "05:30",
+          "endTime": "00:30",
+          "closesNextDay": true
+        },
+        {
+          "dayOfWeek": 6,
+          "startTime": "05:30",
+          "endTime": "00:30",
+          "closesNextDay": true
+        },
+        {
+          "dayOfWeek": 7,
+          "startTime": "05:30",
+          "endTime": "23:30",
+          "closesNextDay": false
+        }
+      ],
+      "keywords": [
+        "avondeten",
+        "belegde broodjes",
+        "brood",
+        "cappuccino",
+        "chocolade",
+        "croissant",
+        "diner",
+        "drinken",
+        "espresso",
+        "eten",
+        "frisdrank",
+        "gebak",
+        "koffie",
+        "lunch",
+        "maaltijd",
+        "middageten",
+        "nootjes",
+        "ontbijt",
+        "salades",
+        "snack",
+        "thee",
+        "tussendoortje",
+        "vruchtensap",
+        "warme chocolademelk",
+        "water",
+        "wijn"
+      ],
+      "stationBound": false,
+      "headerImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/station-retail/resource/img-2.0-Julias_Header_20141203-153927.jpg"
+      },
+      "advertImages": [],
+      "infoImages": [
+        {
+          "name": "info_2",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/station-retail/resource/img-2.0-Julias_info_2_20151020-163252.jpg"
+          },
+          "title": "Over Julia's",
+          "subtitle": "Vers bereide authentieke Italiaanse smaak",
+          "body": "<P><EM>Vers bereide authentieke Italiaanse smaak</EM></P>\r\n<P>Bij Julia's geloven we in de Italiaanse manier van leven! We bereiden onze handgemaakte pasta, echte Italiaanse koffie en brood volgens authentieke recepten en met verse ingrediënten.</P>",
+          "buttonText": "Lees meer",
+          "buttonLink": "https://www.julias.nl/over-mij/"
+        }
+      ],
+      "nextOpeningTime": "Open - until 23:30 hours"
+    },
+    {
+      "type": "station-retail",
+      "name": "Kiosk",
+      "stationFacilityType": "FOOD_AND_DRINK",
+      "nearbyMeMarkerIconName": "food-drinks",
+      "identifiers": [],
+      "categories": [
+        "Eten & Drinken",
+        "station-foodAndDrink"
+      ],
+      "locations": [
+        {
+          "distance": 60.30435786578424,
+          "name": "UT - Kiosk - Stationshal",
+          "stationCode": "UT",
+          "lat": 52.089268,
+          "lng": 5.109754,
+          "open": "Yes",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/station-retail/Kiosk-26"
+          },
+          "thumbnail": {
+            "uri": "/api/v1/location/thumbnail/52.089268,5.109754"
+          },
+          "description": "",
+          "openingHours": [
+            {
+              "dayOfWeek": 1,
+              "startTime": "05:00",
+              "endTime": "24:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 2,
+              "startTime": "05:00",
+              "endTime": "24:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 3,
+              "startTime": "05:00",
+              "endTime": "24:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 4,
+              "startTime": "05:00",
+              "endTime": "24:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 5,
+              "startTime": "05:00",
+              "endTime": "24:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 6,
+              "startTime": "06:15",
+              "endTime": "24:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 7,
+              "startTime": "06:15",
+              "endTime": "24:00",
+              "closesNextDay": false
+            }
+          ],
+          "extra": {},
+          "infoImages": [],
+          "apps": [],
+          "sites": [],
+          "extraInfo": [],
+          "nearbyMeLocationId": {
+            "value": "Kiosk-26",
+            "type": "station-retail"
+          },
+          "nextOpeningTime": "Open - until 24:00 hours",
+          "street": "Stationshal 6",
+          "houseNumber": "",
+          "postalCode": "3511CE",
+          "city": "Utrecht"
+        },
+        {
+          "distance": 26.996164710167186,
+          "name": "UT - Kiosk - Spoor 18/19b",
+          "stationCode": "UT",
+          "lat": 52.088765,
+          "lng": 5.109809,
+          "open": "Yes",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/station-retail/Kiosk-32"
+          },
+          "thumbnail": {
+            "uri": "/api/v1/location/thumbnail/52.088765,5.109809"
+          },
+          "description": "Spoor 18/19b",
+          "openingHours": [
+            {
+              "dayOfWeek": 1,
+              "startTime": "05:45",
+              "endTime": "23:15",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 2,
+              "startTime": "05:45",
+              "endTime": "23:15",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 3,
+              "startTime": "05:45",
+              "endTime": "23:15",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 4,
+              "startTime": "05:45",
+              "endTime": "24:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 5,
+              "startTime": "05:45",
+              "endTime": "24:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 6,
+              "startTime": "06:45",
+              "endTime": "24:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 7,
+              "startTime": "07:15",
+              "endTime": "23:15",
+              "closesNextDay": false
+            }
+          ],
+          "extra": {},
+          "infoImages": [],
+          "apps": [],
+          "sites": [],
+          "extraInfo": [],
+          "nearbyMeLocationId": {
+            "value": "Kiosk-32",
+            "type": "station-retail"
+          },
+          "nextOpeningTime": "Open - until 23:15 hours",
+          "street": "Stationshal 18",
+          "houseNumber": "",
+          "postalCode": "3511CE",
+          "city": "Utrecht "
+        }
+      ],
+      "listLogoImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/station-retail/resource/img-2.0-Kiosk_logo_20230118-161006.jpg"
+      },
+      "primaryColor": "FF8200",
+      "open": "Yes",
+      "openingHours": [
+        {
+          "dayOfWeek": 1,
+          "startTime": "05:00",
+          "endTime": "00:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 2,
+          "startTime": "05:00",
+          "endTime": "00:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 3,
+          "startTime": "05:00",
+          "endTime": "00:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 4,
+          "startTime": "05:00",
+          "endTime": "00:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 5,
+          "startTime": "05:00",
+          "endTime": "00:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 6,
+          "startTime": "06:15",
+          "endTime": "00:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 7,
+          "startTime": "06:15",
+          "endTime": "00:00",
+          "closesNextDay": false
+        }
+      ],
+      "keywords": [
+        "cappuccino",
+        "drinken",
+        "eten",
+        "frisdrank",
+        "koffie",
+        "snoep",
+        "tussendoortje"
+      ],
+      "stationBound": false,
+      "headerImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/station-retail/resource/img-2.0-Kiosk_Header_20141125-192838.jpg"
+      },
+      "advertImages": [],
+      "infoImages": [
+        {
+          "name": "info_3",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/station-retail/resource/img-2.0-Kiosk_info_3_20170302-101206.png"
+          },
+          "title": "Volg Kiosk nu ook via Facebook & Twitter! ",
+          "subtitle": "Facebook.com/kioskns & @Kiosk_NS",
+          "body": "<P>Kiosk is ook te vinden op Facebook &amp; Twitter! </P>\r\n<P>Volg ons hier voor de laatste nieuwtjes, aanbieding en leuke acties. </P>\r\n<P>Vragen of suggesties? We horen het graag! </P>",
+          "buttonText": "Volg ons hier",
+          "buttonLink": "https://www.facebook.com/kioskns/"
+        },
+        {
+          "name": "info_4",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/station-retail/resource/img-2.0-Kiosk_info_1_20141125-193255.jpg"
+          },
+          "title": "Over ons",
+          "subtitle": "Lees meer over Kiosk",
+          "body": "Ken je het gevoel dat je haast hebt, de trein wilt halen en ook nog iets lekkers voor onderweg wilt kopen? Loop dan voordat je de trein instapt de Kiosk binnen. Van verse bonen koffie tot croissants, we hebben het allemaal! ",
+          "buttonText": "",
+          "buttonLink": ""
+        }
+      ],
+      "nextOpeningTime": "All 9 locations are open"
+    },
+    {
+      "type": "stationfacility",
+      "name": "OV Service & Tickets NS",
+      "stationFacilityType": "SERVICE",
+      "nearbyMeMarkerIconName": "tickets",
+      "identifiers": [],
+      "categories": [
+        "Services",
+        "station-service"
+      ],
+      "locations": [
+        {
+          "name": "Centrumzijde",
+          "stationCode": "UT",
+          "location": {},
+          "open": "Yes",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/OV%20Service%20&%20Tickets%20NS-12"
+          },
+          "description": "Centrumzijde",
+          "openingHours": [
+            {
+              "dayOfWeek": 1,
+              "startTime": "06:45",
+              "endTime": "22:30",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 2,
+              "startTime": "06:45",
+              "endTime": "22:30",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 3,
+              "startTime": "06:45",
+              "endTime": "22:30",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 4,
+              "startTime": "06:45",
+              "endTime": "22:30",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 5,
+              "startTime": "06:45",
+              "endTime": "22:30",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 6,
+              "startTime": "06:45",
+              "endTime": "22:30",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 7,
+              "startTime": "06:45",
+              "endTime": "22:30",
+              "closesNextDay": false
+            }
+          ],
+          "extra": {},
+          "infoImages": [
+            {
+              "name": "locationInfo_OV Service & Tickets NS-12_Memo",
+              "link": {
+                "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-OVServiceTicketsNS_Header_20230315-172231.jpg"
+              },
+              "title": "Memo",
+              "body": "Let op: Per 11 oktober tijdelijk geen nachtdiensten in deze servicewinkel \r\n\r\nBij het NS-service- en verkooppunt kunt u terecht met al uw vragen over reizen met het Openbaar Vervoer. Hier kan informatie worden verkregen over uw reis en reisproducten. Ook kunt u hier reisproducten kopen."
+            }
+          ],
+          "apps": [],
+          "sites": [],
+          "extraInfo": [],
+          "nearbyMeLocationId": {
+            "value": "OV Service & Tickets NS-12",
+            "type": "stationfacility"
+          },
+          "nextOpeningTime": "Open - until 22:30 hours",
+          "sapId": "6000/UT0000/476"
+        }
+      ],
+      "listLogoImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-OVServiceTicketsNS_logo_20230315-132119.png"
+      },
+      "primaryColor": "000066",
+      "open": "Yes",
+      "openingHours": [
+        {
+          "dayOfWeek": 1,
+          "startTime": "06:45",
+          "endTime": "22:30",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 2,
+          "startTime": "06:45",
+          "endTime": "22:30",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 3,
+          "startTime": "06:45",
+          "endTime": "22:30",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 4,
+          "startTime": "06:45",
+          "endTime": "22:30",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 5,
+          "startTime": "06:45",
+          "endTime": "22:30",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 6,
+          "startTime": "06:45",
+          "endTime": "22:30",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 7,
+          "startTime": "06:45",
+          "endTime": "22:30",
+          "closesNextDay": false
+        }
+      ],
+      "keywords": [
+        "WiFi"
+      ],
+      "stationBound": false,
+      "headerImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-OVServiceTicketsNS_Header_20230315-172231.jpg"
+      },
+      "advertImages": [],
+      "infoImages": [],
+      "nextOpeningTime": "Open - until 22:30 hours"
+    },
+    {
+      "type": "stationfacility",
+      "name": "Pasfotostudio",
+      "stationFacilityType": "SERVICE",
+      "nearbyMeMarkerIconName": "photobooth",
+      "identifiers": [],
+      "categories": [
+        "Services",
+        "station-service"
+      ],
+      "locations": [
+        {
+          "distance": 75.88507511897711,
+          "name": "Pasfotostudio - Stationshal (zijde Beatrixtheater)",
+          "stationCode": "UT",
+          "lat": 52.089389,
+          "lng": 5.109639,
+          "open": "Yes",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Pasfotostudio-0"
+          },
+          "thumbnail": {
+            "uri": "/api/v1/location/thumbnail/52.089389,5.109639"
+          },
+          "description": "Stationshal",
+          "openingHours": [
+            {
+              "dayOfWeek": 1,
+              "startTime": "00:00",
+              "endTime": "24:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 2,
+              "startTime": "00:00",
+              "endTime": "24:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 3,
+              "startTime": "00:00",
+              "endTime": "24:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 4,
+              "startTime": "00:00",
+              "endTime": "24:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 5,
+              "startTime": "00:00",
+              "endTime": "24:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 6,
+              "startTime": "00:00",
+              "endTime": "24:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 7,
+              "startTime": "00:00",
+              "endTime": "24:00",
+              "closesNextDay": true
+            }
+          ],
+          "extra": {},
+          "infoImages": [],
+          "apps": [],
+          "sites": [],
+          "extraInfo": [],
+          "nearbyMeLocationId": {
+            "value": "Pasfotostudio-0",
+            "type": "stationfacility"
+          },
+          "nextOpeningTime": "Open: whole day (24 hours)",
+          "sapId": "6000/UT0000/357"
+        },
+        {
+          "distance": 133.28417168862077,
+          "name": "Jaarbeurszijde",
+          "stationCode": "UT",
+          "lat": 52.088926,
+          "lng": 5.10826,
+          "open": "Yes",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Pasfotostudio-45"
+          },
+          "thumbnail": {
+            "uri": "/api/v1/location/thumbnail/52.088926,5.10826"
+          },
+          "openingHours": [
+            {
+              "dayOfWeek": 1,
+              "startTime": "00:00",
+              "endTime": "24:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 2,
+              "startTime": "00:00",
+              "endTime": "24:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 3,
+              "startTime": "00:00",
+              "endTime": "24:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 4,
+              "startTime": "00:00",
+              "endTime": "24:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 5,
+              "startTime": "00:00",
+              "endTime": "24:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 6,
+              "startTime": "00:00",
+              "endTime": "24:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 7,
+              "startTime": "00:00",
+              "endTime": "24:00",
+              "closesNextDay": true
+            }
+          ],
+          "extra": {},
+          "infoImages": [],
+          "apps": [],
+          "sites": [],
+          "extraInfo": [],
+          "nearbyMeLocationId": {
+            "value": "Pasfotostudio-45",
+            "type": "stationfacility"
+          },
+          "nextOpeningTime": "Open: whole day (24 hours)",
+          "sapId": "6000/UT0000/357"
+        }
+      ],
+      "listLogoImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-Pasfotostudio_logo_20220615-140432.png"
+      },
+      "primaryColor": "0404B4",
+      "open": "Yes",
+      "openingHours": [
+        {
+          "dayOfWeek": 1,
+          "startTime": "00:00",
+          "endTime": "00:00",
+          "closesNextDay": true
+        },
+        {
+          "dayOfWeek": 2,
+          "startTime": "00:00",
+          "endTime": "00:00",
+          "closesNextDay": true
+        },
+        {
+          "dayOfWeek": 3,
+          "startTime": "00:00",
+          "endTime": "00:00",
+          "closesNextDay": true
+        },
+        {
+          "dayOfWeek": 4,
+          "startTime": "00:00",
+          "endTime": "00:00",
+          "closesNextDay": true
+        },
+        {
+          "dayOfWeek": 5,
+          "startTime": "00:00",
+          "endTime": "00:00",
+          "closesNextDay": true
+        },
+        {
+          "dayOfWeek": 6,
+          "startTime": "00:00",
+          "endTime": "00:00",
+          "closesNextDay": true
+        },
+        {
+          "dayOfWeek": 7,
+          "startTime": "00:00",
+          "endTime": "00:00",
+          "closesNextDay": true
+        }
+      ],
+      "keywords": [
+        "pasfoto’s"
+      ],
+      "stationBound": false,
+      "headerImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-Pasfotostudio_Header_20180430-154444.jpg"
+      },
+      "advertImages": [],
+      "infoImages": [
+        {
+          "name": "info_1",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-Pasfotostudio_info_1_20180430-153947.jpg"
+          },
+          "title": "Officiële pasfoto’s en fun-foto’s",
+          "subtitle": "",
+          "body": "<p class=\"MsoNormal\" style=\"margin: 0cm 0cm 0pt;\"><font face=\"Calibri\"><span style=\"color: rgb(31, 73, 125);\">Maak eenvoudig, snel en voordelig een set officiële pasfoto's, voor slechts € 10,00 per set van 5 pasfoto’s. Deze pasfoto’s zijn geschikt en goedgekeurd voor alle officiële documenten zoals paspoort, ID kaart, rijbewijs, OV chipkaart, Visa e.d. <br></span></font></p>",
+          "buttonText": "Bezoek ook onze website",
+          "buttonLink": "http://www.prontophot.nl"
+        },
+        {
+          "name": "info_2",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-"
+          },
+          "title": "Verlengen rijbewijs",
+          "subtitle": "",
+          "body": "Handig is ook dat je in de pasfotostudio je rijbewijs kunt verlengen. Dat scheelt een bezoek aan het gemeentehuis. Je vernieuwde rijbewijs ligt al na twee werkdagen voor je klaar bij je gemeente. Prijs voor de RDW pasfoto: € 15,00. ",
+          "buttonText": "",
+          "buttonLink": ""
+        },
+        {
+          "name": "info_3",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-"
+          },
+          "title": "Fun foto's",
+          "subtitle": "",
+          "body": "De pasfotostudio is tevens te gebruiken voor leuke fun-foto's. Maak samen een blijvende herinnering!<br>Prijs Fun foto: € 4,00",
+          "buttonText": "",
+          "buttonLink": ""
+        }
+      ],
+      "nextOpeningTime": "All 2 locations are open"
+    },
+    {
+      "type": "station-retail",
+      "name": "Rituals",
+      "stationFacilityType": "SHOP",
+      "nearbyMeMarkerIconName": "shop",
+      "identifiers": [],
+      "categories": [
+        "Winkelen",
+        "station-shop"
+      ],
+      "locations": [
+        {
+          "distance": 52.70472133653679,
+          "name": "Rituals - Richting Jaarbeurs",
+          "stationCode": "UT",
+          "lat": 52.08926,
+          "lng": 5.110386,
+          "open": "Yes",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/station-retail/Rituals-2"
+          },
+          "thumbnail": {
+            "uri": "/api/v1/location/thumbnail/52.08926,5.110386"
+          },
+          "description": "Richting Jaarbeurs",
+          "openingHours": [
+            {
+              "dayOfWeek": 1,
+              "startTime": "07:00",
+              "endTime": "22:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 2,
+              "startTime": "07:00",
+              "endTime": "22:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 3,
+              "startTime": "07:00",
+              "endTime": "22:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 4,
+              "startTime": "07:00",
+              "endTime": "22:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 5,
+              "startTime": "07:00",
+              "endTime": "22:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 6,
+              "startTime": "09:00",
+              "endTime": "21:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 7,
+              "startTime": "10:00",
+              "endTime": "21:00",
+              "closesNextDay": false
+            }
+          ],
+          "extra": {},
+          "infoImages": [],
+          "apps": [],
+          "sites": [],
+          "extraInfo": [],
+          "nearbyMeLocationId": {
+            "value": "Rituals-2",
+            "type": "station-retail"
+          },
+          "nextOpeningTime": "Open - until 22:00 hours",
+          "street": "Stationshal 11 B",
+          "houseNumber": "",
+          "postalCode": "3511CE",
+          "city": "Utrecht "
+        }
+      ],
+      "listLogoImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/station-retail/resource/img-2.0-Rituals_logo_20150626-105546.jpg"
+      },
+      "primaryColor": "000000",
+      "open": "Yes",
+      "openingHours": [
+        {
+          "dayOfWeek": 1,
+          "startTime": "07:00",
+          "endTime": "22:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 2,
+          "startTime": "07:00",
+          "endTime": "22:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 3,
+          "startTime": "07:00",
+          "endTime": "22:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 4,
+          "startTime": "07:00",
+          "endTime": "22:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 5,
+          "startTime": "07:00",
+          "endTime": "22:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 6,
+          "startTime": "09:00",
+          "endTime": "21:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 7,
+          "startTime": "10:00",
+          "endTime": "21:00",
+          "closesNextDay": false
+        }
+      ],
+      "keywords": [
+        "accessoires",
+        "deodorant",
+        "kleding",
+        "nagellak"
+      ],
+      "stationBound": false,
+      "headerImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/station-retail/resource/img-2.0-Rituals_Header_20141126-162121.jpg"
+      },
+      "advertImages": [],
+      "infoImages": [
+        {
+          "name": "info_1",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/station-retail/resource/img-2.0-Rituals_info_1_20150626-105628.jpg"
+          },
+          "title": "Rituals",
+          "subtitle": "",
+          "body": "Verander je dagelijkse routines in bijzondere verwenmomemten. Bij Rituals vind je een uitgebreide collectie luxe producten, van lichaams- en gezichtsverzorging tot make-up en thee.",
+          "buttonText": "Klik hier voor meer info",
+          "buttonLink": "www.rituals.com"
+        },
+        {
+          "name": "info_2",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/station-retail/resource/img-2.0-Rituals_info_2_20141216-114841.jpg"
+          },
+          "title": "Originele cadeaus voor hem en haar",
+          "subtitle": "Cadeautips ",
+          "body": "<H3>Haal voldoening uit het geven van een cadeau</H3>\r\n<P>Op zoek naar een origineel cadeau voor hem of haar? De grootste voldoening haal je misschien wel uit geven. Niets wordt namelijk met minder plezier en dankbaarheid in ontvangst genomen dan een bijzonder geschenk. RITUALS heeft deze in alle soorten en maten. Of je nu op zoek bent naar een kleinigheidje of een grootse indruk wil achterlaten. De cadeaupakketten van RITUALS zitten vol met heerlijke producten die de huid verzorgen, reinigen, ontspannen en hydrateren. Zo zorgt het Deep Relaxation pakket voor een diepe ontspanning en een Pure Refreshment pakket voor een instant fris gevoel.</P>",
+          "buttonText": "",
+          "buttonLink": ""
+        }
+      ],
+      "nextOpeningTime": "Open - until 22:00 hours"
+    }
+  ]
+}

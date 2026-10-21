@@ -1,0 +1,40 @@
+name: deployment
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deployment-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Runs here rather than in a separate workflow so the image is built from
+  # exactly the commit that passed.
+  quality:
+    uses: ultimatelemon/shared-actions/.github/workflows/node-quality.yml@v1
+
+  publish:
+    needs: [quality]
+    uses: ultimatelemon/shared-actions/.github/workflows/docker-publish.yml@v1
+    permissions:
+      contents: read
+      packages: write
+    with:
+      image: ghcr.io/${{ github.repository }}
+
+  deploy:
+    needs: [publish]
+    if: github.ref == 'refs/heads/main'
+    uses: ultimatelemon/shared-actions/.github/workflows/dokploy-deploy.yml@v1
+    with:
+      environment: production
+      url: ${{ vars.DEPLOY_URL }}
+    secrets:
+      # A repository secret, not an environment secret: the calling job has no
+      # environment, so an environment secret would resolve to an empty string.
+      webhook-url: ${{ secrets.DOKPLOY_DEPLOY_URL }}

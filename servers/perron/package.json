@@ -1,0 +1,63 @@
+{
+  "name": "@ultimatelemon-eu/perron",
+  "version": "1.0.0",
+  "description": "MCP server for Dutch Railways (NS) travel information: journey planning, live departures, disruptions, crowding and station facilities.",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ultimatelemon/perron.git"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev": "node --watch --env-file-if-exists=.env src/server.ts",
+    "build": "tsc -p tsconfig.build.json",
+    "start": "node dist/server.js",
+    "probe": "node --env-file-if-exists=.env scripts/probe.ts",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check:last-mile": "node scripts/check-last-mile.ts"
+  },
+  "prettier": "@ultimatelemon-eu/prettier-config",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.1",
+    "@turf/bearing": "^7.4.0",
+    "@turf/boolean-point-in-polygon": "^7.4.0",
+    "@turf/destination": "^7.4.0",
+    "@turf/distance": "^7.4.0",
+    "@turf/helpers": "^7.4.0",
+    "@turf/nearest-point-on-line": "^7.4.0",
+    "@turf/polygon-to-line": "^7.4.0",
+    "@ultimatelemon-eu/datetime": "^1.0.0",
+    "@ultimatelemon-eu/fetch-client": "^1.0.0",
+    "@ultimatelemon-eu/mcp-http": "^1.0.0",
+    "gtfs-realtime-bindings": "^2.2.0",
+    "pino": "^10.4.0",
+    "redis": "^6.3.0",
+    "yauzl": "^3.4.0",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@types/geojson": "^7946.0.16",
+    "@types/node": "^24.19.1",
+    "@types/yauzl": "^3.4.0",
+    "@types/yazl": "^3.3.1",
+    "@ultimatelemon-eu/eslint-config": "^1.1.0",
+    "@ultimatelemon-eu/prettier-config": "^1.0.1",
+    "eslint": "^10.12.0",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^17.13.0",
+    "pino-pretty": "^13.2.0",
+    "prettier": "^3.9.9",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.71.1",
+    "vitest": "^5.0.3",
+    "yazl": "^3.3.1"
+  }
+}

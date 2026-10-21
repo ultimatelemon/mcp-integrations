@@ -1,0 +1,351 @@
+{
+  "links": {},
+  "payload": [
+    {
+      "type": "stationfacility",
+      "name": "OV-fiets",
+      "stationFacilityType": "SERVICE",
+      "nearbyMeMarkerIconName": "bike",
+      "identifiers": [
+        "ovfiets"
+      ],
+      "categories": [
+        "Services",
+        "station-service",
+        "Services",
+        "stationfacility",
+        "servicerich",
+        "station-service"
+      ],
+      "locations": [
+        {
+          "distance": 181.1410169383794,
+          "name": "UT - OV-fiets - Utrecht Centraal Jaarbeursplein",
+          "stationCode": "UT",
+          "lat": 52.08895,
+          "lng": 5.10756,
+          "open": "Yes",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/ovfiets/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-ut016"
+          },
+          "thumbnail": {
+            "uri": "/api/v1/location/thumbnail/52.08895,5.10756"
+          },
+          "description": "Utrecht Centraal Jaarbeursplein",
+          "openingHours": [
+            {
+              "dayOfWeek": 1,
+              "startTime": "00:00",
+              "endTime": "24:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 2,
+              "startTime": "00:00",
+              "endTime": "24:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 3,
+              "startTime": "00:00",
+              "endTime": "24:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 4,
+              "startTime": "00:00",
+              "endTime": "24:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 5,
+              "startTime": "00:00",
+              "endTime": "24:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 6,
+              "startTime": "00:00",
+              "endTime": "24:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 7,
+              "startTime": "00:00",
+              "endTime": "24:00",
+              "closesNextDay": true
+            }
+          ],
+          "extra": {
+            "serviceType": "Bemenst",
+            "rentalBikes": "1",
+            "locationCode": "ut016",
+            "type": "OV_FIETS"
+          },
+          "infoImages": [
+            {
+              "name": "locationInfo_Bemenst OV-fiets uitgiftepunt-ut016_Bijzonderheden",
+              "title": "Bijzonderheden",
+              "body": "Je huurt een OV-fiets met  je OV-chipkaart. Zien hoe dit werkt? Ga naar ov-fiets.nl/slot."
+            }
+          ],
+          "apps": [],
+          "sites": [],
+          "extraInfo": [],
+          "nearbyMeLocationId": {
+            "value": "Bemenst OV-fiets uitgiftepunt-ut016",
+            "type": "stationfacility"
+          },
+          "nextOpeningTime": "Geopend: gehele dag (24 uur)",
+          "street": "Jaarbeursplein ",
+          "houseNumber": "14",
+          "postalCode": "3521 AL",
+          "city": "Utrecht"
+        },
+        {
+          "distance": 219.08683532608148,
+          "name": "UT - OV -fiets - Utrecht Centraal Stationsplein",
+          "stationCode": "UT",
+          "lat": 52.090746,
+          "lng": 5.110702,
+          "open": "Yes",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/ovfiets/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-ut020"
+          },
+          "thumbnail": {
+            "uri": "/api/v1/location/thumbnail/52.090746,5.110702"
+          },
+          "description": "Utrecht Centraal Stationsplein",
+          "openingHours": [
+            {
+              "dayOfWeek": 1,
+              "startTime": "00:00",
+              "endTime": "24:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 2,
+              "startTime": "00:00",
+              "endTime": "24:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 3,
+              "startTime": "00:00",
+              "endTime": "24:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 4,
+              "startTime": "00:00",
+              "endTime": "24:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 5,
+              "startTime": "00:00",
+              "endTime": "24:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 6,
+              "startTime": "00:00",
+              "endTime": "24:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 7,
+              "startTime": "00:00",
+              "endTime": "24:00",
+              "closesNextDay": true
+            }
+          ],
+          "extra": {
+            "serviceType": "Bemenst",
+            "rentalBikes": "4",
+            "locationCode": "ut020",
+            "type": "OV_FIETS"
+          },
+          "infoImages": [
+            {
+              "name": "locationInfo_Bemenst OV-fiets uitgiftepunt-ut020_Bijzonderheden",
+              "title": "Bijzonderheden",
+              "body": "\n\nJe huurt een OV-fiets met je OV-chipkaart. Zien hoe dit werkt? Ga naar ov-fiets.nl/slot."
+            },
+            {
+              "name": "locationInfo_Bemenst OV-fiets uitgiftepunt-ut020_Routebeschrijving",
+              "title": "Routebeschrijving",
+              "body": "Vanaf sporen 1 tot 21 loop je via de Middentunnel naar de fietsenstalling.\nVanaf sporen 1 tot15 loop je via de Noordertunnel naar de fietsenstalling. "
+            }
+          ],
+          "apps": [],
+          "sites": [],
+          "extraInfo": [],
+          "nearbyMeLocationId": {
+            "value": "Bemenst OV-fiets uitgiftepunt-ut020",
+            "type": "stationfacility"
+          },
+          "nextOpeningTime": "Geopend: gehele dag (24 uur)",
+          "street": "Stationsplein",
+          "houseNumber": "2",
+          "postalCode": "3511 GD",
+          "city": "Utrecht"
+        },
+        {
+          "distance": 166.2440084319149,
+          "name": "UT - OV-fiets - Utrecht Centraal Knoop",
+          "stationCode": "UT",
+          "lat": 52.087374,
+          "lng": 5.109469,
+          "open": "Yes",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/ovfiets/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-ut021"
+          },
+          "thumbnail": {
+            "uri": "/api/v1/location/thumbnail/52.087374,5.109469"
+          },
+          "description": "Utrecht Centraal Knoop",
+          "openingHours": [
+            {
+              "dayOfWeek": 1,
+              "startTime": "06:30",
+              "endTime": "24:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 2,
+              "startTime": "06:30",
+              "endTime": "24:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 3,
+              "startTime": "06:30",
+              "endTime": "24:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 4,
+              "startTime": "06:30",
+              "endTime": "24:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 5,
+              "startTime": "06:30",
+              "endTime": "24:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 6,
+              "startTime": "07:00",
+              "endTime": "24:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 7,
+              "startTime": "07:00",
+              "endTime": "24:00",
+              "closesNextDay": false
+            }
+          ],
+          "extra": {
+            "serviceType": "Bemenst",
+            "rentalBikes": "0",
+            "locationCode": "ut021",
+            "type": "OV_FIETS"
+          },
+          "infoImages": [
+            {
+              "name": "locationInfo_Bemenst OV-fiets uitgiftepunt-ut021_Bijzonderheden",
+              "title": "Bijzonderheden",
+              "body": "Je huurt een OV-fiets met je OV-chipkaart. Zien hoe dit werkt? Ga naar ov-fiets.nl/slot."
+            },
+            {
+              "name": "locationInfo_Bemenst OV-fiets uitgiftepunt-ut021_Routebeschrijving",
+              "title": "Routebeschrijving",
+              "body": "Verlaat het station via uitgang Jaarbeursplein. Ga direct links en volg het looppad richting de Rabobank. De Knoop stalling vind je aan de rechterkant van het looppad. De OV-fietsen staan op de 1e verdieping."
+            }
+          ],
+          "apps": [],
+          "sites": [],
+          "extraInfo": [],
+          "nearbyMeLocationId": {
+            "value": "Bemenst OV-fiets uitgiftepunt-ut021",
+            "type": "stationfacility"
+          },
+          "nextOpeningTime": "Open - tot 24:00 uur",
+          "street": "Knooppassage",
+          "houseNumber": "0",
+          "postalCode": "3521 AW",
+          "city": "Utrecht"
+        }
+      ],
+      "listLogoImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/ovfiets/stationfacility/resource/img-2.0-OVfiets_logo_20151211-111333.jpg"
+      },
+      "primaryColor": "000066",
+      "open": "Yes",
+      "openingHours": [
+        {
+          "dayOfWeek": 1,
+          "startTime": "00:00",
+          "endTime": "00:00",
+          "closesNextDay": true
+        },
+        {
+          "dayOfWeek": 2,
+          "startTime": "00:00",
+          "endTime": "00:00",
+          "closesNextDay": true
+        },
+        {
+          "dayOfWeek": 3,
+          "startTime": "00:00",
+          "endTime": "00:00",
+          "closesNextDay": true
+        },
+        {
+          "dayOfWeek": 4,
+          "startTime": "00:00",
+          "endTime": "00:00",
+          "closesNextDay": true
+        },
+        {
+          "dayOfWeek": 5,
+          "startTime": "00:00",
+          "endTime": "00:00",
+          "closesNextDay": true
+        },
+        {
+          "dayOfWeek": 6,
+          "startTime": "00:00",
+          "endTime": "00:00",
+          "closesNextDay": true
+        },
+        {
+          "dayOfWeek": 7,
+          "startTime": "00:00",
+          "endTime": "00:00",
+          "closesNextDay": true
+        }
+      ],
+      "keywords": [
+        "Fiets & Service",
+        "fietsenstalling",
+        "fietsverhuur",
+        "kluis",
+        "OV-producten",
+        "fiets"
+      ],
+      "stationBound": false,
+      "headerImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/ovfiets/stationfacility/resource/img-2.0-ZelfserviceOVfietsuitgiftepunt_Header_20240327-154654.jpg"
+      },
+      "advertImages": [],
+      "infoImages": [],
+      "nextOpeningTime": "Alle 3 locaties zijn open"
+    }
+  ],
+  "meta": {}
+}

@@ -1,0 +1,13 @@
+{
+  "payload": {
+    "totalPriceInCents": 10834,
+    "priceDifferenceInCentsBetweenFirstAndSecondClass": 2352,
+    "operatorName": "NS",
+    "travelDiscount": "NO_DISCOUNT",
+    "travelClass": "FIRST_CLASS",
+    "travelProducts": [
+      "RAILRUNNER",
+      "ETICKET_RETOUR"
+    ]
+  }
+}

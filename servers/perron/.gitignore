@@ -1,0 +1,17 @@
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+.DS_Store
+
+.env*
+!.env.example
+
+# Raw probe output; may contain live data. Tests use the trimmed copies in test/fixtures.
+/fixtures/
+
+# NS's OpenAPI specs; download them from https://apiportal.ns.nl (see README).
+/specs/
+
+# Timetable database and geocode cache (DATA_DIR).
+/data/

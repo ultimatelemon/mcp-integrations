@@ -1,0 +1,112 @@
+{
+  "prognoses": [
+    {
+      "trainNumber": 3529,
+      "stationUic": "8400339",
+      "date": "2026-10-06",
+      "classification": "LOW"
+    },
+    {
+      "trainNumber": 3529,
+      "stationUic": "8400206",
+      "date": "2026-10-06",
+      "classification": "LOW"
+    },
+    {
+      "trainNumber": 3529,
+      "stationUic": "8400280",
+      "date": "2026-10-06",
+      "classification": "HIGH"
+    },
+    {
+      "trainNumber": 3529,
+      "stationUic": "8400313",
+      "date": "2026-10-06",
+      "classification": "LOW"
+    },
+    {
+      "trainNumber": 3529,
+      "stationUic": "8400172",
+      "date": "2026-10-06",
+      "classification": "LOW"
+    },
+    {
+      "trainNumber": 3529,
+      "stationUic": "8400074",
+      "date": "2026-10-06",
+      "classification": "LOW"
+    },
+    {
+      "trainNumber": 3529,
+      "stationUic": "8400117",
+      "date": "2026-10-06",
+      "classification": "LOW"
+    },
+    {
+      "trainNumber": 3529,
+      "stationUic": "8400390",
+      "date": "2026-10-06",
+      "classification": "HIGH"
+    },
+    {
+      "trainNumber": 3529,
+      "stationUic": "8400319",
+      "date": "2026-10-06",
+      "classification": "LOW"
+    },
+    {
+      "trainNumber": 3529,
+      "stationUic": "8400061",
+      "date": "2026-10-06",
+      "classification": "LOW"
+    },
+    {
+      "trainNumber": 3529,
+      "stationUic": "8400553",
+      "date": "2026-10-06",
+      "classification": "MEDIUM"
+    },
+    {
+      "trainNumber": 3529,
+      "stationUic": "8400380",
+      "date": "2026-10-06",
+      "classification": "HIGH"
+    },
+    {
+      "trainNumber": 3529,
+      "stationUic": "8400530",
+      "date": "2026-10-06",
+      "classification": "LOW"
+    },
+    {
+      "trainNumber": 3529,
+      "stationUic": "8400529",
+      "date": "2026-10-06",
+      "classification": "LOW"
+    },
+    {
+      "trainNumber": 3529,
+      "stationUic": "8400180",
+      "date": "2026-10-06",
+      "classification": "LOW"
+    },
+    {
+      "trainNumber": 3529,
+      "stationUic": "8400170",
+      "date": "2026-10-06",
+      "classification": "MEDIUM"
+    },
+    {
+      "trainNumber": 3529,
+      "stationUic": "8400621",
+      "date": "2026-10-06",
+      "classification": "LOW"
+    },
+    {
+      "trainNumber": 3529,
+      "stationUic": "8400561",
+      "date": "2026-10-06",
+      "classification": "MEDIUM"
+    }
+  ]
+}

@@ -1,0 +1,153 @@
+{
+  "payload": {
+    "arrivals": [
+      {
+        "origin": "Frankfurt (M) Hbf",
+        "name": "NS Int   222",
+        "plannedDateTime": "2026-10-06T08:59:00+0200",
+        "plannedTimeZoneOffset": 120,
+        "actualDateTime": "2026-10-06T09:27:20+0200",
+        "actualTimeZoneOffset": 120,
+        "plannedTrack": "14",
+        "actualTrack": "14",
+        "product": {
+          "number": "222",
+          "categoryCode": "ICE",
+          "shortCategoryName": "NS Int ICE",
+          "longCategoryName": "ICE",
+          "operatorName": "NS Int",
+          "operatorCode": "NS Int",
+          "type": "TRAIN"
+        },
+        "trainCategory": "ICE",
+        "cancelled": false,
+        "messages": [],
+        "arrivalStatus": "INCOMING"
+      },
+      {
+        "origin": "Dordrecht",
+        "name": "NS  3529",
+        "plannedDateTime": "2026-10-06T09:18:00+0200",
+        "plannedTimeZoneOffset": 120,
+        "actualDateTime": "2026-10-06T09:30:25+0200",
+        "actualTimeZoneOffset": 120,
+        "plannedTrack": "18",
+        "actualTrack": "15",
+        "product": {
+          "number": "3529",
+          "categoryCode": "IC",
+          "shortCategoryName": "NS Intercity",
+          "longCategoryName": "Intercity",
+          "operatorName": "NS",
+          "operatorCode": "NS",
+          "type": "TRAIN"
+        },
+        "trainCategory": "IC",
+        "cancelled": false,
+        "messages": [
+          {
+            "message": "Arrival platform changed",
+            "style": "INFO"
+          }
+        ],
+        "arrivalStatus": "INCOMING"
+      },
+      {
+        "origin": "Arnhem Centraal",
+        "recognizableDestination": {
+          "code": "SHL",
+          "name": "Schiphol Airport ✈"
+        },
+        "name": "NS  3226",
+        "plannedDateTime": "2026-10-06T09:26:00+0200",
+        "plannedTimeZoneOffset": 120,
+        "actualDateTime": "2026-10-06T09:26:00+0200",
+        "actualTimeZoneOffset": 120,
+        "plannedTrack": "5",
+        "actualTrack": "5",
+        "product": {
+          "number": "3226",
+          "categoryCode": "IC",
+          "shortCategoryName": "NS Intercity",
+          "longCategoryName": "Intercity",
+          "operatorName": "NS",
+          "operatorCode": "NS",
+          "type": "TRAIN"
+        },
+        "trainCategory": "IC",
+        "cancelled": false,
+        "messages": [],
+        "arrivalStatus": "ON_STATION"
+      },
+      {
+        "origin": "Maastricht",
+        "name": "NS  2726",
+        "plannedDateTime": "2026-10-06T09:27:00+0200",
+        "plannedTimeZoneOffset": 120,
+        "actualDateTime": "2026-10-06T09:27:00+0200",
+        "actualTimeZoneOffset": 120,
+        "plannedTrack": "7",
+        "actualTrack": "7",
+        "product": {
+          "number": "2726",
+          "categoryCode": "IC",
+          "shortCategoryName": "NS Intercity",
+          "longCategoryName": "Intercity",
+          "operatorName": "NS",
+          "operatorCode": "NS",
+          "type": "TRAIN"
+        },
+        "trainCategory": "IC",
+        "cancelled": false,
+        "messages": [],
+        "arrivalStatus": "ON_STATION"
+      },
+      {
+        "origin": "Rotterdam Centraal",
+        "name": "NS  2829",
+        "plannedDateTime": "2026-10-06T09:27:00+0200",
+        "plannedTimeZoneOffset": 120,
+        "actualDateTime": "2026-10-06T09:27:00+0200",
+        "actualTimeZoneOffset": 120,
+        "plannedTrack": "12",
+        "actualTrack": "12",
+        "product": {
+          "number": "2829",
+          "categoryCode": "IC",
+          "shortCategoryName": "NS Intercity",
+          "longCategoryName": "Intercity",
+          "operatorName": "NS",
+          "operatorCode": "NS",
+          "type": "TRAIN"
+        },
+        "trainCategory": "IC",
+        "cancelled": false,
+        "messages": [],
+        "arrivalStatus": "INCOMING"
+      },
+      {
+        "origin": "Rotterdam Centraal",
+        "name": "NS  3229",
+        "plannedDateTime": "2026-10-06T09:28:00+0200",
+        "plannedTimeZoneOffset": 120,
+        "actualDateTime": "2026-10-06T09:35:36+0200",
+        "actualTimeZoneOffset": 120,
+        "plannedTrack": "19",
+        "actualTrack": "19",
+        "product": {
+          "number": "3229",
+          "categoryCode": "IC",
+          "shortCategoryName": "NS Intercity",
+          "longCategoryName": "Intercity",
+          "operatorName": "NS",
+          "operatorCode": "NS",
+          "type": "TRAIN"
+        },
+        "trainCategory": "IC",
+        "cancelled": false,
+        "messages": [],
+        "arrivalStatus": "INCOMING"
+      }
+    ]
+  }
+}

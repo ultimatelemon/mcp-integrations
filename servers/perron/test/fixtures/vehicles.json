@@ -1,0 +1,18 @@
+{
+  "last_updated": "2026-10-06T06:59:30Z",
+  "ttl": 30,
+  "data": {
+    "vehicles": [
+      { "system_id": "check", "vehicle_id": "check:a1", "lat": 52.0895, "lon": 5.1110, "is_reserved": false, "is_disabled": false, "form_factor": "moped", "propulsion_type": "electric" },
+      { "system_id": "check", "vehicle_id": "check:a2", "lat": 52.0870, "lon": 5.1080, "is_reserved": false, "is_disabled": false, "form_factor": "moped", "propulsion_type": "electric" },
+      { "system_id": "check", "vehicle_id": "check:a3", "lat": 52.0889, "lon": 5.1105, "is_reserved": true, "is_disabled": false, "form_factor": "moped", "propulsion_type": "electric" },
+      { "system_id": "check", "vehicle_id": "check:a4", "lat": 52.0900, "lon": 5.1095, "is_reserved": false, "is_disabled": true, "form_factor": "moped", "propulsion_type": "electric" },
+      { "system_id": "check", "vehicle_id": "check:a5", "lat": 52.1000, "lon": 5.1300, "is_reserved": false, "is_disabled": false, "form_factor": "moped", "propulsion_type": "electric" },
+      { "system_id": "felyx", "vehicle_id": "felyx:b1", "lat": 52.0880, "lon": 5.1120, "is_reserved": false, "is_disabled": false, "form_factor": "moped", "propulsion_type": "electric" },
+      { "system_id": "gosharing", "vehicle_id": "gosharing:c1", "lat": 52.0910, "lon": 5.1100, "is_reserved": false, "is_disabled": false, "form_factor": "moped", "propulsion_type": "electric" },
+      { "system_id": "cykl", "vehicle_id": "cykl:d1", "lat": 52.0885, "lon": 5.1095, "is_reserved": false, "is_disabled": false, "form_factor": "bicycle", "propulsion_type": "human" },
+      { "system_id": "baqme", "vehicle_id": "baqme:e1", "lat": 52.344463, "lon": 4.896417, "is_reserved": false, "is_disabled": false, "form_factor": "cargo_bicycle", "propulsion_type": "electric_assist" },
+      { "system_id": "check", "vehicle_id": "check:f1", "lat": 51.9244, "lon": 4.4690, "is_reserved": false, "is_disabled": false, "form_factor": "moped", "propulsion_type": "electric" }
+    ]
+  }
+}

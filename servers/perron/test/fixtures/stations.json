@@ -1,0 +1,1339 @@
+{
+  "payload": [
+    {
+      "id": {
+        "uicCode": "8015458",
+        "uicCdCode": "108015458",
+        "evaCode": "8000207",
+        "code": "KOLN"
+      },
+      "stationType": "MEGA_STATION",
+      "names": {
+        "long": "Köln Hbf",
+        "medium": "Köln Hbf",
+        "short": "Köln Hbf",
+        "synonyms": [
+          "Koln",
+          "Koln Hbf",
+          "Keulen"
+        ]
+      },
+      "location": {
+        "lat": 50.9432158,
+        "lng": 6.9589214
+      },
+      "tracks": [],
+      "hasKnownFacilities": true,
+      "availableForAccessibleTravel": false,
+      "hasTravelAssistance": false,
+      "areTracksIndependentlyAccessible": false,
+      "isBorderStop": false,
+      "country": "D",
+      "startDate": "2013-05-29",
+      "nearbyMeLocationId": {
+        "value": "KOLN",
+        "type": "stationV3"
+      }
+    },
+    {
+      "id": {
+        "uicCode": "8812005",
+        "uicCdCode": "108812005",
+        "evaCode": "8800002",
+        "code": "BRUSN"
+      },
+      "stationType": "INTERCITY_HUB_STATION",
+      "names": {
+        "long": "Brussel-Noord",
+        "medium": "Brussel-N",
+        "short": "Brussel-N",
+        "synonyms": []
+      },
+      "location": {
+        "lat": 50.859658,
+        "lng": 4.360854
+      },
+      "tracks": [],
+      "hasKnownFacilities": true,
+      "availableForAccessibleTravel": false,
+      "hasTravelAssistance": false,
+      "areTracksIndependentlyAccessible": false,
+      "isBorderStop": false,
+      "country": "B",
+      "radius": 525,
+      "approachingRadius": 1200,
+      "startDate": "2024-12-15",
+      "nearbyMeLocationId": {
+        "value": "BRUSN",
+        "type": "stationV3"
+      }
+    },
+    {
+      "id": {
+        "uicCode": "8813003",
+        "uicCdCode": "108813003",
+        "evaCode": "8800003",
+        "code": "BRUSC"
+      },
+      "stationType": "INTERCITY_STATION",
+      "names": {
+        "long": "Brussel-Centraal",
+        "medium": "Brussel-C",
+        "short": "Brussel-C",
+        "synonyms": []
+      },
+      "location": {
+        "lat": 50.845175,
+        "lng": 4.357131
+      },
+      "tracks": [],
+      "hasKnownFacilities": true,
+      "availableForAccessibleTravel": false,
+      "hasTravelAssistance": false,
+      "areTracksIndependentlyAccessible": false,
+      "isBorderStop": false,
+      "country": "B",
+      "radius": 1700,
+      "approachingRadius": 2500,
+      "startDate": "2024-12-15",
+      "nearbyMeLocationId": {
+        "value": "BRUSC",
+        "type": "stationV3"
+      }
+    },
+    {
+      "id": {
+        "uicCode": "8814001",
+        "uicCdCode": "108814001",
+        "evaCode": "8800004",
+        "code": "BRUSZ"
+      },
+      "stationType": "MEGA_STATION",
+      "names": {
+        "long": "Brussel-Zuid",
+        "medium": "Brussel-Z",
+        "short": "Brussel-Z",
+        "synonyms": []
+      },
+      "location": {
+        "lat": 50.836782,
+        "lng": 4.336922
+      },
+      "tracks": [],
+      "hasKnownFacilities": true,
+      "availableForAccessibleTravel": false,
+      "hasTravelAssistance": false,
+      "areTracksIndependentlyAccessible": false,
+      "isBorderStop": false,
+      "country": "B",
+      "radius": 525,
+      "approachingRadius": 1600,
+      "startDate": "2024-12-15",
+      "nearbyMeLocationId": {
+        "value": "BRUSZ",
+        "type": "stationV3"
+      }
+    },
+    {
+      "id": {
+        "uicCode": "8819406",
+        "uicCdCode": "108819406",
+        "evaCode": "8800043",
+        "code": "FBNL"
+      },
+      "stationType": "MEGA_STATION",
+      "names": {
+        "long": "Brussels Airport-Zaventem",
+        "medium": "Brus Airpt",
+        "short": "Brus Airpt",
+        "synonyms": []
+      },
+      "location": {
+        "lat": 50.896821,
+        "lng": 4.48549
+      },
+      "tracks": [],
+      "hasKnownFacilities": true,
+      "availableForAccessibleTravel": false,
+      "hasTravelAssistance": false,
+      "areTracksIndependentlyAccessible": false,
+      "isBorderStop": false,
+      "country": "B",
+      "radius": 525,
+      "approachingRadius": 1600,
+      "startDate": "2025-01-08",
+      "nearbyMeLocationId": {
+        "value": "FBNL",
+        "type": "stationV3"
+      }
+    },
+    {
+      "id": {
+        "uicCode": "8400058",
+        "uicCdCode": "118400058",
+        "evaCode": "8400058",
+        "cdCode": 58,
+        "code": "ASD"
+      },
+      "stationType": "MEGA_STATION",
+      "names": {
+        "long": "Amsterdam Centraal",
+        "medium": "Amsterdm C",
+        "short": "Amsterdm C",
+        "synonyms": [
+          "Amsterdam CS",
+          "Amsterdam"
+        ]
+      },
+      "location": {
+        "lat": 52.3788871765137,
+        "lng": 4.90027761459351
+      },
+      "tracks": [
+        "1",
+        "2",
+        "2a",
+        "2b",
+        "4",
+        "4a",
+        "4b",
+        "5",
+        "5a",
+        "5b",
+        "7",
+        "7a",
+        "7b",
+        "8",
+        "8a",
+        "8b",
+        "10",
+        "10a",
+        "10b",
+        "11",
+        "11a",
+        "11b",
+        "13",
+        "13a",
+        "13b",
+        "14",
+        "14a",
+        "14b",
+        "15",
+        "15a",
+        "15b"
+      ],
+      "hasKnownFacilities": true,
+      "availableForAccessibleTravel": true,
+      "hasTravelAssistance": true,
+      "areTracksIndependentlyAccessible": false,
+      "isBorderStop": false,
+      "country": "NL",
+      "radius": 525,
+      "approachingRadius": 1200,
+      "startDate": "2025-06-03",
+      "nearbyMeLocationId": {
+        "value": "ASD",
+        "type": "stationV3"
+      }
+    },
+    {
+      "id": {
+        "uicCode": "8400061",
+        "uicCdCode": "118400061",
+        "evaCode": "8400061",
+        "cdCode": 61,
+        "code": "ASDZ"
+      },
+      "stationType": "INTERCITY_STATION",
+      "names": {
+        "long": "Amsterdam Zuid",
+        "medium": "Amsterdm Z",
+        "short": "Amsterdm Z",
+        "synonyms": []
+      },
+      "location": {
+        "lat": 52.338889,
+        "lng": 4.872356
+      },
+      "tracks": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "hasKnownFacilities": true,
+      "availableForAccessibleTravel": true,
+      "hasTravelAssistance": true,
+      "areTracksIndependentlyAccessible": false,
+      "isBorderStop": false,
+      "country": "NL",
+      "radius": 260,
+      "approachingRadius": 1200,
+      "startDate": "2024-12-15",
+      "nearbyMeLocationId": {
+        "value": "ASDZ",
+        "type": "stationV3"
+      }
+    },
+    {
+      "id": {
+        "uicCode": "8400071",
+        "uicCdCode": "118400071",
+        "evaCode": "8400071",
+        "cdCode": 71,
+        "code": "AH"
+      },
+      "stationType": "INTERCITY_HUB_STATION",
+      "names": {
+        "long": "Arnhem Centraal",
+        "medium": "Arnhem C",
+        "short": "Arnhem C",
+        "synonyms": [
+          "Arnhem",
+          "Arnhem CS"
+        ]
+      },
+      "location": {
+        "lat": 51.9850006103516,
+        "lng": 5.89916658401489
+      },
+      "tracks": [
+        "3",
+        "4",
+        "4a",
+        "4b",
+        "6",
+        "6a",
+        "6b",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11"
+      ],
+      "hasKnownFacilities": true,
+      "availableForAccessibleTravel": true,
+      "hasTravelAssistance": true,
+      "areTracksIndependentlyAccessible": false,
+      "isBorderStop": false,
+      "country": "NL",
+      "radius": 525,
+      "approachingRadius": 1200,
+      "startDate": "2022-01-06",
+      "nearbyMeLocationId": {
+        "value": "AH",
+        "type": "stationV3"
+      }
+    },
+    {
+      "id": {
+        "uicCode": "8400080",
+        "uicCdCode": "118400080",
+        "evaCode": "8400080",
+        "cdCode": 80,
+        "code": "ALM"
+      },
+      "stationType": "INTERCITY_HUB_STATION",
+      "names": {
+        "long": "Almere Centrum",
+        "medium": "Almere C",
+        "short": "Almere C",
+        "synonyms": [
+          "Almere"
+        ]
+      },
+      "location": {
+        "lat": 52.37503,
+        "lng": 5.21764
+      },
+      "tracks": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "hasKnownFacilities": true,
+      "availableForAccessibleTravel": true,
+      "hasTravelAssistance": true,
+      "areTracksIndependentlyAccessible": true,
+      "isBorderStop": false,
+      "country": "NL",
+      "radius": 525,
+      "approachingRadius": 1200,
+      "startDate": "2025-06-03",
+      "nearbyMeLocationId": {
+        "value": "ALM",
+        "type": "stationV3"
+      }
+    },
+    {
+      "id": {
+        "uicCode": "8400117",
+        "uicCdCode": "118400117",
+        "evaCode": "8400117",
+        "cdCode": 117,
+        "code": "BR"
+      },
+      "stationType": "LOCAL_TRAIN_STATION",
+      "names": {
+        "long": "Blerick",
+        "medium": "Blerick",
+        "short": "Blerick",
+        "synonyms": []
+      },
+      "location": {
+        "lat": 51.372501373291,
+        "lng": 6.15500020980835
+      },
+      "tracks": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "hasKnownFacilities": true,
+      "availableForAccessibleTravel": true,
+      "hasTravelAssistance": true,
+      "areTracksIndependentlyAccessible": false,
+      "isBorderStop": false,
+      "country": "NL",
+      "radius": 525,
+      "approachingRadius": 1000,
+      "startDate": "2024-12-15",
+      "nearbyMeLocationId": {
+        "value": "BR",
+        "type": "stationV3"
+      }
+    },
+    {
+      "id": {
+        "uicCode": "8400180",
+        "uicCdCode": "118400180",
+        "evaCode": "8400180",
+        "cdCode": 180,
+        "code": "DDR"
+      },
+      "stationType": "INTERCITY_HUB_STATION",
+      "names": {
+        "long": "Dordrecht",
+        "medium": "Dordrecht",
+        "short": "Dordrecht",
+        "synonyms": []
+      },
+      "location": {
+        "lat": 51.8072204589844,
+        "lng": 4.66833353042603
+      },
+      "tracks": [
+        "1",
+        "2",
+        "2a",
+        "2b",
+        "3",
+        "3a",
+        "3b",
+        "4",
+        "4a",
+        "4b",
+        "5",
+        "15",
+        "20"
+      ],
+      "hasKnownFacilities": true,
+      "availableForAccessibleTravel": true,
+      "hasTravelAssistance": true,
+      "areTracksIndependentlyAccessible": false,
+      "isBorderStop": false,
+      "country": "NL",
+      "radius": 525,
+      "approachingRadius": 1200,
+      "startDate": "2024-12-15",
+      "nearbyMeLocationId": {
+        "value": "DDR",
+        "type": "stationV3"
+      }
+    },
+    {
+      "id": {
+        "uicCode": "8400200",
+        "uicCdCode": "118400200",
+        "evaCode": "8400200",
+        "cdCode": 200,
+        "code": "ED"
+      },
+      "stationType": "INTERCITY_HUB_STATION",
+      "names": {
+        "long": "Ede-Wageningen",
+        "medium": "Ede-Wag",
+        "short": "Ede-Wag",
+        "synonyms": []
+      },
+      "location": {
+        "lat": 52.0277786254883,
+        "lng": 5.67305564880371
+      },
+      "tracks": [
+        "1",
+        "3",
+        "4",
+        "5"
+      ],
+      "hasKnownFacilities": true,
+      "availableForAccessibleTravel": true,
+      "hasTravelAssistance": true,
+      "areTracksIndependentlyAccessible": true,
+      "isBorderStop": false,
+      "country": "NL",
+      "radius": 525,
+      "approachingRadius": 1200,
+      "startDate": "2014-04-02",
+      "nearbyMeLocationId": {
+        "value": "ED",
+        "type": "stationV3"
+      }
+    },
+    {
+      "id": {
+        "uicCode": "8400201",
+        "uicCdCode": "118400201",
+        "evaCode": "8400201",
+        "cdCode": 201,
+        "code": "EDC"
+      },
+      "stationType": "LOCAL_TRAIN_STATION",
+      "names": {
+        "long": "Ede Centrum",
+        "medium": "Ede C",
+        "short": "Ede C",
+        "synonyms": []
+      },
+      "location": {
+        "lat": 52.0436096191406,
+        "lng": 5.66833353042603
+      },
+      "tracks": [
+        "1"
+      ],
+      "hasKnownFacilities": true,
+      "availableForAccessibleTravel": true,
+      "hasTravelAssistance": true,
+      "areTracksIndependentlyAccessible": true,
+      "isBorderStop": false,
+      "country": "NL",
+      "radius": 200,
+      "approachingRadius": 1200,
+      "startDate": "2020-05-13",
+      "nearbyMeLocationId": {
+        "value": "EDC",
+        "type": "stationV3"
+      }
+    },
+    {
+      "id": {
+        "uicCode": "8400206",
+        "uicCdCode": "118400206",
+        "evaCode": "8400206",
+        "cdCode": 206,
+        "code": "EHV"
+      },
+      "stationType": "MEGA_STATION",
+      "names": {
+        "long": "Eindhoven Centraal",
+        "medium": "Eindhovn C",
+        "short": "Eindhovn C",
+        "synonyms": [
+          "Eindhoven",
+          "Eindhoven CS"
+        ]
+      },
+      "location": {
+        "lat": 51.4433326721191,
+        "lng": 5.48138904571533
+      },
+      "tracks": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "hasKnownFacilities": true,
+      "availableForAccessibleTravel": true,
+      "hasTravelAssistance": true,
+      "areTracksIndependentlyAccessible": false,
+      "isBorderStop": false,
+      "country": "NL",
+      "radius": 525,
+      "approachingRadius": 1200,
+      "startDate": "2025-06-03",
+      "nearbyMeLocationId": {
+        "value": "EHV",
+        "type": "stationV3"
+      }
+    },
+    {
+      "id": {
+        "uicCode": "8400212",
+        "uicCdCode": "118400212",
+        "evaCode": "8400212",
+        "cdCode": 212,
+        "code": "ES"
+      },
+      "stationType": "INTERCITY_HUB_STATION",
+      "names": {
+        "long": "Enschede",
+        "medium": "Enschede",
+        "short": "Enschede",
+        "synonyms": []
+      },
+      "location": {
+        "lat": 52.2224998474121,
+        "lng": 6.8899998664856
+      },
+      "tracks": [
+        "1",
+        "2",
+        "3",
+        "4a",
+        "4b"
+      ],
+      "hasKnownFacilities": true,
+      "availableForAccessibleTravel": true,
+      "hasTravelAssistance": true,
+      "areTracksIndependentlyAccessible": true,
+      "isBorderStop": false,
+      "country": "NL",
+      "radius": 525,
+      "approachingRadius": 1200,
+      "startDate": "2021-06-21",
+      "nearbyMeLocationId": {
+        "value": "ES",
+        "type": "stationV3"
+      }
+    },
+    {
+      "id": {
+        "uicCode": "8400263",
+        "uicCdCode": "118400263",
+        "evaCode": "8400263",
+        "cdCode": 263,
+        "code": "GN"
+      },
+      "stationType": "INTERCITY_HUB_STATION",
+      "names": {
+        "long": "Groningen",
+        "medium": "Groningen",
+        "short": "Groningen",
+        "synonyms": []
+      },
+      "location": {
+        "lat": 53.2105560302734,
+        "lng": 6.56472206115723
+      },
+      "tracks": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "hasKnownFacilities": true,
+      "availableForAccessibleTravel": true,
+      "hasTravelAssistance": true,
+      "areTracksIndependentlyAccessible": true,
+      "isBorderStop": false,
+      "country": "NL",
+      "radius": 525,
+      "approachingRadius": 1200,
+      "startDate": "2025-06-03",
+      "nearbyMeLocationId": {
+        "value": "GN",
+        "type": "stationV3"
+      }
+    },
+    {
+      "id": {
+        "uicCode": "8400280",
+        "uicCdCode": "118400280",
+        "evaCode": "8400280",
+        "cdCode": 280,
+        "code": "GV"
+      },
+      "stationType": "INTERCITY_HUB_STATION",
+      "names": {
+        "long": "Den Haag HS",
+        "medium": "Dn Haag HS",
+        "short": "Dn Haag HS",
+        "synonyms": [
+          "Den Haag Hollands Spoor",
+          "Hollands Spoor"
+        ]
+      },
+      "location": {
+        "lat": 52.0697212219238,
+        "lng": 4.32250022888184
+      },
+      "tracks": [
+        "1",
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "hasKnownFacilities": true,
+      "availableForAccessibleTravel": true,
+      "hasTravelAssistance": true,
+      "areTracksIndependentlyAccessible": false,
+      "isBorderStop": false,
+      "country": "NL",
+      "radius": 525,
+      "approachingRadius": 1600,
+      "startDate": "2024-12-15",
+      "nearbyMeLocationId": {
+        "value": "GV",
+        "type": "stationV3"
+      }
+    },
+    {
+      "id": {
+        "uicCode": "8400282",
+        "uicCdCode": "118400282",
+        "evaCode": "8400282",
+        "cdCode": 282,
+        "code": "GVC"
+      },
+      "stationType": "MEGA_STATION",
+      "names": {
+        "long": "Den Haag Centraal",
+        "medium": "Den Haag C",
+        "short": "Den Haag C",
+        "synonyms": [
+          "Den Haag CS",
+          "Den Haag",
+          "'s-Gravenhage"
+        ]
+      },
+      "location": {
+        "lat": 52.0802764892578,
+        "lng": 4.32499980926514
+      },
+      "tracks": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12"
+      ],
+      "hasKnownFacilities": true,
+      "availableForAccessibleTravel": true,
+      "hasTravelAssistance": true,
+      "areTracksIndependentlyAccessible": false,
+      "isBorderStop": false,
+      "country": "NL",
+      "radius": 525,
+      "approachingRadius": 1600,
+      "startDate": "2024-12-15",
+      "nearbyMeLocationId": {
+        "value": "GVC",
+        "type": "stationV3"
+      }
+    },
+    {
+      "id": {
+        "uicCode": "8400285",
+        "uicCdCode": "118400285",
+        "evaCode": "8400285",
+        "cdCode": 285,
+        "code": "HLM"
+      },
+      "stationType": "INTERCITY_HUB_STATION",
+      "names": {
+        "long": "Haarlem",
+        "medium": "Haarlem",
+        "short": "Haarlem",
+        "synonyms": []
+      },
+      "location": {
+        "lat": 52.3877792358398,
+        "lng": 4.63833332061768
+      },
+      "tracks": [
+        "1",
+        "3",
+        "3a",
+        "3b",
+        "4",
+        "5",
+        "6",
+        "6a",
+        "6b",
+        "8"
+      ],
+      "hasKnownFacilities": true,
+      "availableForAccessibleTravel": true,
+      "hasTravelAssistance": true,
+      "areTracksIndependentlyAccessible": false,
+      "isBorderStop": false,
+      "country": "NL",
+      "radius": 525,
+      "approachingRadius": 1200,
+      "startDate": "2024-12-15",
+      "nearbyMeLocationId": {
+        "value": "HLM",
+        "type": "stationV3"
+      }
+    },
+    {
+      "id": {
+        "uicCode": "8400302",
+        "uicCdCode": "118400302",
+        "evaCode": "8400302",
+        "cdCode": 302,
+        "code": "HAD"
+      },
+      "stationType": "INTERCITY_STATION",
+      "names": {
+        "long": "Heemstede-Aerdenhout",
+        "medium": "Heemstede",
+        "short": "Heemstede",
+        "synonyms": []
+      },
+      "location": {
+        "lat": 52.3591651916504,
+        "lng": 4.60666656494141
+      },
+      "tracks": [
+        "1",
+        "2"
+      ],
+      "hasKnownFacilities": true,
+      "availableForAccessibleTravel": true,
+      "hasTravelAssistance": true,
+      "areTracksIndependentlyAccessible": true,
+      "isBorderStop": false,
+      "country": "NL",
+      "radius": 200,
+      "approachingRadius": 1200,
+      "startDate": "2024-12-15",
+      "nearbyMeLocationId": {
+        "value": "HAD",
+        "type": "stationV3"
+      }
+    },
+    {
+      "id": {
+        "uicCode": "8400319",
+        "uicCdCode": "118400319",
+        "evaCode": "8400319",
+        "cdCode": 319,
+        "code": "HT"
+      },
+      "stationType": "INTERCITY_HUB_STATION",
+      "names": {
+        "long": "'s-Hertogenbosch",
+        "medium": "Den Bosch",
+        "short": "Den Bosch",
+        "synonyms": [
+          "Den Bosch",
+          "Hertogenbosch ('s)"
+        ]
+      },
+      "location": {
+        "lat": 51.69048,
+        "lng": 5.29362
+      },
+      "tracks": [
+        "1",
+        "3",
+        "3a",
+        "3b",
+        "4",
+        "4a",
+        "4b",
+        "6",
+        "6a",
+        "6b",
+        "7",
+        "7a",
+        "7b"
+      ],
+      "hasKnownFacilities": true,
+      "availableForAccessibleTravel": true,
+      "hasTravelAssistance": true,
+      "areTracksIndependentlyAccessible": true,
+      "isBorderStop": false,
+      "country": "NL",
+      "radius": 525,
+      "approachingRadius": 1200,
+      "startDate": "2025-06-03",
+      "nearbyMeLocationId": {
+        "value": "HT",
+        "type": "stationV3"
+      }
+    },
+    {
+      "id": {
+        "uicCode": "8400320",
+        "uicCdCode": "118400320",
+        "evaCode": "8400320",
+        "cdCode": 320,
+        "code": "HTO"
+      },
+      "stationType": "LOCAL_TRAIN_STATION",
+      "names": {
+        "long": "'s-Hertogenbosch Oost",
+        "medium": "Dn Bosch O",
+        "short": "Dn Bosch O",
+        "synonyms": [
+          "Hertogenbosch Oost ('s)",
+          "Den Bosch Oost"
+        ]
+      },
+      "location": {
+        "lat": 51.700553894043,
+        "lng": 5.3183331489563
+      },
+      "tracks": [
+        "1",
+        "2"
+      ],
+      "hasKnownFacilities": true,
+      "availableForAccessibleTravel": true,
+      "hasTravelAssistance": true,
+      "areTracksIndependentlyAccessible": true,
+      "isBorderStop": false,
+      "country": "NL",
+      "radius": 200,
+      "approachingRadius": 1200,
+      "startDate": "2024-12-15",
+      "nearbyMeLocationId": {
+        "value": "HTO",
+        "type": "stationV3"
+      }
+    },
+    {
+      "id": {
+        "uicCode": "8400390",
+        "uicCdCode": "118400390",
+        "evaCode": "8400390",
+        "cdCode": 390,
+        "code": "LEDN"
+      },
+      "stationType": "INTERCITY_HUB_STATION",
+      "names": {
+        "long": "Leiden Centraal",
+        "medium": "Leiden C",
+        "short": "Leiden C",
+        "synonyms": [
+          "Leiden CS",
+          "Leiden"
+        ]
+      },
+      "location": {
+        "lat": 52.1661109924316,
+        "lng": 4.48166656494141
+      },
+      "tracks": [
+        "1",
+        "2",
+        "4",
+        "4a",
+        "4b",
+        "5",
+        "5a",
+        "5b",
+        "8",
+        "8a",
+        "8b",
+        "9",
+        "9a",
+        "9b"
+      ],
+      "hasKnownFacilities": true,
+      "availableForAccessibleTravel": true,
+      "hasTravelAssistance": true,
+      "areTracksIndependentlyAccessible": true,
+      "isBorderStop": false,
+      "country": "NL",
+      "radius": 525,
+      "approachingRadius": 1600,
+      "startDate": "2024-12-15",
+      "nearbyMeLocationId": {
+        "value": "LEDN",
+        "type": "stationV3"
+      }
+    },
+    {
+      "id": {
+        "uicCode": "8400470",
+        "uicCdCode": "118400470",
+        "evaCode": "8400470",
+        "cdCode": 470,
+        "code": "NM"
+      },
+      "stationType": "INTERCITY_HUB_STATION",
+      "names": {
+        "long": "Nijmegen",
+        "medium": "Nijmegen",
+        "short": "Nijmegen",
+        "synonyms": []
+      },
+      "location": {
+        "lat": 51.8436126708984,
+        "lng": 5.85222244262695
+      },
+      "tracks": [
+        "1",
+        "1a",
+        "1b",
+        "3",
+        "4",
+        "35"
+      ],
+      "hasKnownFacilities": true,
+      "availableForAccessibleTravel": true,
+      "hasTravelAssistance": true,
+      "areTracksIndependentlyAccessible": false,
+      "isBorderStop": false,
+      "country": "NL",
+      "radius": 525,
+      "approachingRadius": 1200,
+      "startDate": "2024-12-15",
+      "nearbyMeLocationId": {
+        "value": "NM",
+        "type": "stationV3"
+      }
+    },
+    {
+      "id": {
+        "uicCode": "8400529",
+        "uicCdCode": "118400529",
+        "evaCode": "8400529",
+        "cdCode": 529,
+        "code": "RTB"
+      },
+      "stationType": "LOCAL_TRAIN_STATION",
+      "names": {
+        "long": "Rotterdam Blaak",
+        "medium": "Blaak",
+        "short": "Blaak",
+        "synonyms": []
+      },
+      "location": {
+        "lat": 51.9202766418457,
+        "lng": 4.48888874053955
+      },
+      "tracks": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "hasKnownFacilities": true,
+      "availableForAccessibleTravel": true,
+      "hasTravelAssistance": true,
+      "areTracksIndependentlyAccessible": true,
+      "isBorderStop": false,
+      "country": "NL",
+      "radius": 200,
+      "approachingRadius": 1200,
+      "startDate": "2024-12-15",
+      "nearbyMeLocationId": {
+        "value": "RTB",
+        "type": "stationV3"
+      }
+    },
+    {
+      "id": {
+        "uicCode": "8400530",
+        "uicCdCode": "118400530",
+        "evaCode": "8400530",
+        "cdCode": 530,
+        "code": "RTD"
+      },
+      "stationType": "MEGA_STATION",
+      "names": {
+        "long": "Rotterdam Centraal",
+        "medium": "Rotterdm C",
+        "short": "Rotterdm C",
+        "synonyms": [
+          "Rotterdam CS",
+          "Rotterdam"
+        ]
+      },
+      "location": {
+        "lat": 51.9249992370605,
+        "lng": 4.46888875961304
+      },
+      "tracks": [
+        "2",
+        "3",
+        "4",
+        "6",
+        "7",
+        "8",
+        "9",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16"
+      ],
+      "hasKnownFacilities": true,
+      "availableForAccessibleTravel": true,
+      "hasTravelAssistance": true,
+      "areTracksIndependentlyAccessible": false,
+      "isBorderStop": false,
+      "country": "NL",
+      "radius": 525,
+      "approachingRadius": 1000,
+      "startDate": "2017-02-01",
+      "nearbyMeLocationId": {
+        "value": "RTD",
+        "type": "stationV3"
+      }
+    },
+    {
+      "id": {
+        "uicCode": "8400561",
+        "uicCdCode": "118400561",
+        "evaCode": "8400561",
+        "cdCode": 561,
+        "code": "SHL"
+      },
+      "stationType": "MEGA_STATION",
+      "names": {
+        "long": "Schiphol Airport",
+        "medium": "Schiphol",
+        "short": "Schiphol",
+        "festive": "Schiphol Airport ✈",
+        "synonyms": [
+          "Amsterdam Airport"
+        ]
+      },
+      "location": {
+        "lat": 52.3094444274902,
+        "lng": 4.76194429397583
+      },
+      "tracks": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "hasKnownFacilities": true,
+      "availableForAccessibleTravel": true,
+      "hasTravelAssistance": true,
+      "areTracksIndependentlyAccessible": true,
+      "isBorderStop": false,
+      "country": "NL",
+      "radius": 2800,
+      "approachingRadius": 3200,
+      "startDate": "2025-06-03",
+      "nearbyMeLocationId": {
+        "value": "SHL",
+        "type": "stationV3"
+      }
+    },
+    {
+      "id": {
+        "uicCode": "8400621",
+        "uicCdCode": "118400621",
+        "evaCode": "8400621",
+        "cdCode": 621,
+        "code": "UT"
+      },
+      "stationType": "MEGA_STATION",
+      "names": {
+        "long": "Utrecht Centraal",
+        "medium": "Utrecht C",
+        "short": "Utrecht C",
+        "synonyms": [
+          "Utrecht CS",
+          "Utrecht"
+        ]
+      },
+      "location": {
+        "lat": 52.0888900756836,
+        "lng": 5.11027765274048
+      },
+      "tracks": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "7",
+        "8",
+        "9",
+        "11",
+        "12",
+        "14",
+        "15",
+        "18",
+        "19",
+        "20",
+        "21"
+      ],
+      "hasKnownFacilities": true,
+      "availableForAccessibleTravel": true,
+      "hasTravelAssistance": true,
+      "areTracksIndependentlyAccessible": true,
+      "isBorderStop": false,
+      "country": "NL",
+      "radius": 525,
+      "approachingRadius": 1550,
+      "startDate": "2025-06-03",
+      "nearbyMeLocationId": {
+        "value": "UT",
+        "type": "stationV3"
+      }
+    },
+    {
+      "id": {
+        "uicCode": "8400644",
+        "uicCdCode": "118400644",
+        "evaCode": "8400644",
+        "cdCode": 644,
+        "code": "VL"
+      },
+      "stationType": "INTERCITY_HUB_STATION",
+      "names": {
+        "long": "Venlo",
+        "medium": "Venlo",
+        "short": "Venlo",
+        "synonyms": []
+      },
+      "location": {
+        "lat": 51.3636093139648,
+        "lng": 6.17277765274048
+      },
+      "tracks": [
+        "1",
+        "1a",
+        "1b",
+        "3",
+        "4",
+        "4a",
+        "4b",
+        "6"
+      ],
+      "hasKnownFacilities": true,
+      "availableForAccessibleTravel": true,
+      "hasTravelAssistance": true,
+      "areTracksIndependentlyAccessible": false,
+      "isBorderStop": false,
+      "country": "NL",
+      "radius": 525,
+      "approachingRadius": 1000,
+      "startDate": "2024-12-15",
+      "nearbyMeLocationId": {
+        "value": "VL",
+        "type": "stationV3"
+      }
+    },
+    {
+      "id": {
+        "uicCode": "8400685",
+        "uicCdCode": "118400685",
+        "evaCode": "8400685",
+        "cdCode": 685,
+        "code": "WP"
+      },
+      "stationType": "LOCAL_TRAIN_HUB_STATION",
+      "names": {
+        "long": "Weesp",
+        "medium": "Weesp",
+        "short": "Weesp",
+        "synonyms": []
+      },
+      "location": {
+        "lat": 52.3127784729004,
+        "lng": 5.04305553436279
+      },
+      "tracks": [
+        "1",
+        "2",
+        "5",
+        "6"
+      ],
+      "hasKnownFacilities": true,
+      "availableForAccessibleTravel": true,
+      "hasTravelAssistance": true,
+      "areTracksIndependentlyAccessible": false,
+      "isBorderStop": false,
+      "country": "NL",
+      "radius": 525,
+      "approachingRadius": 1200,
+      "startDate": "1990-01-01",
+      "nearbyMeLocationId": {
+        "value": "WP",
+        "type": "stationV3"
+      }
+    },
+    {
+      "id": {
+        "uicCode": "8400747",
+        "uicCdCode": "118400747",
+        "evaCode": "8400747",
+        "cdCode": 747,
+        "code": "ZL"
+      },
+      "stationType": "INTERCITY_HUB_STATION",
+      "names": {
+        "long": "Zwolle",
+        "medium": "Zwolle",
+        "short": "Zwolle",
+        "synonyms": []
+      },
+      "location": {
+        "lat": 52.5047225952148,
+        "lng": 6.09194421768188
+      },
+      "tracks": [
+        "1",
+        "1a",
+        "1b",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16"
+      ],
+      "hasKnownFacilities": true,
+      "availableForAccessibleTravel": true,
+      "hasTravelAssistance": true,
+      "areTracksIndependentlyAccessible": false,
+      "isBorderStop": false,
+      "country": "NL",
+      "radius": 525,
+      "approachingRadius": 1200,
+      "startDate": "2025-06-03",
+      "nearbyMeLocationId": {
+        "value": "ZL",
+        "type": "stationV3"
+      }
+    }
+  ]
+}

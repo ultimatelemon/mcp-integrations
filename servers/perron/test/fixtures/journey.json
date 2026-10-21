@@ -1,0 +1,3872 @@
+{
+  "payload": {
+    "notes": [],
+    "productNumbers": [
+      "3529"
+    ],
+    "stops": [
+      {
+        "id": "DDR_0",
+        "stop": {
+          "name": "Dordrecht",
+          "lng": 4.66833353042603,
+          "lat": 51.8072204589844,
+          "countryCode": "NL",
+          "uicCode": "8400180"
+        },
+        "previousStopId": [],
+        "nextStopId": [
+          "ZWD_0"
+        ],
+        "destination": "Venlo",
+        "status": "ORIGIN",
+        "arrivals": [],
+        "departures": [
+          {
+            "product": {
+              "number": "3529",
+              "categoryCode": "IC",
+              "shortCategoryName": "Intercity",
+              "longCategoryName": "Intercity",
+              "operatorCode": "NS",
+              "operatorName": "NS",
+              "type": "TRAIN"
+            },
+            "origin": {
+              "name": "Dordrecht",
+              "lng": 4.66833353042603,
+              "lat": 51.8072204589844,
+              "countryCode": "NL",
+              "uicCode": "8400180"
+            },
+            "destination": {
+              "name": "Venlo",
+              "lng": 6.17277765274048,
+              "lat": 51.3636093139648,
+              "countryCode": "NL",
+              "uicCode": "8400644"
+            },
+            "plannedTime": "2026-10-06T07:34:00+0200",
+            "actualTime": "2026-10-06T07:34:05+0200",
+            "delayInSeconds": 5,
+            "plannedTrack": "2",
+            "actualTrack": "2",
+            "cancelled": false,
+            "crowdForecast": "LOW",
+            "stockIdentifiers": [
+              "8676",
+              "9590"
+            ]
+          }
+        ],
+        "actualStock": {
+          "trainType": "VIRM",
+          "numberOfSeats": 925,
+          "numberOfParts": 10,
+          "trainParts": [
+            {
+              "stockIdentifier": "8676",
+              "destination": {
+                "name": "Venlo",
+                "lng": 6.17277765274048,
+                "lat": 51.3636093139648,
+                "countryCode": "NL",
+                "uicCode": "8400644"
+              },
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS",
+                "STROOM"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virmm1_6.png"
+              }
+            },
+            {
+              "stockIdentifier": "9590",
+              "destination": {
+                "name": "Eindhoven Centraal",
+                "lng": 5.48138904571533,
+                "lat": 51.4433326721191,
+                "countryCode": "NL",
+                "uicCode": "8400206"
+              },
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virm_4.png"
+              }
+            }
+          ],
+          "hasSignificantChange": false
+        },
+        "plannedStock": {
+          "trainType": "VIRM",
+          "numberOfSeats": 925,
+          "numberOfParts": 10,
+          "trainParts": [
+            {
+              "stockIdentifier": "8676",
+              "destination": {
+                "name": "Venlo",
+                "lng": 6.17277765274048,
+                "lat": 51.3636093139648,
+                "countryCode": "NL",
+                "uicCode": "8400644"
+              },
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS",
+                "STROOM"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virmm1_6.png"
+              }
+            },
+            {
+              "stockIdentifier": "9590",
+              "destination": {
+                "name": "Eindhoven Centraal",
+                "lng": 5.48138904571533,
+                "lat": 51.4433326721191,
+                "countryCode": "NL",
+                "uicCode": "8400206"
+              },
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virm_4.png"
+              }
+            }
+          ],
+          "hasSignificantChange": false
+        },
+        "platformFeatures": [],
+        "coachCrowdForecast": []
+      },
+      {
+        "id": "ZWD_0",
+        "stop": {
+          "name": "Zwijndrecht",
+          "lng": 4.64166688919067,
+          "lat": 51.814998626709,
+          "countryCode": "NL",
+          "uicCode": "8400752"
+        },
+        "previousStopId": [
+          "DDR_0"
+        ],
+        "nextStopId": [
+          "BRD_0"
+        ],
+        "status": "PASSING",
+        "arrivals": [],
+        "departures": []
+      },
+      {
+        "id": "BRD_0",
+        "stop": {
+          "name": "Barendrecht",
+          "lng": 4.5533332824707,
+          "lat": 51.8547210693359,
+          "countryCode": "NL",
+          "uicCode": "8400090"
+        },
+        "previousStopId": [
+          "ZWD_0"
+        ],
+        "nextStopId": [
+          "RLB_0"
+        ],
+        "status": "PASSING",
+        "arrivals": [],
+        "departures": []
+      },
+      {
+        "id": "RLB_0",
+        "stop": {
+          "name": "Rotterdam Lombardijen",
+          "lng": 4.53138875961304,
+          "lat": 51.8800010681152,
+          "countryCode": "NL",
+          "uicCode": "8400542"
+        },
+        "previousStopId": [
+          "BRD_0"
+        ],
+        "nextStopId": [
+          "RTST_0"
+        ],
+        "status": "PASSING",
+        "arrivals": [],
+        "departures": []
+      },
+      {
+        "id": "RTST_0",
+        "stop": {
+          "name": "Rotterdam Stadion",
+          "lng": 4.51972198486328,
+          "lat": 51.8938903808594,
+          "countryCode": "NL",
+          "uicCode": "8400534"
+        },
+        "previousStopId": [
+          "RLB_0"
+        ],
+        "nextStopId": [
+          "RTZ_0"
+        ],
+        "status": "PASSING",
+        "arrivals": [],
+        "departures": []
+      },
+      {
+        "id": "RTZ_0",
+        "stop": {
+          "name": "Rotterdam Zuid",
+          "lng": 4.51027774810791,
+          "lat": 51.9044456481934,
+          "countryCode": "NL",
+          "uicCode": "8400533"
+        },
+        "previousStopId": [
+          "RTST_0"
+        ],
+        "nextStopId": [
+          "RTB_0"
+        ],
+        "status": "PASSING",
+        "arrivals": [],
+        "departures": []
+      },
+      {
+        "id": "RTB_0",
+        "stop": {
+          "name": "Rotterdam Blaak",
+          "lng": 4.48888874053955,
+          "lat": 51.9202766418457,
+          "countryCode": "NL",
+          "uicCode": "8400529"
+        },
+        "previousStopId": [
+          "RTZ_0"
+        ],
+        "nextStopId": [
+          "RTD_0"
+        ],
+        "destination": "Venlo",
+        "status": "STOP",
+        "arrivals": [
+          {
+            "product": {
+              "number": "3529",
+              "categoryCode": "IC",
+              "shortCategoryName": "Intercity",
+              "longCategoryName": "Intercity",
+              "operatorCode": "NS",
+              "operatorName": "NS",
+              "type": "TRAIN"
+            },
+            "origin": {
+              "name": "Dordrecht",
+              "lng": 4.66833353042603,
+              "lat": 51.8072204589844,
+              "countryCode": "NL",
+              "uicCode": "8400180"
+            },
+            "destination": {
+              "name": "Venlo",
+              "lng": 6.17277765274048,
+              "lat": 51.3636093139648,
+              "countryCode": "NL",
+              "uicCode": "8400644"
+            },
+            "plannedTime": "2026-10-06T07:45:00+0200",
+            "actualTime": "2026-10-06T07:46:43+0200",
+            "delayInSeconds": 103,
+            "plannedTrack": "2",
+            "actualTrack": "2",
+            "cancelled": false,
+            "crowdForecast": "LOW",
+            "stockIdentifiers": [
+              "8676",
+              "9590"
+            ]
+          }
+        ],
+        "departures": [
+          {
+            "product": {
+              "number": "3529",
+              "categoryCode": "IC",
+              "shortCategoryName": "Intercity",
+              "longCategoryName": "Intercity",
+              "operatorCode": "NS",
+              "operatorName": "NS",
+              "type": "TRAIN"
+            },
+            "origin": {
+              "name": "Dordrecht",
+              "lng": 4.66833353042603,
+              "lat": 51.8072204589844,
+              "countryCode": "NL",
+              "uicCode": "8400180"
+            },
+            "destination": {
+              "name": "Venlo",
+              "lng": 6.17277765274048,
+              "lat": 51.3636093139648,
+              "countryCode": "NL",
+              "uicCode": "8400644"
+            },
+            "plannedTime": "2026-10-06T07:45:00+0200",
+            "actualTime": "2026-10-06T07:46:43+0200",
+            "delayInSeconds": 103,
+            "plannedTrack": "2",
+            "actualTrack": "2",
+            "cancelled": false,
+            "crowdForecast": "LOW",
+            "stockIdentifiers": [
+              "8676",
+              "9590"
+            ]
+          }
+        ],
+        "actualStock": {
+          "trainType": "VIRM",
+          "numberOfSeats": 925,
+          "numberOfParts": 10,
+          "trainParts": [
+            {
+              "stockIdentifier": "8676",
+              "destination": {
+                "name": "Venlo",
+                "lng": 6.17277765274048,
+                "lat": 51.3636093139648,
+                "countryCode": "NL",
+                "uicCode": "8400644"
+              },
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS",
+                "STROOM"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virmm1_6.png"
+              }
+            },
+            {
+              "stockIdentifier": "9590",
+              "destination": {
+                "name": "Eindhoven Centraal",
+                "lng": 5.48138904571533,
+                "lat": 51.4433326721191,
+                "countryCode": "NL",
+                "uicCode": "8400206"
+              },
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virm_4.png"
+              }
+            }
+          ],
+          "hasSignificantChange": false
+        },
+        "plannedStock": {
+          "trainType": "VIRM",
+          "numberOfSeats": 925,
+          "numberOfParts": 10,
+          "trainParts": [
+            {
+              "stockIdentifier": "8676",
+              "destination": {
+                "name": "Venlo",
+                "lng": 6.17277765274048,
+                "lat": 51.3636093139648,
+                "countryCode": "NL",
+                "uicCode": "8400644"
+              },
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS",
+                "STROOM"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virmm1_6.png"
+              }
+            },
+            {
+              "stockIdentifier": "9590",
+              "destination": {
+                "name": "Eindhoven Centraal",
+                "lng": 5.48138904571533,
+                "lat": 51.4433326721191,
+                "countryCode": "NL",
+                "uicCode": "8400206"
+              },
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virm_4.png"
+              }
+            }
+          ],
+          "hasSignificantChange": false
+        },
+        "platformFeatures": [],
+        "coachCrowdForecast": []
+      },
+      {
+        "id": "RTD_0",
+        "stop": {
+          "name": "Rotterdam Centraal",
+          "lng": 4.46888875961304,
+          "lat": 51.9249992370605,
+          "countryCode": "NL",
+          "uicCode": "8400530"
+        },
+        "previousStopId": [
+          "RTB_0"
+        ],
+        "nextStopId": [
+          "SDM_0"
+        ],
+        "destination": "Venlo",
+        "status": "STOP",
+        "arrivals": [
+          {
+            "product": {
+              "number": "3529",
+              "categoryCode": "IC",
+              "shortCategoryName": "Intercity",
+              "longCategoryName": "Intercity",
+              "operatorCode": "NS",
+              "operatorName": "NS",
+              "type": "TRAIN"
+            },
+            "origin": {
+              "name": "Dordrecht",
+              "lng": 4.66833353042603,
+              "lat": 51.8072204589844,
+              "countryCode": "NL",
+              "uicCode": "8400180"
+            },
+            "destination": {
+              "name": "Venlo",
+              "lng": 6.17277765274048,
+              "lat": 51.3636093139648,
+              "countryCode": "NL",
+              "uicCode": "8400644"
+            },
+            "plannedTime": "2026-10-06T07:48:00+0200",
+            "actualTime": "2026-10-06T07:49:34+0200",
+            "delayInSeconds": 94,
+            "plannedTrack": "8",
+            "actualTrack": "8",
+            "cancelled": false,
+            "crowdForecast": "LOW",
+            "stockIdentifiers": [
+              "8676",
+              "9590"
+            ]
+          }
+        ],
+        "departures": [
+          {
+            "product": {
+              "number": "3529",
+              "categoryCode": "IC",
+              "shortCategoryName": "Intercity",
+              "longCategoryName": "Intercity",
+              "operatorCode": "NS",
+              "operatorName": "NS",
+              "type": "TRAIN"
+            },
+            "origin": {
+              "name": "Dordrecht",
+              "lng": 4.66833353042603,
+              "lat": 51.8072204589844,
+              "countryCode": "NL",
+              "uicCode": "8400180"
+            },
+            "destination": {
+              "name": "Venlo",
+              "lng": 6.17277765274048,
+              "lat": 51.3636093139648,
+              "countryCode": "NL",
+              "uicCode": "8400644"
+            },
+            "plannedTime": "2026-10-06T07:52:00+0200",
+            "actualTime": "2026-10-06T07:52:00+0200",
+            "delayInSeconds": 0,
+            "plannedTrack": "8",
+            "actualTrack": "8",
+            "cancelled": false,
+            "crowdForecast": "LOW",
+            "stockIdentifiers": [
+              "8676",
+              "9590"
+            ]
+          }
+        ],
+        "actualStock": {
+          "trainType": "VIRM",
+          "numberOfSeats": 925,
+          "numberOfParts": 10,
+          "trainParts": [
+            {
+              "stockIdentifier": "8676",
+              "destination": {
+                "name": "Venlo",
+                "lng": 6.17277765274048,
+                "lat": 51.3636093139648,
+                "countryCode": "NL",
+                "uicCode": "8400644"
+              },
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS",
+                "STROOM"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virmm1_6.png"
+              }
+            },
+            {
+              "stockIdentifier": "9590",
+              "destination": {
+                "name": "Eindhoven Centraal",
+                "lng": 5.48138904571533,
+                "lat": 51.4433326721191,
+                "countryCode": "NL",
+                "uicCode": "8400206"
+              },
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virm_4.png"
+              }
+            }
+          ],
+          "hasSignificantChange": false
+        },
+        "plannedStock": {
+          "trainType": "VIRM",
+          "numberOfSeats": 925,
+          "numberOfParts": 10,
+          "trainParts": [
+            {
+              "stockIdentifier": "8676",
+              "destination": {
+                "name": "Venlo",
+                "lng": 6.17277765274048,
+                "lat": 51.3636093139648,
+                "countryCode": "NL",
+                "uicCode": "8400644"
+              },
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS",
+                "STROOM"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virmm1_6.png"
+              }
+            },
+            {
+              "stockIdentifier": "9590",
+              "destination": {
+                "name": "Eindhoven Centraal",
+                "lng": 5.48138904571533,
+                "lat": 51.4433326721191,
+                "countryCode": "NL",
+                "uicCode": "8400206"
+              },
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virm_4.png"
+              }
+            }
+          ],
+          "hasSignificantChange": false
+        },
+        "platformFeatures": [],
+        "coachCrowdForecast": []
+      },
+      {
+        "id": "SDM_0",
+        "stop": {
+          "name": "Schiedam Centrum",
+          "lng": 4.4089937210083,
+          "lat": 51.9212438128032,
+          "countryCode": "NL",
+          "uicCode": "8400553"
+        },
+        "previousStopId": [
+          "RTD_0"
+        ],
+        "nextStopId": [
+          "DTCP_0"
+        ],
+        "destination": "Venlo",
+        "status": "STOP",
+        "arrivals": [
+          {
+            "product": {
+              "number": "3529",
+              "categoryCode": "IC",
+              "shortCategoryName": "Intercity",
+              "longCategoryName": "Intercity",
+              "operatorCode": "NS",
+              "operatorName": "NS",
+              "type": "TRAIN"
+            },
+            "origin": {
+              "name": "Dordrecht",
+              "lng": 4.66833353042603,
+              "lat": 51.8072204589844,
+              "countryCode": "NL",
+              "uicCode": "8400180"
+            },
+            "destination": {
+              "name": "Venlo",
+              "lng": 6.17277765274048,
+              "lat": 51.3636093139648,
+              "countryCode": "NL",
+              "uicCode": "8400644"
+            },
+            "plannedTime": "2026-10-06T07:57:00+0200",
+            "actualTime": "2026-10-06T07:58:26+0200",
+            "delayInSeconds": 86,
+            "plannedTrack": "5",
+            "actualTrack": "5",
+            "cancelled": false,
+            "crowdForecast": "MEDIUM",
+            "stockIdentifiers": [
+              "8676",
+              "9590"
+            ]
+          }
+        ],
+        "departures": [
+          {
+            "product": {
+              "number": "3529",
+              "categoryCode": "IC",
+              "shortCategoryName": "Intercity",
+              "longCategoryName": "Intercity",
+              "operatorCode": "NS",
+              "operatorName": "NS",
+              "type": "TRAIN"
+            },
+            "origin": {
+              "name": "Dordrecht",
+              "lng": 4.66833353042603,
+              "lat": 51.8072204589844,
+              "countryCode": "NL",
+              "uicCode": "8400180"
+            },
+            "destination": {
+              "name": "Venlo",
+              "lng": 6.17277765274048,
+              "lat": 51.3636093139648,
+              "countryCode": "NL",
+              "uicCode": "8400644"
+            },
+            "plannedTime": "2026-10-06T07:57:00+0200",
+            "actualTime": "2026-10-06T07:58:26+0200",
+            "delayInSeconds": 86,
+            "plannedTrack": "5",
+            "actualTrack": "5",
+            "cancelled": false,
+            "crowdForecast": "MEDIUM",
+            "stockIdentifiers": [
+              "8676",
+              "9590"
+            ]
+          }
+        ],
+        "actualStock": {
+          "trainType": "VIRM",
+          "numberOfSeats": 925,
+          "numberOfParts": 10,
+          "trainParts": [
+            {
+              "stockIdentifier": "8676",
+              "destination": {
+                "name": "Venlo",
+                "lng": 6.17277765274048,
+                "lat": 51.3636093139648,
+                "countryCode": "NL",
+                "uicCode": "8400644"
+              },
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS",
+                "STROOM"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virmm1_6.png"
+              }
+            },
+            {
+              "stockIdentifier": "9590",
+              "destination": {
+                "name": "Eindhoven Centraal",
+                "lng": 5.48138904571533,
+                "lat": 51.4433326721191,
+                "countryCode": "NL",
+                "uicCode": "8400206"
+              },
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virm_4.png"
+              }
+            }
+          ],
+          "hasSignificantChange": false
+        },
+        "plannedStock": {
+          "trainType": "VIRM",
+          "numberOfSeats": 925,
+          "numberOfParts": 10,
+          "trainParts": [
+            {
+              "stockIdentifier": "8676",
+              "destination": {
+                "name": "Venlo",
+                "lng": 6.17277765274048,
+                "lat": 51.3636093139648,
+                "countryCode": "NL",
+                "uicCode": "8400644"
+              },
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS",
+                "STROOM"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virmm1_6.png"
+              }
+            },
+            {
+              "stockIdentifier": "9590",
+              "destination": {
+                "name": "Eindhoven Centraal",
+                "lng": 5.48138904571533,
+                "lat": 51.4433326721191,
+                "countryCode": "NL",
+                "uicCode": "8400206"
+              },
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virm_4.png"
+              }
+            }
+          ],
+          "hasSignificantChange": false
+        },
+        "platformFeatures": [],
+        "coachCrowdForecast": []
+      },
+      {
+        "id": "DTCP_0",
+        "stop": {
+          "name": "Delft Campus",
+          "lng": 4.36472225189209,
+          "lat": 51.9908332824707,
+          "countryCode": "NL",
+          "uicCode": "8400166"
+        },
+        "previousStopId": [
+          "SDM_0"
+        ],
+        "nextStopId": [
+          "DT_0"
+        ],
+        "status": "PASSING",
+        "arrivals": [],
+        "departures": []
+      },
+      {
+        "id": "DT_0",
+        "stop": {
+          "name": "Delft",
+          "lng": 4.35638904571533,
+          "lat": 52.0066680908203,
+          "countryCode": "NL",
+          "uicCode": "8400170"
+        },
+        "previousStopId": [
+          "DTCP_0"
+        ],
+        "nextStopId": [
+          "RSW_0"
+        ],
+        "destination": "Venlo",
+        "status": "STOP",
+        "arrivals": [
+          {
+            "product": {
+              "number": "3529",
+              "categoryCode": "IC",
+              "shortCategoryName": "Intercity",
+              "longCategoryName": "Intercity",
+              "operatorCode": "NS",
+              "operatorName": "NS",
+              "type": "TRAIN"
+            },
+            "origin": {
+              "name": "Dordrecht",
+              "lng": 4.66833353042603,
+              "lat": 51.8072204589844,
+              "countryCode": "NL",
+              "uicCode": "8400180"
+            },
+            "destination": {
+              "name": "Venlo",
+              "lng": 6.17277765274048,
+              "lat": 51.3636093139648,
+              "countryCode": "NL",
+              "uicCode": "8400644"
+            },
+            "plannedTime": "2026-10-06T08:04:00+0200",
+            "actualTime": "2026-10-06T08:05:44+0200",
+            "delayInSeconds": 104,
+            "plannedTrack": "1",
+            "actualTrack": "1",
+            "cancelled": false,
+            "crowdForecast": "MEDIUM",
+            "stockIdentifiers": [
+              "8676",
+              "9590"
+            ]
+          }
+        ],
+        "departures": [
+          {
+            "product": {
+              "number": "3529",
+              "categoryCode": "IC",
+              "shortCategoryName": "Intercity",
+              "longCategoryName": "Intercity",
+              "operatorCode": "NS",
+              "operatorName": "NS",
+              "type": "TRAIN"
+            },
+            "origin": {
+              "name": "Dordrecht",
+              "lng": 4.66833353042603,
+              "lat": 51.8072204589844,
+              "countryCode": "NL",
+              "uicCode": "8400180"
+            },
+            "destination": {
+              "name": "Venlo",
+              "lng": 6.17277765274048,
+              "lat": 51.3636093139648,
+              "countryCode": "NL",
+              "uicCode": "8400644"
+            },
+            "plannedTime": "2026-10-06T08:04:00+0200",
+            "actualTime": "2026-10-06T08:05:44+0200",
+            "delayInSeconds": 104,
+            "plannedTrack": "1",
+            "actualTrack": "1",
+            "cancelled": false,
+            "crowdForecast": "MEDIUM",
+            "stockIdentifiers": [
+              "8676",
+              "9590"
+            ]
+          }
+        ],
+        "actualStock": {
+          "trainType": "VIRM",
+          "numberOfSeats": 925,
+          "numberOfParts": 10,
+          "trainParts": [
+            {
+              "stockIdentifier": "8676",
+              "destination": {
+                "name": "Venlo",
+                "lng": 6.17277765274048,
+                "lat": 51.3636093139648,
+                "countryCode": "NL",
+                "uicCode": "8400644"
+              },
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS",
+                "STROOM"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virmm1_6.png"
+              }
+            },
+            {
+              "stockIdentifier": "9590",
+              "destination": {
+                "name": "Eindhoven Centraal",
+                "lng": 5.48138904571533,
+                "lat": 51.4433326721191,
+                "countryCode": "NL",
+                "uicCode": "8400206"
+              },
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virm_4.png"
+              }
+            }
+          ],
+          "hasSignificantChange": false
+        },
+        "plannedStock": {
+          "trainType": "VIRM",
+          "numberOfSeats": 925,
+          "numberOfParts": 10,
+          "trainParts": [
+            {
+              "stockIdentifier": "8676",
+              "destination": {
+                "name": "Venlo",
+                "lng": 6.17277765274048,
+                "lat": 51.3636093139648,
+                "countryCode": "NL",
+                "uicCode": "8400644"
+              },
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS",
+                "STROOM"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virmm1_6.png"
+              }
+            },
+            {
+              "stockIdentifier": "9590",
+              "destination": {
+                "name": "Eindhoven Centraal",
+                "lng": 5.48138904571533,
+                "lat": 51.4433326721191,
+                "countryCode": "NL",
+                "uicCode": "8400206"
+              },
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virm_4.png"
+              }
+            }
+          ],
+          "hasSignificantChange": false
+        },
+        "platformFeatures": [],
+        "coachCrowdForecast": []
+      },
+      {
+        "id": "RSW_0",
+        "stop": {
+          "name": "Rijswijk",
+          "lng": 4.31916666030884,
+          "lat": 52.039722442627,
+          "countryCode": "NL",
+          "uicCode": "8400505"
+        },
+        "previousStopId": [
+          "DT_0"
+        ],
+        "nextStopId": [
+          "GVMW_0"
+        ],
+        "status": "PASSING",
+        "arrivals": [],
+        "departures": []
+      },
+      {
+        "id": "GVMW_0",
+        "stop": {
+          "name": "Den Haag Moerwijk",
+          "lng": 4.3086109161377,
+          "lat": 52.0538902282715,
+          "countryCode": "NL",
+          "uicCode": "8400279"
+        },
+        "previousStopId": [
+          "RSW_0"
+        ],
+        "nextStopId": [
+          "GV_0"
+        ],
+        "status": "PASSING",
+        "arrivals": [],
+        "departures": []
+      },
+      {
+        "id": "GV_0",
+        "stop": {
+          "name": "Den Haag HS",
+          "lng": 4.32250022888184,
+          "lat": 52.0697212219238,
+          "countryCode": "NL",
+          "uicCode": "8400280"
+        },
+        "previousStopId": [
+          "GVMW_0"
+        ],
+        "nextStopId": [
+          "LAA_0"
+        ],
+        "destination": "Venlo",
+        "status": "STOP",
+        "arrivals": [
+          {
+            "product": {
+              "number": "3529",
+              "categoryCode": "IC",
+              "shortCategoryName": "Intercity",
+              "longCategoryName": "Intercity",
+              "operatorCode": "NS",
+              "operatorName": "NS",
+              "type": "TRAIN"
+            },
+            "origin": {
+              "name": "Dordrecht",
+              "lng": 4.66833353042603,
+              "lat": 51.8072204589844,
+              "countryCode": "NL",
+              "uicCode": "8400180"
+            },
+            "destination": {
+              "name": "Venlo",
+              "lng": 6.17277765274048,
+              "lat": 51.3636093139648,
+              "countryCode": "NL",
+              "uicCode": "8400644"
+            },
+            "plannedTime": "2026-10-06T08:11:00+0200",
+            "actualTime": "2026-10-06T08:12:51+0200",
+            "delayInSeconds": 111,
+            "plannedTrack": "6",
+            "actualTrack": "6",
+            "cancelled": false,
+            "crowdForecast": "HIGH",
+            "stockIdentifiers": [
+              "8676",
+              "9590"
+            ]
+          }
+        ],
+        "departures": [
+          {
+            "product": {
+              "number": "3529",
+              "categoryCode": "IC",
+              "shortCategoryName": "Intercity",
+              "longCategoryName": "Intercity",
+              "operatorCode": "NS",
+              "operatorName": "NS",
+              "type": "TRAIN"
+            },
+            "origin": {
+              "name": "Dordrecht",
+              "lng": 4.66833353042603,
+              "lat": 51.8072204589844,
+              "countryCode": "NL",
+              "uicCode": "8400180"
+            },
+            "destination": {
+              "name": "Venlo",
+              "lng": 6.17277765274048,
+              "lat": 51.3636093139648,
+              "countryCode": "NL",
+              "uicCode": "8400644"
+            },
+            "plannedTime": "2026-10-06T08:13:00+0200",
+            "actualTime": "2026-10-06T08:14:15+0200",
+            "delayInSeconds": 75,
+            "plannedTrack": "6",
+            "actualTrack": "6",
+            "cancelled": false,
+            "crowdForecast": "HIGH",
+            "stockIdentifiers": [
+              "8676",
+              "9590"
+            ]
+          }
+        ],
+        "actualStock": {
+          "trainType": "VIRM",
+          "numberOfSeats": 925,
+          "numberOfParts": 10,
+          "trainParts": [
+            {
+              "stockIdentifier": "8676",
+              "destination": {
+                "name": "Venlo",
+                "lng": 6.17277765274048,
+                "lat": 51.3636093139648,
+                "countryCode": "NL",
+                "uicCode": "8400644"
+              },
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS",
+                "STROOM"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virmm1_6.png"
+              }
+            },
+            {
+              "stockIdentifier": "9590",
+              "destination": {
+                "name": "Eindhoven Centraal",
+                "lng": 5.48138904571533,
+                "lat": 51.4433326721191,
+                "countryCode": "NL",
+                "uicCode": "8400206"
+              },
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virm_4.png"
+              }
+            }
+          ],
+          "hasSignificantChange": false
+        },
+        "plannedStock": {
+          "trainType": "VIRM",
+          "numberOfSeats": 925,
+          "numberOfParts": 10,
+          "trainParts": [
+            {
+              "stockIdentifier": "8676",
+              "destination": {
+                "name": "Venlo",
+                "lng": 6.17277765274048,
+                "lat": 51.3636093139648,
+                "countryCode": "NL",
+                "uicCode": "8400644"
+              },
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS",
+                "STROOM"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virmm1_6.png"
+              }
+            },
+            {
+              "stockIdentifier": "9590",
+              "destination": {
+                "name": "Eindhoven Centraal",
+                "lng": 5.48138904571533,
+                "lat": 51.4433326721191,
+                "countryCode": "NL",
+                "uicCode": "8400206"
+              },
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virm_4.png"
+              }
+            }
+          ],
+          "hasSignificantChange": false
+        },
+        "platformFeatures": [],
+        "coachCrowdForecast": []
+      },
+      {
+        "id": "LAA_0",
+        "stop": {
+          "name": "Den Haag Laan v NOI",
+          "lng": 4.34277772903442,
+          "lat": 52.0786094665527,
+          "countryCode": "NL",
+          "uicCode": "8400380"
+        },
+        "previousStopId": [
+          "GV_0"
+        ],
+        "nextStopId": [
+          "GVM_0"
+        ],
+        "destination": "Venlo",
+        "status": "STOP",
+        "arrivals": [
+          {
+            "product": {
+              "number": "3529",
+              "categoryCode": "IC",
+              "shortCategoryName": "Intercity",
+              "longCategoryName": "Intercity",
+              "operatorCode": "NS",
+              "operatorName": "NS",
+              "type": "TRAIN"
+            },
+            "origin": {
+              "name": "Dordrecht",
+              "lng": 4.66833353042603,
+              "lat": 51.8072204589844,
+              "countryCode": "NL",
+              "uicCode": "8400180"
+            },
+            "destination": {
+              "name": "Venlo",
+              "lng": 6.17277765274048,
+              "lat": 51.3636093139648,
+              "countryCode": "NL",
+              "uicCode": "8400644"
+            },
+            "plannedTime": "2026-10-06T08:16:00+0200",
+            "actualTime": "2026-10-06T08:18:12+0200",
+            "delayInSeconds": 132,
+            "plannedTrack": "6",
+            "actualTrack": "6",
+            "cancelled": false,
+            "crowdForecast": "HIGH",
+            "stockIdentifiers": [
+              "8676",
+              "9590"
+            ]
+          }
+        ],
+        "departures": [
+          {
+            "product": {
+              "number": "3529",
+              "categoryCode": "IC",
+              "shortCategoryName": "Intercity",
+              "longCategoryName": "Intercity",
+              "operatorCode": "NS",
+              "operatorName": "NS",
+              "type": "TRAIN"
+            },
+            "origin": {
+              "name": "Dordrecht",
+              "lng": 4.66833353042603,
+              "lat": 51.8072204589844,
+              "countryCode": "NL",
+              "uicCode": "8400180"
+            },
+            "destination": {
+              "name": "Venlo",
+              "lng": 6.17277765274048,
+              "lat": 51.3636093139648,
+              "countryCode": "NL",
+              "uicCode": "8400644"
+            },
+            "plannedTime": "2026-10-06T08:16:00+0200",
+            "actualTime": "2026-10-06T08:18:12+0200",
+            "delayInSeconds": 132,
+            "plannedTrack": "6",
+            "actualTrack": "6",
+            "cancelled": false,
+            "crowdForecast": "HIGH",
+            "stockIdentifiers": [
+              "8676",
+              "9590"
+            ]
+          }
+        ],
+        "actualStock": {
+          "trainType": "VIRM",
+          "numberOfSeats": 925,
+          "numberOfParts": 10,
+          "trainParts": [
+            {
+              "stockIdentifier": "8676",
+              "destination": {
+                "name": "Venlo",
+                "lng": 6.17277765274048,
+                "lat": 51.3636093139648,
+                "countryCode": "NL",
+                "uicCode": "8400644"
+              },
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS",
+                "STROOM"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virmm1_6.png"
+              }
+            },
+            {
+              "stockIdentifier": "9590",
+              "destination": {
+                "name": "Eindhoven Centraal",
+                "lng": 5.48138904571533,
+                "lat": 51.4433326721191,
+                "countryCode": "NL",
+                "uicCode": "8400206"
+              },
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virm_4.png"
+              }
+            }
+          ],
+          "hasSignificantChange": false
+        },
+        "plannedStock": {
+          "trainType": "VIRM",
+          "numberOfSeats": 925,
+          "numberOfParts": 10,
+          "trainParts": [
+            {
+              "stockIdentifier": "8676",
+              "destination": {
+                "name": "Venlo",
+                "lng": 6.17277765274048,
+                "lat": 51.3636093139648,
+                "countryCode": "NL",
+                "uicCode": "8400644"
+              },
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS",
+                "STROOM"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virmm1_6.png"
+              }
+            },
+            {
+              "stockIdentifier": "9590",
+              "destination": {
+                "name": "Eindhoven Centraal",
+                "lng": 5.48138904571533,
+                "lat": 51.4433326721191,
+                "countryCode": "NL",
+                "uicCode": "8400206"
+              },
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virm_4.png"
+              }
+            }
+          ],
+          "hasSignificantChange": false
+        },
+        "platformFeatures": [],
+        "coachCrowdForecast": []
+      },
+      {
+        "id": "GVM_0",
+        "stop": {
+          "name": "Den Haag Mariahoeve",
+          "lng": 4.36944437026978,
+          "lat": 52.0905570983887,
+          "countryCode": "NL",
+          "uicCode": "8400278"
+        },
+        "previousStopId": [
+          "LAA_0"
+        ],
+        "nextStopId": [
+          "VST_0"
+        ],
+        "status": "PASSING",
+        "arrivals": [],
+        "departures": []
+      },
+      {
+        "id": "VST_0",
+        "stop": {
+          "name": "Voorschoten",
+          "lng": 4.43249988555908,
+          "lat": 52.1252784729004,
+          "countryCode": "NL",
+          "uicCode": "8400659"
+        },
+        "previousStopId": [
+          "GVM_0"
+        ],
+        "nextStopId": [
+          "DVNK_0"
+        ],
+        "status": "PASSING",
+        "arrivals": [],
+        "departures": []
+      },
+      {
+        "id": "DVNK_0",
+        "stop": {
+          "name": "De Vink",
+          "lng": 4.4563889503479,
+          "lat": 52.1472206115723,
+          "countryCode": "NL",
+          "uicCode": "8400188"
+        },
+        "previousStopId": [
+          "VST_0"
+        ],
+        "nextStopId": [
+          "LEDN_0"
+        ],
+        "status": "PASSING",
+        "arrivals": [],
+        "departures": []
+      },
+      {
+        "id": "LEDN_0",
+        "stop": {
+          "name": "Leiden Centraal",
+          "lng": 4.48166656494141,
+          "lat": 52.1661109924316,
+          "countryCode": "NL",
+          "uicCode": "8400390"
+        },
+        "previousStopId": [
+          "DVNK_0"
+        ],
+        "nextStopId": [
+          "SSH_0"
+        ],
+        "destination": "Venlo",
+        "status": "STOP",
+        "arrivals": [
+          {
+            "product": {
+              "number": "3529",
+              "categoryCode": "IC",
+              "shortCategoryName": "Intercity",
+              "longCategoryName": "Intercity",
+              "operatorCode": "NS",
+              "operatorName": "NS",
+              "type": "TRAIN"
+            },
+            "origin": {
+              "name": "Dordrecht",
+              "lng": 4.66833353042603,
+              "lat": 51.8072204589844,
+              "countryCode": "NL",
+              "uicCode": "8400180"
+            },
+            "destination": {
+              "name": "Venlo",
+              "lng": 6.17277765274048,
+              "lat": 51.3636093139648,
+              "countryCode": "NL",
+              "uicCode": "8400644"
+            },
+            "plannedTime": "2026-10-06T08:25:00+0200",
+            "actualTime": "2026-10-06T08:26:19+0200",
+            "delayInSeconds": 79,
+            "plannedTrack": "5b",
+            "actualTrack": "5b",
+            "cancelled": false,
+            "crowdForecast": "HIGH",
+            "stockIdentifiers": [
+              "8676",
+              "9590"
+            ]
+          }
+        ],
+        "departures": [
+          {
+            "product": {
+              "number": "3529",
+              "categoryCode": "IC",
+              "shortCategoryName": "Intercity",
+              "longCategoryName": "Intercity",
+              "operatorCode": "NS",
+              "operatorName": "NS",
+              "type": "TRAIN"
+            },
+            "origin": {
+              "name": "Dordrecht",
+              "lng": 4.66833353042603,
+              "lat": 51.8072204589844,
+              "countryCode": "NL",
+              "uicCode": "8400180"
+            },
+            "destination": {
+              "name": "Venlo",
+              "lng": 6.17277765274048,
+              "lat": 51.3636093139648,
+              "countryCode": "NL",
+              "uicCode": "8400644"
+            },
+            "plannedTime": "2026-10-06T08:27:00+0200",
+            "actualTime": "2026-10-06T08:36:12+0200",
+            "delayInSeconds": 552,
+            "plannedTrack": "5b",
+            "actualTrack": "5b",
+            "cancelled": false,
+            "crowdForecast": "HIGH",
+            "stockIdentifiers": [
+              "8676",
+              "9590"
+            ]
+          }
+        ],
+        "actualStock": {
+          "trainType": "VIRM",
+          "numberOfSeats": 925,
+          "numberOfParts": 10,
+          "trainParts": [
+            {
+              "stockIdentifier": "8676",
+              "destination": {
+                "name": "Venlo",
+                "lng": 6.17277765274048,
+                "lat": 51.3636093139648,
+                "countryCode": "NL",
+                "uicCode": "8400644"
+              },
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS",
+                "STROOM"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virmm1_6.png"
+              }
+            },
+            {
+              "stockIdentifier": "9590",
+              "destination": {
+                "name": "Eindhoven Centraal",
+                "lng": 5.48138904571533,
+                "lat": 51.4433326721191,
+                "countryCode": "NL",
+                "uicCode": "8400206"
+              },
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virm_4.png"
+              }
+            }
+          ],
+          "hasSignificantChange": false
+        },
+        "plannedStock": {
+          "trainType": "VIRM",
+          "numberOfSeats": 925,
+          "numberOfParts": 10,
+          "trainParts": [
+            {
+              "stockIdentifier": "8676",
+              "destination": {
+                "name": "Venlo",
+                "lng": 6.17277765274048,
+                "lat": 51.3636093139648,
+                "countryCode": "NL",
+                "uicCode": "8400644"
+              },
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS",
+                "STROOM"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virmm1_6.png"
+              }
+            },
+            {
+              "stockIdentifier": "9590",
+              "destination": {
+                "name": "Eindhoven Centraal",
+                "lng": 5.48138904571533,
+                "lat": 51.4433326721191,
+                "countryCode": "NL",
+                "uicCode": "8400206"
+              },
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virm_4.png"
+              }
+            }
+          ],
+          "hasSignificantChange": false
+        },
+        "platformFeatures": [],
+        "coachCrowdForecast": []
+      },
+      {
+        "id": "SSH_0",
+        "stop": {
+          "name": "Sassenheim",
+          "lng": 4.517222,
+          "lat": 52.215278,
+          "countryCode": "NL",
+          "uicCode": "8400603"
+        },
+        "previousStopId": [
+          "LEDN_0"
+        ],
+        "nextStopId": [
+          "NVP_0"
+        ],
+        "status": "PASSING",
+        "arrivals": [],
+        "departures": []
+      },
+      {
+        "id": "NVP_0",
+        "stop": {
+          "name": "Nieuw Vennep",
+          "lng": 4.64555549621582,
+          "lat": 52.2588882446289,
+          "countryCode": "NL",
+          "uicCode": "8400460"
+        },
+        "previousStopId": [
+          "SSH_0"
+        ],
+        "nextStopId": [
+          "HFD_0"
+        ],
+        "status": "PASSING",
+        "arrivals": [],
+        "departures": []
+      },
+      {
+        "id": "HFD_0",
+        "stop": {
+          "name": "Hoofddorp",
+          "lng": 4.70055532455444,
+          "lat": 52.2933349609375,
+          "countryCode": "NL",
+          "uicCode": "8400332"
+        },
+        "previousStopId": [
+          "NVP_0"
+        ],
+        "nextStopId": [
+          "SHL_0"
+        ],
+        "status": "PASSING",
+        "arrivals": [],
+        "departures": []
+      },
+      {
+        "id": "SHL_0",
+        "stop": {
+          "name": "Schiphol Airport",
+          "lng": 4.76194429397583,
+          "lat": 52.3094444274902,
+          "countryCode": "NL",
+          "uicCode": "8400561"
+        },
+        "previousStopId": [
+          "HFD_0"
+        ],
+        "nextStopId": [
+          "ASDZ_0"
+        ],
+        "destination": "Venlo",
+        "status": "STOP",
+        "arrivals": [
+          {
+            "product": {
+              "number": "3529",
+              "categoryCode": "IC",
+              "shortCategoryName": "Intercity",
+              "longCategoryName": "Intercity",
+              "operatorCode": "NS",
+              "operatorName": "NS",
+              "type": "TRAIN"
+            },
+            "origin": {
+              "name": "Dordrecht",
+              "lng": 4.66833353042603,
+              "lat": 51.8072204589844,
+              "countryCode": "NL",
+              "uicCode": "8400180"
+            },
+            "destination": {
+              "name": "Venlo",
+              "lng": 6.17277765274048,
+              "lat": 51.3636093139648,
+              "countryCode": "NL",
+              "uicCode": "8400644"
+            },
+            "plannedTime": "2026-10-06T08:44:00+0200",
+            "actualTime": "2026-10-06T08:59:06+0200",
+            "delayInSeconds": 906,
+            "plannedTrack": "1-2",
+            "actualTrack": "1",
+            "cancelled": false,
+            "crowdForecast": "MEDIUM",
+            "stockIdentifiers": [
+              "8676",
+              "9590"
+            ]
+          }
+        ],
+        "departures": [
+          {
+            "product": {
+              "number": "3529",
+              "categoryCode": "IC",
+              "shortCategoryName": "Intercity",
+              "longCategoryName": "Intercity",
+              "operatorCode": "NS",
+              "operatorName": "NS",
+              "type": "TRAIN"
+            },
+            "origin": {
+              "name": "Dordrecht",
+              "lng": 4.66833353042603,
+              "lat": 51.8072204589844,
+              "countryCode": "NL",
+              "uicCode": "8400180"
+            },
+            "destination": {
+              "name": "Venlo",
+              "lng": 6.17277765274048,
+              "lat": 51.3636093139648,
+              "countryCode": "NL",
+              "uicCode": "8400644"
+            },
+            "plannedTime": "2026-10-06T08:45:00+0200",
+            "actualTime": "2026-10-06T09:01:09+0200",
+            "delayInSeconds": 969,
+            "plannedTrack": "1-2",
+            "actualTrack": "1",
+            "cancelled": false,
+            "crowdForecast": "MEDIUM",
+            "stockIdentifiers": [
+              "8676",
+              "9590"
+            ]
+          }
+        ],
+        "actualStock": {
+          "trainType": "VIRM",
+          "numberOfSeats": 925,
+          "numberOfParts": 10,
+          "trainParts": [
+            {
+              "stockIdentifier": "8676",
+              "destination": {
+                "name": "Venlo",
+                "lng": 6.17277765274048,
+                "lat": 51.3636093139648,
+                "countryCode": "NL",
+                "uicCode": "8400644"
+              },
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS",
+                "STROOM"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virmm1_6.png"
+              }
+            },
+            {
+              "stockIdentifier": "9590",
+              "destination": {
+                "name": "Eindhoven Centraal",
+                "lng": 5.48138904571533,
+                "lat": 51.4433326721191,
+                "countryCode": "NL",
+                "uicCode": "8400206"
+              },
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virm_4.png"
+              }
+            }
+          ],
+          "hasSignificantChange": false
+        },
+        "plannedStock": {
+          "trainType": "VIRM",
+          "numberOfSeats": 925,
+          "numberOfParts": 10,
+          "trainParts": [
+            {
+              "stockIdentifier": "8676",
+              "destination": {
+                "name": "Venlo",
+                "lng": 6.17277765274048,
+                "lat": 51.3636093139648,
+                "countryCode": "NL",
+                "uicCode": "8400644"
+              },
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS",
+                "STROOM"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virmm1_6.png"
+              }
+            },
+            {
+              "stockIdentifier": "9590",
+              "destination": {
+                "name": "Eindhoven Centraal",
+                "lng": 5.48138904571533,
+                "lat": 51.4433326721191,
+                "countryCode": "NL",
+                "uicCode": "8400206"
+              },
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virm_4.png"
+              }
+            }
+          ],
+          "hasSignificantChange": false
+        },
+        "platformFeatures": [],
+        "coachCrowdForecast": []
+      },
+      {
+        "id": "ASDZ_0",
+        "stop": {
+          "name": "Amsterdam Zuid",
+          "lng": 4.872356,
+          "lat": 52.338889,
+          "countryCode": "NL",
+          "uicCode": "8400061"
+        },
+        "previousStopId": [
+          "SHL_0"
+        ],
+        "nextStopId": [
+          "RAI_0"
+        ],
+        "destination": "Venlo",
+        "status": "STOP",
+        "arrivals": [
+          {
+            "product": {
+              "number": "3529",
+              "categoryCode": "IC",
+              "shortCategoryName": "Intercity",
+              "longCategoryName": "Intercity",
+              "operatorCode": "NS",
+              "operatorName": "NS",
+              "type": "TRAIN"
+            },
+            "origin": {
+              "name": "Dordrecht",
+              "lng": 4.66833353042603,
+              "lat": 51.8072204589844,
+              "countryCode": "NL",
+              "uicCode": "8400180"
+            },
+            "destination": {
+              "name": "Venlo",
+              "lng": 6.17277765274048,
+              "lat": 51.3636093139648,
+              "countryCode": "NL",
+              "uicCode": "8400644"
+            },
+            "plannedTime": "2026-10-06T08:52:00+0200",
+            "actualTime": "2026-10-06T09:07:28+0200",
+            "delayInSeconds": 928,
+            "plannedTrack": "2",
+            "actualTrack": "2",
+            "cancelled": false,
+            "punctuality": 81.8,
+            "crowdForecast": "LOW",
+            "stockIdentifiers": [
+              "8676",
+              "9590"
+            ]
+          }
+        ],
+        "departures": [
+          {
+            "product": {
+              "number": "3529",
+              "categoryCode": "IC",
+              "shortCategoryName": "Intercity",
+              "longCategoryName": "Intercity",
+              "operatorCode": "NS",
+              "operatorName": "NS",
+              "type": "TRAIN"
+            },
+            "origin": {
+              "name": "Dordrecht",
+              "lng": 4.66833353042603,
+              "lat": 51.8072204589844,
+              "countryCode": "NL",
+              "uicCode": "8400180"
+            },
+            "destination": {
+              "name": "Venlo",
+              "lng": 6.17277765274048,
+              "lat": 51.3636093139648,
+              "countryCode": "NL",
+              "uicCode": "8400644"
+            },
+            "plannedTime": "2026-10-06T08:56:00+0200",
+            "actualTime": "2026-10-06T09:09:41+0200",
+            "delayInSeconds": 821,
+            "plannedTrack": "2",
+            "actualTrack": "2",
+            "cancelled": false,
+            "crowdForecast": "LOW",
+            "stockIdentifiers": [
+              "8676",
+              "9590"
+            ]
+          }
+        ],
+        "actualStock": {
+          "trainType": "VIRM",
+          "numberOfSeats": 925,
+          "numberOfParts": 10,
+          "trainParts": [
+            {
+              "stockIdentifier": "8676",
+              "destination": {
+                "name": "Venlo",
+                "lng": 6.17277765274048,
+                "lat": 51.3636093139648,
+                "countryCode": "NL",
+                "uicCode": "8400644"
+              },
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS",
+                "STROOM"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virmm1_6.png"
+              }
+            },
+            {
+              "stockIdentifier": "9590",
+              "destination": {
+                "name": "Eindhoven Centraal",
+                "lng": 5.48138904571533,
+                "lat": 51.4433326721191,
+                "countryCode": "NL",
+                "uicCode": "8400206"
+              },
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virm_4.png"
+              }
+            }
+          ],
+          "hasSignificantChange": false
+        },
+        "plannedStock": {
+          "trainType": "VIRM",
+          "numberOfSeats": 925,
+          "numberOfParts": 10,
+          "trainParts": [
+            {
+              "stockIdentifier": "8676",
+              "destination": {
+                "name": "Venlo",
+                "lng": 6.17277765274048,
+                "lat": 51.3636093139648,
+                "countryCode": "NL",
+                "uicCode": "8400644"
+              },
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS",
+                "STROOM"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virmm1_6.png"
+              }
+            },
+            {
+              "stockIdentifier": "9590",
+              "destination": {
+                "name": "Eindhoven Centraal",
+                "lng": 5.48138904571533,
+                "lat": 51.4433326721191,
+                "countryCode": "NL",
+                "uicCode": "8400206"
+              },
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virm_4.png"
+              }
+            }
+          ],
+          "hasSignificantChange": false
+        },
+        "platformFeatures": [],
+        "coachCrowdForecast": []
+      },
+      {
+        "id": "RAI_0",
+        "stop": {
+          "name": "Amsterdam RAI",
+          "lng": 4.89027786254883,
+          "lat": 52.3372230529785,
+          "countryCode": "NL",
+          "uicCode": "8400056"
+        },
+        "previousStopId": [
+          "ASDZ_0"
+        ],
+        "nextStopId": [
+          "ASB_0"
+        ],
+        "status": "PASSING",
+        "arrivals": [],
+        "departures": []
+      },
+      {
+        "id": "ASB_0",
+        "stop": {
+          "name": "Amsterdam Bijlmer ArenA",
+          "lng": 4.94694423675537,
+          "lat": 52.3122215270996,
+          "countryCode": "NL",
+          "uicCode": "8400074"
+        },
+        "previousStopId": [
+          "RAI_0"
+        ],
+        "nextStopId": [
+          "ASHD_0"
+        ],
+        "destination": "Venlo",
+        "status": "STOP",
+        "arrivals": [
+          {
+            "product": {
+              "number": "3529",
+              "categoryCode": "IC",
+              "shortCategoryName": "Intercity",
+              "longCategoryName": "Intercity",
+              "operatorCode": "NS",
+              "operatorName": "NS",
+              "type": "TRAIN"
+            },
+            "origin": {
+              "name": "Dordrecht",
+              "lng": 4.66833353042603,
+              "lat": 51.8072204589844,
+              "countryCode": "NL",
+              "uicCode": "8400180"
+            },
+            "destination": {
+              "name": "Venlo",
+              "lng": 6.17277765274048,
+              "lat": 51.3636093139648,
+              "countryCode": "NL",
+              "uicCode": "8400644"
+            },
+            "plannedTime": "2026-10-06T09:01:00+0200",
+            "actualTime": "2026-10-06T09:14:02+0200",
+            "delayInSeconds": 782,
+            "plannedTrack": "7",
+            "actualTrack": "7",
+            "cancelled": false,
+            "punctuality": 81.8,
+            "crowdForecast": "LOW",
+            "stockIdentifiers": [
+              "8676",
+              "9590"
+            ]
+          }
+        ],
+        "departures": [
+          {
+            "product": {
+              "number": "3529",
+              "categoryCode": "IC",
+              "shortCategoryName": "Intercity",
+              "longCategoryName": "Intercity",
+              "operatorCode": "NS",
+              "operatorName": "NS",
+              "type": "TRAIN"
+            },
+            "origin": {
+              "name": "Dordrecht",
+              "lng": 4.66833353042603,
+              "lat": 51.8072204589844,
+              "countryCode": "NL",
+              "uicCode": "8400180"
+            },
+            "destination": {
+              "name": "Venlo",
+              "lng": 6.17277765274048,
+              "lat": 51.3636093139648,
+              "countryCode": "NL",
+              "uicCode": "8400644"
+            },
+            "plannedTime": "2026-10-06T09:02:00+0200",
+            "actualTime": "2026-10-06T09:15:18+0200",
+            "delayInSeconds": 798,
+            "plannedTrack": "7",
+            "actualTrack": "7",
+            "cancelled": false,
+            "crowdForecast": "LOW",
+            "stockIdentifiers": [
+              "8676",
+              "9590"
+            ]
+          }
+        ],
+        "actualStock": {
+          "trainType": "VIRM",
+          "numberOfSeats": 925,
+          "numberOfParts": 10,
+          "trainParts": [
+            {
+              "stockIdentifier": "8676",
+              "destination": {
+                "name": "Venlo",
+                "lng": 6.17277765274048,
+                "lat": 51.3636093139648,
+                "countryCode": "NL",
+                "uicCode": "8400644"
+              },
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS",
+                "STROOM"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virmm1_6.png"
+              }
+            },
+            {
+              "stockIdentifier": "9590",
+              "destination": {
+                "name": "Eindhoven Centraal",
+                "lng": 5.48138904571533,
+                "lat": 51.4433326721191,
+                "countryCode": "NL",
+                "uicCode": "8400206"
+              },
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virm_4.png"
+              }
+            }
+          ],
+          "hasSignificantChange": false
+        },
+        "plannedStock": {
+          "trainType": "VIRM",
+          "numberOfSeats": 925,
+          "numberOfParts": 10,
+          "trainParts": [
+            {
+              "stockIdentifier": "8676",
+              "destination": {
+                "name": "Venlo",
+                "lng": 6.17277765274048,
+                "lat": 51.3636093139648,
+                "countryCode": "NL",
+                "uicCode": "8400644"
+              },
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS",
+                "STROOM"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virmm1_6.png"
+              }
+            },
+            {
+              "stockIdentifier": "9590",
+              "destination": {
+                "name": "Eindhoven Centraal",
+                "lng": 5.48138904571533,
+                "lat": 51.4433326721191,
+                "countryCode": "NL",
+                "uicCode": "8400206"
+              },
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virm_4.png"
+              }
+            }
+          ],
+          "hasSignificantChange": false
+        },
+        "platformFeatures": [],
+        "coachCrowdForecast": []
+      },
+      {
+        "id": "ASHD_0",
+        "stop": {
+          "name": "Amsterdam Holendrecht",
+          "lng": 4.95972,
+          "lat": 52.29844,
+          "countryCode": "NL",
+          "uicCode": "8400231"
+        },
+        "previousStopId": [
+          "ASB_0"
+        ],
+        "nextStopId": [
+          "AC_0"
+        ],
+        "status": "PASSING",
+        "arrivals": [],
+        "departures": []
+      },
+      {
+        "id": "AC_0",
+        "stop": {
+          "name": "Abcoude",
+          "lng": 4.977,
+          "lat": 52.2785,
+          "countryCode": "NL",
+          "uicCode": "8400047"
+        },
+        "previousStopId": [
+          "ASHD_0"
+        ],
+        "nextStopId": [
+          "BKL_0"
+        ],
+        "status": "PASSING",
+        "arrivals": [],
+        "departures": []
+      },
+      {
+        "id": "BKL_0",
+        "stop": {
+          "name": "Breukelen",
+          "lng": 4.9906,
+          "lat": 52.17149,
+          "countryCode": "NL",
+          "uicCode": "8400133"
+        },
+        "previousStopId": [
+          "AC_0"
+        ],
+        "nextStopId": [
+          "MAS_0"
+        ],
+        "status": "PASSING",
+        "arrivals": [],
+        "departures": []
+      },
+      {
+        "id": "MAS_0",
+        "stop": {
+          "name": "Maarssen",
+          "lng": 5.03361129760742,
+          "lat": 52.1352767944336,
+          "countryCode": "NL",
+          "uicCode": "8400419"
+        },
+        "previousStopId": [
+          "BKL_0"
+        ],
+        "nextStopId": [
+          "UTZL_0"
+        ],
+        "status": "PASSING",
+        "arrivals": [],
+        "departures": []
+      },
+      {
+        "id": "UTZL_0",
+        "stop": {
+          "name": "Utrecht Zuilen",
+          "lng": 5.09,
+          "lat": 52.103055,
+          "countryCode": "NL",
+          "uicCode": "8400613"
+        },
+        "previousStopId": [
+          "MAS_0"
+        ],
+        "nextStopId": [
+          "UT_0"
+        ],
+        "status": "PASSING",
+        "arrivals": [],
+        "departures": []
+      },
+      {
+        "id": "UT_0",
+        "stop": {
+          "name": "Utrecht Centraal",
+          "lng": 5.11027765274048,
+          "lat": 52.0888900756836,
+          "countryCode": "NL",
+          "uicCode": "8400621"
+        },
+        "previousStopId": [
+          "UTZL_0"
+        ],
+        "nextStopId": [
+          "UTVR_0"
+        ],
+        "destination": "Venlo",
+        "status": "STOP",
+        "arrivals": [
+          {
+            "product": {
+              "number": "3529",
+              "categoryCode": "IC",
+              "shortCategoryName": "Intercity",
+              "longCategoryName": "Intercity",
+              "operatorCode": "NS",
+              "operatorName": "NS",
+              "type": "TRAIN"
+            },
+            "origin": {
+              "name": "Dordrecht",
+              "lng": 4.66833353042603,
+              "lat": 51.8072204589844,
+              "countryCode": "NL",
+              "uicCode": "8400180"
+            },
+            "destination": {
+              "name": "Venlo",
+              "lng": 6.17277765274048,
+              "lat": 51.3636093139648,
+              "countryCode": "NL",
+              "uicCode": "8400644"
+            },
+            "plannedTime": "2026-10-06T09:18:00+0200",
+            "actualTime": "2026-10-06T09:30:25+0200",
+            "delayInSeconds": 745,
+            "plannedTrack": "18",
+            "actualTrack": "15",
+            "cancelled": false,
+            "punctuality": 90.9,
+            "crowdForecast": "LOW",
+            "stockIdentifiers": [
+              "8676",
+              "9590"
+            ]
+          }
+        ],
+        "departures": [
+          {
+            "product": {
+              "number": "3529",
+              "categoryCode": "IC",
+              "shortCategoryName": "Intercity",
+              "longCategoryName": "Intercity",
+              "operatorCode": "NS",
+              "operatorName": "NS",
+              "type": "TRAIN"
+            },
+            "origin": {
+              "name": "Dordrecht",
+              "lng": 4.66833353042603,
+              "lat": 51.8072204589844,
+              "countryCode": "NL",
+              "uicCode": "8400180"
+            },
+            "destination": {
+              "name": "Venlo",
+              "lng": 6.17277765274048,
+              "lat": 51.3636093139648,
+              "countryCode": "NL",
+              "uicCode": "8400644"
+            },
+            "plannedTime": "2026-10-06T09:24:00+0200",
+            "actualTime": "2026-10-06T09:32:25+0200",
+            "delayInSeconds": 505,
+            "plannedTrack": "18",
+            "actualTrack": "15",
+            "cancelled": false,
+            "crowdForecast": "LOW",
+            "stockIdentifiers": [
+              "8676",
+              "9590"
+            ]
+          }
+        ],
+        "actualStock": {
+          "trainType": "VIRM",
+          "numberOfSeats": 925,
+          "numberOfParts": 10,
+          "trainParts": [
+            {
+              "stockIdentifier": "8676",
+              "destination": {
+                "name": "Venlo",
+                "lng": 6.17277765274048,
+                "lat": 51.3636093139648,
+                "countryCode": "NL",
+                "uicCode": "8400644"
+              },
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS",
+                "STROOM"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virmm1_6.png"
+              }
+            },
+            {
+              "stockIdentifier": "9590",
+              "destination": {
+                "name": "Eindhoven Centraal",
+                "lng": 5.48138904571533,
+                "lat": 51.4433326721191,
+                "countryCode": "NL",
+                "uicCode": "8400206"
+              },
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virm_4.png"
+              }
+            }
+          ],
+          "hasSignificantChange": false
+        },
+        "plannedStock": {
+          "trainType": "VIRM",
+          "numberOfSeats": 925,
+          "numberOfParts": 10,
+          "trainParts": [
+            {
+              "stockIdentifier": "8676",
+              "destination": {
+                "name": "Venlo",
+                "lng": 6.17277765274048,
+                "lat": 51.3636093139648,
+                "countryCode": "NL",
+                "uicCode": "8400644"
+              },
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS",
+                "STROOM"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virmm1_6.png"
+              }
+            },
+            {
+              "stockIdentifier": "9590",
+              "destination": {
+                "name": "Eindhoven Centraal",
+                "lng": 5.48138904571533,
+                "lat": 51.4433326721191,
+                "countryCode": "NL",
+                "uicCode": "8400206"
+              },
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virm_4.png"
+              }
+            }
+          ],
+          "hasSignificantChange": false
+        },
+        "platformFeatures": [],
+        "coachCrowdForecast": []
+      },
+      {
+        "id": "UTVR_0",
+        "stop": {
+          "name": "Utrecht Vaartsche Rijn",
+          "lng": 5.121667,
+          "lat": 52.078889,
+          "countryCode": "NL",
+          "uicCode": "8400606"
+        },
+        "previousStopId": [
+          "UT_0"
+        ],
+        "nextStopId": [
+          "UTLN_0"
+        ],
+        "status": "PASSING",
+        "arrivals": [],
+        "departures": []
+      },
+      {
+        "id": "UTLN_0",
+        "stop": {
+          "name": "Utrecht Lunetten",
+          "lng": 5.14416646957397,
+          "lat": 52.0655555725098,
+          "countryCode": "NL",
+          "uicCode": "8400623"
+        },
+        "previousStopId": [
+          "UTVR_0"
+        ],
+        "nextStopId": [
+          "HTN_0"
+        ],
+        "status": "PASSING",
+        "arrivals": [],
+        "departures": []
+      },
+      {
+        "id": "HTN_0",
+        "stop": {
+          "name": "Houten",
+          "lng": 5.16821,
+          "lat": 52.03402,
+          "countryCode": "NL",
+          "uicCode": "8400340"
+        },
+        "previousStopId": [
+          "UTLN_0"
+        ],
+        "nextStopId": [
+          "HTNC_0"
+        ],
+        "status": "PASSING",
+        "arrivals": [],
+        "departures": []
+      },
+      {
+        "id": "HTNC_0",
+        "stop": {
+          "name": "Houten Castellum",
+          "lng": 5.17949,
+          "lat": 52.01701,
+          "countryCode": "NL",
+          "uicCode": "8400335"
+        },
+        "previousStopId": [
+          "HTN_0"
+        ],
+        "nextStopId": [
+          "CL_0"
+        ],
+        "status": "PASSING",
+        "arrivals": [],
+        "departures": []
+      },
+      {
+        "id": "CL_0",
+        "stop": {
+          "name": "Culemborg",
+          "lng": 5.22694444656372,
+          "lat": 51.9466667175293,
+          "countryCode": "NL",
+          "uicCode": "8400154"
+        },
+        "previousStopId": [
+          "HTNC_0"
+        ],
+        "nextStopId": [
+          "GDM_0"
+        ],
+        "status": "PASSING",
+        "arrivals": [],
+        "departures": []
+      },
+      {
+        "id": "GDM_0",
+        "stop": {
+          "name": "Geldermalsen",
+          "lng": 5.27127,
+          "lat": 51.88301,
+          "countryCode": "NL",
+          "uicCode": "8400244"
+        },
+        "previousStopId": [
+          "CL_0"
+        ],
+        "nextStopId": [
+          "ZBM_0"
+        ],
+        "status": "PASSING",
+        "arrivals": [],
+        "departures": []
+      },
+      {
+        "id": "ZBM_0",
+        "stop": {
+          "name": "Zaltbommel",
+          "lng": 5.26333332061768,
+          "lat": 51.8088874816895,
+          "countryCode": "NL",
+          "uicCode": "8400732"
+        },
+        "previousStopId": [
+          "GDM_0"
+        ],
+        "nextStopId": [
+          "HT_0"
+        ],
+        "status": "PASSING",
+        "arrivals": [],
+        "departures": []
+      },
+      {
+        "id": "HT_0",
+        "stop": {
+          "name": "'s-Hertogenbosch",
+          "lng": 5.29362,
+          "lat": 51.69048,
+          "countryCode": "NL",
+          "uicCode": "8400319"
+        },
+        "previousStopId": [
+          "ZBM_0"
+        ],
+        "nextStopId": [
+          "VG_0"
+        ],
+        "destination": "Venlo",
+        "status": "STOP",
+        "arrivals": [
+          {
+            "product": {
+              "number": "3529",
+              "categoryCode": "IC",
+              "shortCategoryName": "Intercity",
+              "longCategoryName": "Intercity",
+              "operatorCode": "NS",
+              "operatorName": "NS",
+              "type": "TRAIN"
+            },
+            "origin": {
+              "name": "Dordrecht",
+              "lng": 4.66833353042603,
+              "lat": 51.8072204589844,
+              "countryCode": "NL",
+              "uicCode": "8400180"
+            },
+            "destination": {
+              "name": "Venlo",
+              "lng": 6.17277765274048,
+              "lat": 51.3636093139648,
+              "countryCode": "NL",
+              "uicCode": "8400644"
+            },
+            "plannedTime": "2026-10-06T09:52:00+0200",
+            "actualTime": "2026-10-06T09:59:09+0200",
+            "delayInSeconds": 429,
+            "plannedTrack": "6",
+            "actualTrack": "6",
+            "cancelled": false,
+            "punctuality": 90.9,
+            "crowdForecast": "LOW",
+            "stockIdentifiers": [
+              "8676",
+              "9590"
+            ]
+          }
+        ],
+        "departures": [
+          {
+            "product": {
+              "number": "3529",
+              "categoryCode": "IC",
+              "shortCategoryName": "Intercity",
+              "longCategoryName": "Intercity",
+              "operatorCode": "NS",
+              "operatorName": "NS",
+              "type": "TRAIN"
+            },
+            "origin": {
+              "name": "Dordrecht",
+              "lng": 4.66833353042603,
+              "lat": 51.8072204589844,
+              "countryCode": "NL",
+              "uicCode": "8400180"
+            },
+            "destination": {
+              "name": "Venlo",
+              "lng": 6.17277765274048,
+              "lat": 51.3636093139648,
+              "countryCode": "NL",
+              "uicCode": "8400644"
+            },
+            "plannedTime": "2026-10-06T09:55:00+0200",
+            "actualTime": "2026-10-06T10:01:09+0200",
+            "delayInSeconds": 369,
+            "plannedTrack": "6",
+            "actualTrack": "6",
+            "cancelled": false,
+            "crowdForecast": "LOW",
+            "stockIdentifiers": [
+              "8676",
+              "9590"
+            ]
+          }
+        ],
+        "actualStock": {
+          "trainType": "VIRM",
+          "numberOfSeats": 925,
+          "numberOfParts": 10,
+          "trainParts": [
+            {
+              "stockIdentifier": "8676",
+              "destination": {
+                "name": "Venlo",
+                "lng": 6.17277765274048,
+                "lat": 51.3636093139648,
+                "countryCode": "NL",
+                "uicCode": "8400644"
+              },
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS",
+                "STROOM"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virmm1_6.png"
+              }
+            },
+            {
+              "stockIdentifier": "9590",
+              "destination": {
+                "name": "Eindhoven Centraal",
+                "lng": 5.48138904571533,
+                "lat": 51.4433326721191,
+                "countryCode": "NL",
+                "uicCode": "8400206"
+              },
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virm_4.png"
+              }
+            }
+          ],
+          "hasSignificantChange": false
+        },
+        "plannedStock": {
+          "trainType": "VIRM",
+          "numberOfSeats": 925,
+          "numberOfParts": 10,
+          "trainParts": [
+            {
+              "stockIdentifier": "8676",
+              "destination": {
+                "name": "Venlo",
+                "lng": 6.17277765274048,
+                "lat": 51.3636093139648,
+                "countryCode": "NL",
+                "uicCode": "8400644"
+              },
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS",
+                "STROOM"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virmm1_6.png"
+              }
+            },
+            {
+              "stockIdentifier": "9590",
+              "destination": {
+                "name": "Eindhoven Centraal",
+                "lng": 5.48138904571533,
+                "lat": 51.4433326721191,
+                "countryCode": "NL",
+                "uicCode": "8400206"
+              },
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virm_4.png"
+              }
+            }
+          ],
+          "hasSignificantChange": false
+        },
+        "platformFeatures": [],
+        "coachCrowdForecast": []
+      },
+      {
+        "id": "VG_0",
+        "stop": {
+          "name": "Vught",
+          "lng": 5.29218,
+          "lat": 51.65038,
+          "countryCode": "NL",
+          "uicCode": "8400667"
+        },
+        "previousStopId": [
+          "HT_0"
+        ],
+        "nextStopId": [
+          "BTL_0"
+        ],
+        "status": "PASSING",
+        "arrivals": [],
+        "departures": []
+      },
+      {
+        "id": "BTL_0",
+        "stop": {
+          "name": "Boxtel",
+          "lng": 5.31912,
+          "lat": 51.58433,
+          "countryCode": "NL",
+          "uicCode": "8400129"
+        },
+        "previousStopId": [
+          "VG_0"
+        ],
+        "nextStopId": [
+          "BET_0"
+        ],
+        "status": "PASSING",
+        "arrivals": [],
+        "departures": []
+      },
+      {
+        "id": "BET_0",
+        "stop": {
+          "name": "Best",
+          "lng": 5.38916683197022,
+          "lat": 51.5099983215332,
+          "countryCode": "NL",
+          "uicCode": "8400112"
+        },
+        "previousStopId": [
+          "BTL_0"
+        ],
+        "nextStopId": [
+          "EHS_0"
+        ],
+        "status": "PASSING",
+        "arrivals": [],
+        "departures": []
+      },
+      {
+        "id": "EHS_0",
+        "stop": {
+          "name": "Eindhoven Strijp-S",
+          "lng": 5.45583343505859,
+          "lat": 51.4511108398438,
+          "countryCode": "NL",
+          "uicCode": "8400196"
+        },
+        "previousStopId": [
+          "BET_0"
+        ],
+        "nextStopId": [
+          "EHV_0"
+        ],
+        "status": "PASSING",
+        "arrivals": [],
+        "departures": []
+      },
+      {
+        "id": "EHV_0",
+        "stop": {
+          "name": "Eindhoven Centraal",
+          "lng": 5.48138904571533,
+          "lat": 51.4433326721191,
+          "countryCode": "NL",
+          "uicCode": "8400206"
+        },
+        "previousStopId": [
+          "EHS_0"
+        ],
+        "nextStopId": [
+          "HMBV_0"
+        ],
+        "destination": "Venlo",
+        "status": "STOP",
+        "arrivals": [
+          {
+            "product": {
+              "number": "3529",
+              "categoryCode": "IC",
+              "shortCategoryName": "Intercity",
+              "longCategoryName": "Intercity",
+              "operatorCode": "NS",
+              "operatorName": "NS",
+              "type": "TRAIN"
+            },
+            "origin": {
+              "name": "Dordrecht",
+              "lng": 4.66833353042603,
+              "lat": 51.8072204589844,
+              "countryCode": "NL",
+              "uicCode": "8400180"
+            },
+            "destination": {
+              "name": "Venlo",
+              "lng": 6.17277765274048,
+              "lat": 51.3636093139648,
+              "countryCode": "NL",
+              "uicCode": "8400644"
+            },
+            "plannedTime": "2026-10-06T10:15:00+0200",
+            "actualTime": "2026-10-06T10:20:17+0200",
+            "delayInSeconds": 317,
+            "plannedTrack": "2",
+            "actualTrack": "2",
+            "cancelled": false,
+            "punctuality": 90.9,
+            "crowdForecast": "LOW",
+            "stockIdentifiers": [
+              "8676"
+            ]
+          }
+        ],
+        "departures": [
+          {
+            "product": {
+              "number": "3529",
+              "categoryCode": "IC",
+              "shortCategoryName": "Intercity",
+              "longCategoryName": "Intercity",
+              "operatorCode": "NS",
+              "operatorName": "NS",
+              "type": "TRAIN"
+            },
+            "origin": {
+              "name": "Dordrecht",
+              "lng": 4.66833353042603,
+              "lat": 51.8072204589844,
+              "countryCode": "NL",
+              "uicCode": "8400180"
+            },
+            "destination": {
+              "name": "Venlo",
+              "lng": 6.17277765274048,
+              "lat": 51.3636093139648,
+              "countryCode": "NL",
+              "uicCode": "8400644"
+            },
+            "plannedTime": "2026-10-06T10:19:00+0200",
+            "actualTime": "2026-10-06T10:22:17+0200",
+            "delayInSeconds": 197,
+            "plannedTrack": "2",
+            "actualTrack": "2",
+            "cancelled": false,
+            "crowdForecast": "LOW",
+            "stockIdentifiers": [
+              "8676"
+            ]
+          }
+        ],
+        "actualStock": {
+          "trainType": "VIRM",
+          "numberOfSeats": 551,
+          "numberOfParts": 6,
+          "trainParts": [
+            {
+              "stockIdentifier": "8676",
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS",
+                "STROOM"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virmm1_6.png"
+              }
+            }
+          ],
+          "hasSignificantChange": false
+        },
+        "plannedStock": {
+          "trainType": "VIRM",
+          "numberOfSeats": 551,
+          "numberOfParts": 6,
+          "trainParts": [
+            {
+              "stockIdentifier": "8676",
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS",
+                "STROOM"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virmm1_6.png"
+              }
+            }
+          ],
+          "hasSignificantChange": false
+        },
+        "platformFeatures": [],
+        "coachCrowdForecast": []
+      },
+      {
+        "id": "HMBV_0",
+        "stop": {
+          "name": "Helmond Brandevoort",
+          "lng": 5.60722208023071,
+          "lat": 51.4622230529785,
+          "countryCode": "NL",
+          "uicCode": "8400242"
+        },
+        "previousStopId": [
+          "EHV_0"
+        ],
+        "nextStopId": [
+          "HMH_0"
+        ],
+        "status": "PASSING",
+        "arrivals": [],
+        "departures": []
+      },
+      {
+        "id": "HMH_0",
+        "stop": {
+          "name": "Helmond 't Hout",
+          "lng": 5.63085,
+          "lat": 51.46794,
+          "countryCode": "NL",
+          "uicCode": "8400300"
+        },
+        "previousStopId": [
+          "HMBV_0"
+        ],
+        "nextStopId": [
+          "HM_0"
+        ],
+        "status": "PASSING",
+        "arrivals": [],
+        "departures": []
+      },
+      {
+        "id": "HM_0",
+        "stop": {
+          "name": "Helmond",
+          "lng": 5.66194438934326,
+          "lat": 51.4755554199219,
+          "countryCode": "NL",
+          "uicCode": "8400313"
+        },
+        "previousStopId": [
+          "HMH_0"
+        ],
+        "nextStopId": [
+          "HMBH_0"
+        ],
+        "destination": "Venlo",
+        "status": "STOP",
+        "arrivals": [
+          {
+            "product": {
+              "number": "3529",
+              "categoryCode": "IC",
+              "shortCategoryName": "Intercity",
+              "longCategoryName": "Intercity",
+              "operatorCode": "NS",
+              "operatorName": "NS",
+              "type": "TRAIN"
+            },
+            "origin": {
+              "name": "Dordrecht",
+              "lng": 4.66833353042603,
+              "lat": 51.8072204589844,
+              "countryCode": "NL",
+              "uicCode": "8400180"
+            },
+            "destination": {
+              "name": "Venlo",
+              "lng": 6.17277765274048,
+              "lat": 51.3636093139648,
+              "countryCode": "NL",
+              "uicCode": "8400644"
+            },
+            "plannedTime": "2026-10-06T10:28:00+0200",
+            "actualTime": "2026-10-06T10:30:53+0200",
+            "delayInSeconds": 173,
+            "plannedTrack": "2",
+            "actualTrack": "2",
+            "cancelled": false,
+            "crowdForecast": "LOW",
+            "stockIdentifiers": [
+              "8676"
+            ]
+          }
+        ],
+        "departures": [
+          {
+            "product": {
+              "number": "3529",
+              "categoryCode": "IC",
+              "shortCategoryName": "Intercity",
+              "longCategoryName": "Intercity",
+              "operatorCode": "NS",
+              "operatorName": "NS",
+              "type": "TRAIN"
+            },
+            "origin": {
+              "name": "Dordrecht",
+              "lng": 4.66833353042603,
+              "lat": 51.8072204589844,
+              "countryCode": "NL",
+              "uicCode": "8400180"
+            },
+            "destination": {
+              "name": "Venlo",
+              "lng": 6.17277765274048,
+              "lat": 51.3636093139648,
+              "countryCode": "NL",
+              "uicCode": "8400644"
+            },
+            "plannedTime": "2026-10-06T10:29:00+0200",
+            "actualTime": "2026-10-06T10:31:53+0200",
+            "delayInSeconds": 173,
+            "plannedTrack": "2",
+            "actualTrack": "2",
+            "cancelled": false,
+            "crowdForecast": "LOW",
+            "stockIdentifiers": [
+              "8676"
+            ]
+          }
+        ],
+        "actualStock": {
+          "trainType": "VIRM",
+          "numberOfSeats": 551,
+          "numberOfParts": 6,
+          "trainParts": [
+            {
+              "stockIdentifier": "8676",
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS",
+                "STROOM"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virmm1_6.png"
+              }
+            }
+          ],
+          "hasSignificantChange": false
+        },
+        "plannedStock": {
+          "trainType": "VIRM",
+          "numberOfSeats": 551,
+          "numberOfParts": 6,
+          "trainParts": [
+            {
+              "stockIdentifier": "8676",
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS",
+                "STROOM"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virmm1_6.png"
+              }
+            }
+          ],
+          "hasSignificantChange": false
+        },
+        "platformFeatures": [],
+        "coachCrowdForecast": []
+      },
+      {
+        "id": "HMBH_0",
+        "stop": {
+          "name": "Helmond Brouwhuis",
+          "lng": 5.70177,
+          "lat": 51.47068,
+          "countryCode": "NL",
+          "uicCode": "8400299"
+        },
+        "previousStopId": [
+          "HM_0"
+        ],
+        "nextStopId": [
+          "DN_0"
+        ],
+        "status": "PASSING",
+        "arrivals": [],
+        "departures": []
+      },
+      {
+        "id": "DN_0",
+        "stop": {
+          "name": "Deurne",
+          "lng": 5.78888893127441,
+          "lat": 51.4558334350586,
+          "countryCode": "NL",
+          "uicCode": "8400172"
+        },
+        "previousStopId": [
+          "HMBH_0"
+        ],
+        "nextStopId": [
+          "HRT_0"
+        ],
+        "destination": "Venlo",
+        "status": "STOP",
+        "arrivals": [
+          {
+            "product": {
+              "number": "3529",
+              "categoryCode": "IC",
+              "shortCategoryName": "Intercity",
+              "longCategoryName": "Intercity",
+              "operatorCode": "NS",
+              "operatorName": "NS",
+              "type": "TRAIN"
+            },
+            "origin": {
+              "name": "Dordrecht",
+              "lng": 4.66833353042603,
+              "lat": 51.8072204589844,
+              "countryCode": "NL",
+              "uicCode": "8400180"
+            },
+            "destination": {
+              "name": "Venlo",
+              "lng": 6.17277765274048,
+              "lat": 51.3636093139648,
+              "countryCode": "NL",
+              "uicCode": "8400644"
+            },
+            "plannedTime": "2026-10-06T10:36:00+0200",
+            "actualTime": "2026-10-06T10:38:35+0200",
+            "delayInSeconds": 155,
+            "plannedTrack": "2",
+            "actualTrack": "2",
+            "cancelled": false,
+            "crowdForecast": "LOW",
+            "stockIdentifiers": [
+              "8676"
+            ]
+          }
+        ],
+        "departures": [
+          {
+            "product": {
+              "number": "3529",
+              "categoryCode": "IC",
+              "shortCategoryName": "Intercity",
+              "longCategoryName": "Intercity",
+              "operatorCode": "NS",
+              "operatorName": "NS",
+              "type": "TRAIN"
+            },
+            "origin": {
+              "name": "Dordrecht",
+              "lng": 4.66833353042603,
+              "lat": 51.8072204589844,
+              "countryCode": "NL",
+              "uicCode": "8400180"
+            },
+            "destination": {
+              "name": "Venlo",
+              "lng": 6.17277765274048,
+              "lat": 51.3636093139648,
+              "countryCode": "NL",
+              "uicCode": "8400644"
+            },
+            "plannedTime": "2026-10-06T10:36:00+0200",
+            "actualTime": "2026-10-06T10:38:35+0200",
+            "delayInSeconds": 155,
+            "plannedTrack": "2",
+            "actualTrack": "2",
+            "cancelled": false,
+            "crowdForecast": "LOW",
+            "stockIdentifiers": [
+              "8676"
+            ]
+          }
+        ],
+        "actualStock": {
+          "trainType": "VIRM",
+          "numberOfSeats": 551,
+          "numberOfParts": 6,
+          "trainParts": [
+            {
+              "stockIdentifier": "8676",
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS",
+                "STROOM"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virmm1_6.png"
+              }
+            }
+          ],
+          "hasSignificantChange": false
+        },
+        "plannedStock": {
+          "trainType": "VIRM",
+          "numberOfSeats": 551,
+          "numberOfParts": 6,
+          "trainParts": [
+            {
+              "stockIdentifier": "8676",
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS",
+                "STROOM"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virmm1_6.png"
+              }
+            }
+          ],
+          "hasSignificantChange": false
+        },
+        "platformFeatures": [],
+        "coachCrowdForecast": []
+      },
+      {
+        "id": "HRT_0",
+        "stop": {
+          "name": "Horst-Sevenum",
+          "lng": 6.04222202301025,
+          "lat": 51.4263877868652,
+          "countryCode": "NL",
+          "uicCode": "8400339"
+        },
+        "previousStopId": [
+          "DN_0"
+        ],
+        "nextStopId": [
+          "BR_0"
+        ],
+        "destination": "Venlo",
+        "status": "STOP",
+        "arrivals": [
+          {
+            "product": {
+              "number": "3529",
+              "categoryCode": "IC",
+              "shortCategoryName": "Intercity",
+              "longCategoryName": "Intercity",
+              "operatorCode": "NS",
+              "operatorName": "NS",
+              "type": "TRAIN"
+            },
+            "origin": {
+              "name": "Dordrecht",
+              "lng": 4.66833353042603,
+              "lat": 51.8072204589844,
+              "countryCode": "NL",
+              "uicCode": "8400180"
+            },
+            "destination": {
+              "name": "Venlo",
+              "lng": 6.17277765274048,
+              "lat": 51.3636093139648,
+              "countryCode": "NL",
+              "uicCode": "8400644"
+            },
+            "plannedTime": "2026-10-06T10:47:00+0200",
+            "actualTime": "2026-10-06T10:49:06+0200",
+            "delayInSeconds": 126,
+            "plannedTrack": "2",
+            "actualTrack": "2",
+            "cancelled": false,
+            "punctuality": 80,
+            "crowdForecast": "LOW",
+            "stockIdentifiers": [
+              "8676"
+            ]
+          }
+        ],
+        "departures": [
+          {
+            "product": {
+              "number": "3529",
+              "categoryCode": "IC",
+              "shortCategoryName": "Intercity",
+              "longCategoryName": "Intercity",
+              "operatorCode": "NS",
+              "operatorName": "NS",
+              "type": "TRAIN"
+            },
+            "origin": {
+              "name": "Dordrecht",
+              "lng": 4.66833353042603,
+              "lat": 51.8072204589844,
+              "countryCode": "NL",
+              "uicCode": "8400180"
+            },
+            "destination": {
+              "name": "Venlo",
+              "lng": 6.17277765274048,
+              "lat": 51.3636093139648,
+              "countryCode": "NL",
+              "uicCode": "8400644"
+            },
+            "plannedTime": "2026-10-06T10:47:00+0200",
+            "actualTime": "2026-10-06T10:49:06+0200",
+            "delayInSeconds": 126,
+            "plannedTrack": "2",
+            "actualTrack": "2",
+            "cancelled": false,
+            "crowdForecast": "LOW",
+            "stockIdentifiers": [
+              "8676"
+            ]
+          }
+        ],
+        "actualStock": {
+          "trainType": "VIRM",
+          "numberOfSeats": 551,
+          "numberOfParts": 6,
+          "trainParts": [
+            {
+              "stockIdentifier": "8676",
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS",
+                "STROOM"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virmm1_6.png"
+              }
+            }
+          ],
+          "hasSignificantChange": false
+        },
+        "plannedStock": {
+          "trainType": "VIRM",
+          "numberOfSeats": 551,
+          "numberOfParts": 6,
+          "trainParts": [
+            {
+              "stockIdentifier": "8676",
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS",
+                "STROOM"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virmm1_6.png"
+              }
+            }
+          ],
+          "hasSignificantChange": false
+        },
+        "platformFeatures": [],
+        "coachCrowdForecast": []
+      },
+      {
+        "id": "BR_0",
+        "stop": {
+          "name": "Blerick",
+          "lng": 6.15500020980835,
+          "lat": 51.372501373291,
+          "countryCode": "NL",
+          "uicCode": "8400117"
+        },
+        "previousStopId": [
+          "HRT_0"
+        ],
+        "nextStopId": [
+          "VL_0"
+        ],
+        "destination": "Venlo",
+        "status": "STOP",
+        "arrivals": [
+          {
+            "product": {
+              "number": "3529",
+              "categoryCode": "IC",
+              "shortCategoryName": "Intercity",
+              "longCategoryName": "Intercity",
+              "operatorCode": "NS",
+              "operatorName": "NS",
+              "type": "TRAIN"
+            },
+            "origin": {
+              "name": "Dordrecht",
+              "lng": 4.66833353042603,
+              "lat": 51.8072204589844,
+              "countryCode": "NL",
+              "uicCode": "8400180"
+            },
+            "destination": {
+              "name": "Venlo",
+              "lng": 6.17277765274048,
+              "lat": 51.3636093139648,
+              "countryCode": "NL",
+              "uicCode": "8400644"
+            },
+            "plannedTime": "2026-10-06T10:55:00+0200",
+            "actualTime": "2026-10-06T10:56:45+0200",
+            "delayInSeconds": 105,
+            "plannedTrack": "1",
+            "actualTrack": "1",
+            "cancelled": false,
+            "crowdForecast": "LOW",
+            "stockIdentifiers": [
+              "8676"
+            ]
+          }
+        ],
+        "departures": [
+          {
+            "product": {
+              "number": "3529",
+              "categoryCode": "IC",
+              "shortCategoryName": "Intercity",
+              "longCategoryName": "Intercity",
+              "operatorCode": "NS",
+              "operatorName": "NS",
+              "type": "TRAIN"
+            },
+            "origin": {
+              "name": "Dordrecht",
+              "lng": 4.66833353042603,
+              "lat": 51.8072204589844,
+              "countryCode": "NL",
+              "uicCode": "8400180"
+            },
+            "destination": {
+              "name": "Venlo",
+              "lng": 6.17277765274048,
+              "lat": 51.3636093139648,
+              "countryCode": "NL",
+              "uicCode": "8400644"
+            },
+            "plannedTime": "2026-10-06T10:55:00+0200",
+            "actualTime": "2026-10-06T10:56:45+0200",
+            "delayInSeconds": 105,
+            "plannedTrack": "1",
+            "actualTrack": "1",
+            "cancelled": false,
+            "crowdForecast": "LOW",
+            "stockIdentifiers": [
+              "8676"
+            ]
+          }
+        ],
+        "actualStock": {
+          "trainType": "VIRM",
+          "numberOfSeats": 551,
+          "numberOfParts": 6,
+          "trainParts": [
+            {
+              "stockIdentifier": "8676",
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS",
+                "STROOM"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virmm1_6.png"
+              }
+            }
+          ],
+          "hasSignificantChange": false
+        },
+        "plannedStock": {
+          "trainType": "VIRM",
+          "numberOfSeats": 551,
+          "numberOfParts": 6,
+          "trainParts": [
+            {
+              "stockIdentifier": "8676",
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS",
+                "STROOM"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virmm1_6.png"
+              }
+            }
+          ],
+          "hasSignificantChange": false
+        },
+        "platformFeatures": [],
+        "coachCrowdForecast": []
+      },
+      {
+        "id": "VL_0",
+        "stop": {
+          "name": "Venlo",
+          "lng": 6.17277765274048,
+          "lat": 51.3636093139648,
+          "countryCode": "NL",
+          "uicCode": "8400644"
+        },
+        "previousStopId": [
+          "BR_0"
+        ],
+        "nextStopId": [],
+        "destination": "Venlo",
+        "status": "DESTINATION",
+        "arrivals": [
+          {
+            "product": {
+              "number": "3529",
+              "categoryCode": "IC",
+              "shortCategoryName": "Intercity",
+              "longCategoryName": "Intercity",
+              "operatorCode": "NS",
+              "operatorName": "NS",
+              "type": "TRAIN"
+            },
+            "origin": {
+              "name": "Dordrecht",
+              "lng": 4.66833353042603,
+              "lat": 51.8072204589844,
+              "countryCode": "NL",
+              "uicCode": "8400180"
+            },
+            "destination": {
+              "name": "Venlo",
+              "lng": 6.17277765274048,
+              "lat": 51.3636093139648,
+              "countryCode": "NL",
+              "uicCode": "8400644"
+            },
+            "plannedTime": "2026-10-06T10:58:00+0200",
+            "actualTime": "2026-10-06T10:59:37+0200",
+            "delayInSeconds": 97,
+            "plannedTrack": "3",
+            "actualTrack": "3",
+            "cancelled": false,
+            "punctuality": 90,
+            "crowdForecast": "UNKNOWN",
+            "stockIdentifiers": [
+              "0"
+            ]
+          }
+        ],
+        "departures": [],
+        "actualStock": {
+          "trainType": "VIRM",
+          "numberOfSeats": 598,
+          "numberOfParts": 6,
+          "trainParts": [
+            {
+              "stockIdentifier": "0",
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virm_6.png"
+              }
+            }
+          ],
+          "hasSignificantChange": false
+        },
+        "plannedStock": {
+          "trainType": "VIRM",
+          "numberOfSeats": 598,
+          "numberOfParts": 6,
+          "trainParts": [
+            {
+              "stockIdentifier": "0",
+              "facilities": [
+                "WIFI",
+                "TOILET",
+                "STILTE",
+                "FIETS"
+              ],
+              "image": {
+                "uri": "https://vt.ns-mlab.nl/v1/images/virm_6.png"
+              }
+            }
+          ],
+          "hasSignificantChange": false
+        },
+        "platformFeatures": [],
+        "coachCrowdForecast": []
+      }
+    ],
+    "allowCrowdReporting": true,
+    "source": "PPV"
+  }
+}

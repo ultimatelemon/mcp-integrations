@@ -1,0 +1,1704 @@
+{
+  "trips": [
+    {
+      "idx": 0,
+      "uid": "arnu|fromStation=8400621|requestedFromStation=8400621|toStation=8400282|requestedToStation=8400282|plannedFromTime=2026-10-06T09:28:00+02:00|plannedArrivalTime=2026-10-06T10:05:00+02:00|excludeHighSpeedTrains=false|showLiftInfo=false|searchForAccessibleTrip=false|localTrainsOnly=false|disabledTransportModalities=BUS,FERRY,TRAM,METRO|travelAssistance=false|tripSummaryHash=2647680767",
+      "ctxRecon": "arnu|fromStation=8400621|requestedFromStation=8400621|toStation=8400282|requestedToStation=8400282|plannedFromTime=2026-10-06T09:28:00+02:00|plannedArrivalTime=2026-10-06T10:05:00+02:00|excludeHighSpeedTrains=false|showLiftInfo=false|searchForAccessibleTrip=false|localTrainsOnly=false|disabledTransportModalities=BUS,FERRY,TRAM,METRO|travelAssistance=false|tripSummaryHash=2647680767",
+      "sourceCtxRecon": "¶HKI¶T$A=1@O=Utrecht Centraal@L=1100697@a=128@$A=1@O=Den Haag Centraal@L=1100998@a=128@$202610060928$202610061005$IC 1726 $$3$$$$$$¶KC¶#VE#2#CF#100#CA#0#CM#0#SICT#0#AM#16465#AM2#0#RT#31#¶KCC¶#VE#0#ERG#1#HIN#0#ECK#14968|14968|15005|15005|0|0|185|14955|1|0|10|0|0|-2147483648#¶KRCC¶#VE#1#MRTF#",
+      "plannedDurationInMinutes": 37,
+      "actualDurationInMinutes": 37,
+      "transfers": 0,
+      "status": "NORMAL",
+      "legs": [
+        {
+          "idx": "0",
+          "name": "IC 1726",
+          "travelType": "PUBLIC_TRANSIT",
+          "direction": "Den Haag Centraal",
+          "partCancelled": false,
+          "cancelled": false,
+          "isAfterCancelledLeg": false,
+          "isOnOrAfterCancelledLeg": false,
+          "changePossible": true,
+          "alternativeTransport": false,
+          "journeyDetailRef": "HARP_MM-2|#VN#1#ST#1790761283#PI#0#ZI#532334#TA#0#DA#61026#1S#1100691#1T#745#LS#1100998#LT#1005#PU#784#RT#3#CA#IC#ZE#1726#ZB#IC 1726 #PC#1#FR#1100691#FT#745#TO#1100998#TT#1005#",
+          "origin": {
+            "name": "Utrecht Centraal",
+            "rawLocationName": "Utrecht Centraal",
+            "lng": 5.11027765274048,
+            "lat": 52.0888900756836,
+            "countryCode": "NL",
+            "uicCode": "8400621",
+            "uicCdCode": "118400621",
+            "stationCode": "UT",
+            "type": "STATION",
+            "plannedTimeZoneOffset": 120,
+            "plannedDateTime": "2026-10-06T09:28:00+0200",
+            "actualTimeZoneOffset": 120,
+            "actualDateTime": "2026-10-06T09:28:00+0200",
+            "plannedTrack": "8",
+            "actualTrack": "8",
+            "checkinStatus": "CHECKIN",
+            "notes": []
+          },
+          "destination": {
+            "name": "Den Haag Centraal",
+            "rawLocationName": "Den Haag Centraal",
+            "lng": 4.32499980926514,
+            "lat": 52.0802764892578,
+            "countryCode": "NL",
+            "uicCode": "8400282",
+            "uicCdCode": "118400282",
+            "stationCode": "GVC",
+            "type": "STATION",
+            "plannedTimeZoneOffset": 120,
+            "plannedDateTime": "2026-10-06T10:05:00+0200",
+            "actualTimeZoneOffset": 120,
+            "actualDateTime": "2026-10-06T10:05:00+0200",
+            "plannedTrack": "8",
+            "actualTrack": "8",
+            "exitSide": "RIGHT",
+            "checkinStatus": "CHECKOUT",
+            "notes": []
+          },
+          "product": {
+            "productType": "Product",
+            "number": "1726",
+            "categoryCode": "IC",
+            "shortCategoryName": "IC",
+            "longCategoryName": "Intercity",
+            "operatorCode": "NS",
+            "operatorName": "NS",
+            "operatorAdministrativeCode": 100,
+            "type": "TRAIN",
+            "displayName": "NS Intercity",
+            "nameNesProperties": {
+              "color": "text-body"
+            },
+            "iconNesProperties": {
+              "color": "text-body",
+              "icon": "train"
+            },
+            "notes": [
+              [
+                {
+                  "value": "NS Intercity",
+                  "shortValue": "NS Intercity",
+                  "accessibilityValue": "NS Intercity",
+                  "key": "PRODUCT_NAME",
+                  "noteType": "ATTRIBUTE",
+                  "isPresentationRequired": true,
+                  "nesProperties": {
+                    "color": "text-body"
+                  }
+                }
+              ],
+              [
+                {
+                  "value": "richting Den Haag Centraal",
+                  "shortValue": "richting Den Haag Centraal",
+                  "accessibilityValue": "richting Den Haag Centraal",
+                  "key": "PRODUCT_DIRECTION",
+                  "noteType": "ATTRIBUTE",
+                  "isPresentationRequired": true,
+                  "nesProperties": {
+                    "color": "text-body"
+                  }
+                }
+              ],
+              [
+                {
+                  "value": "1 tussenstop",
+                  "shortValue": "1 tussenstop",
+                  "accessibilityValue": "1 tussenstop",
+                  "key": "PRODUCT_INTERMEDIATE_STOPS",
+                  "noteType": "ATTRIBUTE",
+                  "isPresentationRequired": true,
+                  "nesProperties": {
+                    "color": "text-body"
+                  }
+                }
+              ]
+            ],
+            "nesTagVariant": "Neutral"
+          },
+          "stops": [
+            {
+              "uicCode": "8400621",
+              "uicCdCode": "118400621",
+              "name": "Utrecht Centraal",
+              "lat": 52.0888900756836,
+              "lng": 5.11027765274048,
+              "countryCode": "NL",
+              "notes": [],
+              "routeIdx": 0,
+              "plannedDepartureDateTime": "2026-10-06T09:28:00+0200",
+              "plannedDepartureTimeZoneOffset": 120,
+              "actualDepartureDateTime": "2026-10-06T09:28:00+0200",
+              "actualDepartureTimeZoneOffset": 120,
+              "actualDepartureTrack": "8",
+              "plannedDepartureTrack": "8",
+              "plannedArrivalTrack": "8",
+              "actualArrivalTrack": "8",
+              "departureDelayInSeconds": 0,
+              "cancelled": false,
+              "borderStop": false,
+              "passing": false
+            },
+            {
+              "uicCode": "8400258",
+              "uicCdCode": "118400258",
+              "name": "Gouda",
+              "lat": 52.0175018310547,
+              "lng": 4.70444440841675,
+              "countryCode": "NL",
+              "notes": [],
+              "routeIdx": 6,
+              "plannedDepartureDateTime": "2026-10-06T09:47:00+0200",
+              "plannedDepartureTimeZoneOffset": 120,
+              "actualDepartureDateTime": "2026-10-06T09:47:00+0200",
+              "actualDepartureTimeZoneOffset": 120,
+              "plannedArrivalDateTime": "2026-10-06T09:46:00+0200",
+              "plannedArrivalTimeZoneOffset": 120,
+              "actualArrivalDateTime": "2026-10-06T09:46:00+0200",
+              "actualArrivalTimeZoneOffset": 120,
+              "actualDepartureTrack": "8",
+              "plannedDepartureTrack": "8",
+              "plannedArrivalTrack": "8",
+              "actualArrivalTrack": "8",
+              "departureDelayInSeconds": 0,
+              "arrivalDelayInSeconds": 0,
+              "cancelled": false,
+              "borderStop": false,
+              "passing": false
+            },
+            {
+              "uicCode": "8400282",
+              "uicCdCode": "118400282",
+              "name": "Den Haag Centraal",
+              "lat": 52.0802764892578,
+              "lng": 4.32499980926514,
+              "countryCode": "NL",
+              "notes": [],
+              "routeIdx": 12,
+              "plannedArrivalDateTime": "2026-10-06T10:05:00+0200",
+              "plannedArrivalTimeZoneOffset": 120,
+              "actualArrivalDateTime": "2026-10-06T10:05:00+0200",
+              "actualArrivalTimeZoneOffset": 120,
+              "actualDepartureTrack": "8",
+              "plannedDepartureTrack": "8",
+              "plannedArrivalTrack": "8",
+              "actualArrivalTrack": "8",
+              "arrivalDelayInSeconds": 0,
+              "cancelled": false,
+              "borderStop": false,
+              "passing": false
+            }
+          ],
+          "crowdForecast": "MEDIUM",
+          "punctuality": 100,
+          "shorterStock": false,
+          "journeyDetail": [
+            {
+              "type": "TRAIN_XML",
+              "link": {
+                "uri": "/api/v2/journey?id=HARP_MM-2|#VN#1#ST#1790761283#PI#0#ZI#532334#TA#0#DA#61026#1S#1100691#1T#745#LS#1100998#LT#1005#PU#784#RT#3#CA#IC#ZE#1726#ZB#IC 1726 #PC#1#FR#1100691#FT#745#TO#1100998#TT#1005#&train=1726&datetime=2026-10-06T09:28:00+02:00"
+              }
+            }
+          ],
+          "reachable": true,
+          "plannedDurationInMinutes": 37,
+          "actualDurationInMinutes": 37,
+          "nesProperties": {
+            "color": "text-info",
+            "scope": "LEG_LINE",
+            "styles": {
+              "type": "LineStyles",
+              "dashed": false
+            }
+          },
+          "duration": {
+            "value": "37 min.",
+            "accessibilityValue": "37 minuten",
+            "nesProperties": {
+              "color": "text-body"
+            }
+          },
+          "preSteps": [],
+          "postSteps": [],
+          "distanceInMeters": 58087
+        }
+      ],
+      "checksum": "0d400522_3",
+      "crowdForecast": "MEDIUM",
+      "punctuality": 100,
+      "optimal": false,
+      "fareRoute": {
+        "routeId": "=KR8WIpSBfGO8Bg==",
+        "origin": {
+          "varCode": 621,
+          "name": "Utrecht Centraal"
+        },
+        "destination": {
+          "varCode": 282,
+          "name": "Den Haag Centraal"
+        }
+      },
+      "fares": [
+        {
+          "priceInCents": 2646,
+          "product": "OVCHIPKAART_ENKELE_REIS",
+          "travelClass": "FIRST_CLASS",
+          "discountType": "NO_DISCOUNT"
+        },
+        {
+          "priceInCents": 1470,
+          "product": "OVCHIPKAART_ENKELE_REIS",
+          "travelClass": "SECOND_CLASS",
+          "discountType": "NO_DISCOUNT"
+        },
+        {
+          "priceInCents": 2117,
+          "product": "OVCHIPKAART_ENKELE_REIS",
+          "travelClass": "FIRST_CLASS",
+          "discountType": "DISCOUNT_20_PERCENT"
+        },
+        {
+          "priceInCents": 1176,
+          "product": "OVCHIPKAART_ENKELE_REIS",
+          "travelClass": "SECOND_CLASS",
+          "discountType": "DISCOUNT_20_PERCENT"
+        },
+        {
+          "priceInCents": 1588,
+          "product": "OVCHIPKAART_ENKELE_REIS",
+          "travelClass": "FIRST_CLASS",
+          "discountType": "DISCOUNT_40_PERCENT"
+        },
+        {
+          "priceInCents": 882,
+          "product": "OVCHIPKAART_ENKELE_REIS",
+          "travelClass": "SECOND_CLASS",
+          "discountType": "DISCOUNT_40_PERCENT"
+        },
+        {
+          "priceInCents": 5292,
+          "product": "OVCHIPKAART_RETOUR",
+          "travelClass": "FIRST_CLASS",
+          "discountType": "NO_DISCOUNT"
+        },
+        {
+          "priceInCents": 2940,
+          "product": "OVCHIPKAART_RETOUR",
+          "travelClass": "SECOND_CLASS",
+          "discountType": "NO_DISCOUNT"
+        },
+        {
+          "priceInCents": 4234,
+          "product": "OVCHIPKAART_RETOUR",
+          "travelClass": "FIRST_CLASS",
+          "discountType": "DISCOUNT_20_PERCENT"
+        },
+        {
+          "priceInCents": 2352,
+          "product": "OVCHIPKAART_RETOUR",
+          "travelClass": "SECOND_CLASS",
+          "discountType": "DISCOUNT_20_PERCENT"
+        },
+        {
+          "priceInCents": 3176,
+          "product": "OVCHIPKAART_RETOUR",
+          "travelClass": "FIRST_CLASS",
+          "discountType": "DISCOUNT_40_PERCENT"
+        },
+        {
+          "priceInCents": 1764,
+          "product": "OVCHIPKAART_RETOUR",
+          "travelClass": "SECOND_CLASS",
+          "discountType": "DISCOUNT_40_PERCENT"
+        },
+        {
+          "priceInCents": 58500,
+          "product": "TRAJECT_VRIJ_JAAR",
+          "travelClass": "FIRST_CLASS",
+          "discountType": "NO_DISCOUNT"
+        },
+        {
+          "priceInCents": 34410,
+          "product": "TRAJECT_VRIJ_JAAR",
+          "travelClass": "SECOND_CLASS",
+          "discountType": "NO_DISCOUNT"
+        },
+        {
+          "priceInCents": 702000,
+          "product": "BUSINESS_CARD_TRAJECT_VRIJ_JAAR",
+          "travelClass": "FIRST_CLASS",
+          "discountType": "NO_DISCOUNT"
+        },
+        {
+          "priceInCents": 412920,
+          "product": "BUSINESS_CARD_TRAJECT_VRIJ_JAAR",
+          "travelClass": "SECOND_CLASS",
+          "discountType": "NO_DISCOUNT"
+        }
+      ],
+      "fareLegs": [
+        {
+          "origin": {
+            "name": "Utrecht Centraal",
+            "rawLocationName": "Utrecht Centraal",
+            "lng": 5.11027765274048,
+            "lat": 52.0888900756836,
+            "countryCode": "NL",
+            "uicCode": "8400621",
+            "uicCdCode": "118400621",
+            "stationCode": "UT",
+            "type": "STATION"
+          },
+          "destination": {
+            "name": "Den Haag Centraal",
+            "rawLocationName": "Den Haag Centraal",
+            "lng": 4.32499980926514,
+            "lat": 52.0802764892578,
+            "countryCode": "NL",
+            "uicCode": "8400282",
+            "uicCdCode": "118400282",
+            "stationCode": "GVC",
+            "type": "STATION"
+          },
+          "operator": "NS",
+          "productTypes": [
+            "TRAIN"
+          ],
+          "fares": [
+            {
+              "priceInCents": 1470,
+              "priceInCentsExcludingSupplement": 1470,
+              "supplementInCents": 0,
+              "buyableTicketSupplementPriceInCents": 0,
+              "product": "OVCHIPKAART_ENKELE_REIS",
+              "travelClass": "SECOND_CLASS",
+              "discountType": "NO_DISCOUNT"
+            }
+          ],
+          "travelDate": "2026-10-06"
+        }
+      ],
+      "productFare": {
+        "priceInCents": 1470,
+        "priceInCentsExcludingSupplement": 1470,
+        "buyableTicketPriceInCents": 1470,
+        "buyableTicketPriceInCentsExcludingSupplement": 1470,
+        "product": "OVCHIPKAART_ENKELE_REIS",
+        "travelClass": "SECOND_CLASS",
+        "discountType": "NO_DISCOUNT"
+      },
+      "fareOptions": {
+        "isInternationalBookable": false,
+        "isInternational": false,
+        "isEticketBuyable": true,
+        "isPossibleWithOvChipkaart": true,
+        "isTotalPriceUnknown": false
+      },
+      "type": "NS",
+      "shareUrl": {
+        "uri": "https://www.ns.nl/rpx?ctx=arnu%7CfromStation%3D8400621%7CrequestedFromStation%3D8400621%7CtoStation%3D8400282%7CrequestedToStation%3D8400282%7CplannedFromTime%3D2026-10-06T09%3A28%3A00%2B02%3A00%7CplannedArrivalTime%3D2026-10-06T10%3A05%3A00%2B02%3A00%7CexcludeHighSpeedTrains%3Dfalse%7CshowLiftInfo%3Dfalse%7CsearchForAccessibleTrip%3Dfalse%7ClocalTrainsOnly%3Dfalse%7CdisabledTransportModalities%3DBUS%2CFERRY%2CTRAM%2CMETRO%7CtravelAssistance%3Dfalse%7CtripSummaryHash%3D2647680767"
+      },
+      "realtime": true,
+      "routeId": "=KR8WIpSBfGO8Bg==",
+      "modalityListItems": [
+        {
+          "name": "Intercity",
+          "nameNesProperties": {
+            "color": "text-subtle",
+            "styles": {
+              "type": "TextStyles",
+              "strikethrough": false,
+              "bold": false
+            }
+          },
+          "iconNesProperties": {
+            "color": "text-body",
+            "icon": "train"
+          },
+          "actualTrack": "8",
+          "accessibilityName": "Intercity"
+        }
+      ]
+    },
+    {
+      "idx": 1,
+      "uid": "arnu|fromStation=8400621|requestedFromStation=8400621|toStation=8400282|requestedToStation=8400282|plannedFromTime=2026-10-06T09:43:00+02:00|plannedArrivalTime=2026-10-06T10:20:00+02:00|excludeHighSpeedTrains=false|showLiftInfo=false|searchForAccessibleTrip=false|localTrainsOnly=false|disabledTransportModalities=BUS,FERRY,TRAM,METRO|travelAssistance=false|tripSummaryHash=458011175",
+      "ctxRecon": "arnu|fromStation=8400621|requestedFromStation=8400621|toStation=8400282|requestedToStation=8400282|plannedFromTime=2026-10-06T09:43:00+02:00|plannedArrivalTime=2026-10-06T10:20:00+02:00|excludeHighSpeedTrains=false|showLiftInfo=false|searchForAccessibleTrip=false|localTrainsOnly=false|disabledTransportModalities=BUS,FERRY,TRAM,METRO|travelAssistance=false|tripSummaryHash=458011175",
+      "sourceCtxRecon": "¶HKI¶T$A=1@O=Utrecht Centraal@L=1100697@a=128@$A=1@O=Den Haag Centraal@L=1100762@a=128@$202610060943$202610061020$IC 626  $$1$$$$$$¶KC¶#VE#2#CF#100#CA#0#CM#0#SICT#0#AM#16465#AM2#0#RT#31#¶KCC¶#VE#0#ERG#1#HIN#0#ECK#14983|14983|15020|15020|0|0|185|14969|2|0|10|0|0|-2147483648#¶KRCC¶#VE#1#MRTF#",
+      "plannedDurationInMinutes": 37,
+      "actualDurationInMinutes": 37,
+      "transfers": 0,
+      "status": "NORMAL",
+      "legs": [
+        {
+          "idx": "0",
+          "name": "IC 626",
+          "travelType": "PUBLIC_TRANSIT",
+          "direction": "Den Haag Centraal",
+          "partCancelled": false,
+          "cancelled": false,
+          "isAfterCancelledLeg": false,
+          "isOnOrAfterCancelledLeg": false,
+          "changePossible": true,
+          "alternativeTransport": false,
+          "journeyDetailRef": "HARP_MM-2|#VN#1#ST#1790761283#PI#0#ZI#448577#TA#0#DA#61026#1S#1101479#1T#746#LS#1100762#LT#1020#PU#784#RT#1#CA#IC#ZE#626#ZB#IC 626  #PC#1#FR#1101479#FT#746#TO#1100762#TT#1020#",
+          "origin": {
+            "name": "Utrecht Centraal",
+            "rawLocationName": "Utrecht Centraal",
+            "lng": 5.11027765274048,
+            "lat": 52.0888900756836,
+            "countryCode": "NL",
+            "uicCode": "8400621",
+            "uicCdCode": "118400621",
+            "stationCode": "UT",
+            "type": "STATION",
+            "plannedTimeZoneOffset": 120,
+            "plannedDateTime": "2026-10-06T09:43:00+0200",
+            "actualTimeZoneOffset": 120,
+            "actualDateTime": "2026-10-06T09:43:00+0200",
+            "plannedTrack": "8",
+            "actualTrack": "8",
+            "checkinStatus": "CHECKIN",
+            "notes": []
+          },
+          "destination": {
+            "name": "Den Haag Centraal",
+            "rawLocationName": "Den Haag Centraal",
+            "lng": 4.32499980926514,
+            "lat": 52.0802764892578,
+            "countryCode": "NL",
+            "uicCode": "8400282",
+            "uicCdCode": "118400282",
+            "stationCode": "GVC",
+            "type": "STATION",
+            "plannedTimeZoneOffset": 120,
+            "plannedDateTime": "2026-10-06T10:20:00+0200",
+            "actualTimeZoneOffset": 120,
+            "actualDateTime": "2026-10-06T10:20:00+0200",
+            "plannedTrack": "7",
+            "actualTrack": "7",
+            "exitSide": "LEFT",
+            "checkinStatus": "CHECKOUT",
+            "notes": []
+          },
+          "product": {
+            "productType": "Product",
+            "number": "626",
+            "categoryCode": "IC",
+            "shortCategoryName": "IC",
+            "longCategoryName": "Intercity",
+            "operatorCode": "NS",
+            "operatorName": "NS",
+            "operatorAdministrativeCode": 100,
+            "type": "TRAIN",
+            "displayName": "NS Intercity",
+            "nameNesProperties": {
+              "color": "text-body"
+            },
+            "iconNesProperties": {
+              "color": "text-body",
+              "icon": "train"
+            },
+            "notes": [
+              [
+                {
+                  "value": "NS Intercity",
+                  "shortValue": "NS Intercity",
+                  "accessibilityValue": "NS Intercity",
+                  "key": "PRODUCT_NAME",
+                  "noteType": "ATTRIBUTE",
+                  "isPresentationRequired": true,
+                  "nesProperties": {
+                    "color": "text-body"
+                  }
+                }
+              ],
+              [
+                {
+                  "value": "richting Den Haag Centraal",
+                  "shortValue": "richting Den Haag Centraal",
+                  "accessibilityValue": "richting Den Haag Centraal",
+                  "key": "PRODUCT_DIRECTION",
+                  "noteType": "ATTRIBUTE",
+                  "isPresentationRequired": true,
+                  "nesProperties": {
+                    "color": "text-body"
+                  }
+                }
+              ],
+              [
+                {
+                  "value": "1 tussenstop",
+                  "shortValue": "1 tussenstop",
+                  "accessibilityValue": "1 tussenstop",
+                  "key": "PRODUCT_INTERMEDIATE_STOPS",
+                  "noteType": "ATTRIBUTE",
+                  "isPresentationRequired": true,
+                  "nesProperties": {
+                    "color": "text-body"
+                  }
+                }
+              ]
+            ],
+            "nesTagVariant": "Neutral"
+          },
+          "stops": [
+            {
+              "uicCode": "8400621",
+              "uicCdCode": "118400621",
+              "name": "Utrecht Centraal",
+              "lat": 52.0888900756836,
+              "lng": 5.11027765274048,
+              "countryCode": "NL",
+              "notes": [],
+              "routeIdx": 0,
+              "plannedDepartureDateTime": "2026-10-06T09:43:00+0200",
+              "plannedDepartureTimeZoneOffset": 120,
+              "actualDepartureDateTime": "2026-10-06T09:43:00+0200",
+              "actualDepartureTimeZoneOffset": 120,
+              "actualDepartureTrack": "8",
+              "plannedDepartureTrack": "8",
+              "plannedArrivalTrack": "8",
+              "actualArrivalTrack": "8",
+              "departureDelayInSeconds": 0,
+              "cancelled": false,
+              "borderStop": false,
+              "passing": false
+            },
+            {
+              "uicCode": "8400258",
+              "uicCdCode": "118400258",
+              "name": "Gouda",
+              "lat": 52.0175018310547,
+              "lng": 4.70444440841675,
+              "countryCode": "NL",
+              "notes": [],
+              "routeIdx": 6,
+              "plannedDepartureDateTime": "2026-10-06T10:03:00+0200",
+              "plannedDepartureTimeZoneOffset": 120,
+              "actualDepartureDateTime": "2026-10-06T10:03:00+0200",
+              "actualDepartureTimeZoneOffset": 120,
+              "plannedArrivalDateTime": "2026-10-06T10:01:00+0200",
+              "plannedArrivalTimeZoneOffset": 120,
+              "actualArrivalDateTime": "2026-10-06T10:01:00+0200",
+              "actualArrivalTimeZoneOffset": 120,
+              "actualDepartureTrack": "10",
+              "plannedDepartureTrack": "10",
+              "plannedArrivalTrack": "10",
+              "actualArrivalTrack": "10",
+              "departureDelayInSeconds": 0,
+              "arrivalDelayInSeconds": 0,
+              "cancelled": false,
+              "borderStop": false,
+              "passing": false
+            },
+            {
+              "uicCode": "8400282",
+              "uicCdCode": "118400282",
+              "name": "Den Haag Centraal",
+              "lat": 52.0802764892578,
+              "lng": 4.32499980926514,
+              "countryCode": "NL",
+              "notes": [],
+              "routeIdx": 12,
+              "plannedArrivalDateTime": "2026-10-06T10:20:00+0200",
+              "plannedArrivalTimeZoneOffset": 120,
+              "actualArrivalDateTime": "2026-10-06T10:20:00+0200",
+              "actualArrivalTimeZoneOffset": 120,
+              "actualDepartureTrack": "7",
+              "plannedDepartureTrack": "7",
+              "plannedArrivalTrack": "7",
+              "actualArrivalTrack": "7",
+              "arrivalDelayInSeconds": 0,
+              "cancelled": false,
+              "borderStop": false,
+              "passing": false
+            }
+          ],
+          "crowdForecast": "LOW",
+          "bicycleSpotCount": 6,
+          "shorterStock": false,
+          "journeyDetail": [
+            {
+              "type": "TRAIN_XML",
+              "link": {
+                "uri": "/api/v2/journey?id=HARP_MM-2|#VN#1#ST#1790761283#PI#0#ZI#448577#TA#0#DA#61026#1S#1101479#1T#746#LS#1100762#LT#1020#PU#784#RT#1#CA#IC#ZE#626#ZB#IC 626  #PC#1#FR#1101479#FT#746#TO#1100762#TT#1020#&train=626&datetime=2026-10-06T09:43:00+02:00"
+              }
+            }
+          ],
+          "reachable": true,
+          "plannedDurationInMinutes": 37,
+          "actualDurationInMinutes": 37,
+          "nesProperties": {
+            "color": "text-info",
+            "scope": "LEG_LINE",
+            "styles": {
+              "type": "LineStyles",
+              "dashed": false
+            }
+          },
+          "duration": {
+            "value": "37 min.",
+            "accessibilityValue": "37 minuten",
+            "nesProperties": {
+              "color": "text-body"
+            }
+          },
+          "preSteps": [],
+          "postSteps": [],
+          "distanceInMeters": 58087
+        }
+      ],
+      "checksum": "a4122eda_3",
+      "crowdForecast": "LOW",
+      "optimal": true,
+      "fareRoute": {
+        "routeId": "=KR8WIpSBfG0MBg==",
+        "origin": {
+          "varCode": 621,
+          "name": "Utrecht Centraal"
+        },
+        "destination": {
+          "varCode": 282,
+          "name": "Den Haag Centraal"
+        }
+      },
+      "fares": [
+        {
+          "priceInCents": 2646,
+          "product": "OVCHIPKAART_ENKELE_REIS",
+          "travelClass": "FIRST_CLASS",
+          "discountType": "NO_DISCOUNT"
+        },
+        {
+          "priceInCents": 1470,
+          "product": "OVCHIPKAART_ENKELE_REIS",
+          "travelClass": "SECOND_CLASS",
+          "discountType": "NO_DISCOUNT"
+        },
+        {
+          "priceInCents": 2117,
+          "product": "OVCHIPKAART_ENKELE_REIS",
+          "travelClass": "FIRST_CLASS",
+          "discountType": "DISCOUNT_20_PERCENT"
+        },
+        {
+          "priceInCents": 1176,
+          "product": "OVCHIPKAART_ENKELE_REIS",
+          "travelClass": "SECOND_CLASS",
+          "discountType": "DISCOUNT_20_PERCENT"
+        },
+        {
+          "priceInCents": 1588,
+          "product": "OVCHIPKAART_ENKELE_REIS",
+          "travelClass": "FIRST_CLASS",
+          "discountType": "DISCOUNT_40_PERCENT"
+        },
+        {
+          "priceInCents": 882,
+          "product": "OVCHIPKAART_ENKELE_REIS",
+          "travelClass": "SECOND_CLASS",
+          "discountType": "DISCOUNT_40_PERCENT"
+        },
+        {
+          "priceInCents": 5292,
+          "product": "OVCHIPKAART_RETOUR",
+          "travelClass": "FIRST_CLASS",
+          "discountType": "NO_DISCOUNT"
+        },
+        {
+          "priceInCents": 2940,
+          "product": "OVCHIPKAART_RETOUR",
+          "travelClass": "SECOND_CLASS",
+          "discountType": "NO_DISCOUNT"
+        },
+        {
+          "priceInCents": 4234,
+          "product": "OVCHIPKAART_RETOUR",
+          "travelClass": "FIRST_CLASS",
+          "discountType": "DISCOUNT_20_PERCENT"
+        },
+        {
+          "priceInCents": 2352,
+          "product": "OVCHIPKAART_RETOUR",
+          "travelClass": "SECOND_CLASS",
+          "discountType": "DISCOUNT_20_PERCENT"
+        },
+        {
+          "priceInCents": 3176,
+          "product": "OVCHIPKAART_RETOUR",
+          "travelClass": "FIRST_CLASS",
+          "discountType": "DISCOUNT_40_PERCENT"
+        },
+        {
+          "priceInCents": 1764,
+          "product": "OVCHIPKAART_RETOUR",
+          "travelClass": "SECOND_CLASS",
+          "discountType": "DISCOUNT_40_PERCENT"
+        },
+        {
+          "priceInCents": 58500,
+          "product": "TRAJECT_VRIJ_JAAR",
+          "travelClass": "FIRST_CLASS",
+          "discountType": "NO_DISCOUNT"
+        },
+        {
+          "priceInCents": 34410,
+          "product": "TRAJECT_VRIJ_JAAR",
+          "travelClass": "SECOND_CLASS",
+          "discountType": "NO_DISCOUNT"
+        },
+        {
+          "priceInCents": 702000,
+          "product": "BUSINESS_CARD_TRAJECT_VRIJ_JAAR",
+          "travelClass": "FIRST_CLASS",
+          "discountType": "NO_DISCOUNT"
+        },
+        {
+          "priceInCents": 412920,
+          "product": "BUSINESS_CARD_TRAJECT_VRIJ_JAAR",
+          "travelClass": "SECOND_CLASS",
+          "discountType": "NO_DISCOUNT"
+        }
+      ],
+      "fareLegs": [
+        {
+          "origin": {
+            "name": "Utrecht Centraal",
+            "rawLocationName": "Utrecht Centraal",
+            "lng": 5.11027765274048,
+            "lat": 52.0888900756836,
+            "countryCode": "NL",
+            "uicCode": "8400621",
+            "uicCdCode": "118400621",
+            "stationCode": "UT",
+            "type": "STATION"
+          },
+          "destination": {
+            "name": "Den Haag Centraal",
+            "rawLocationName": "Den Haag Centraal",
+            "lng": 4.32499980926514,
+            "lat": 52.0802764892578,
+            "countryCode": "NL",
+            "uicCode": "8400282",
+            "uicCdCode": "118400282",
+            "stationCode": "GVC",
+            "type": "STATION"
+          },
+          "operator": "NS",
+          "productTypes": [
+            "TRAIN"
+          ],
+          "fares": [
+            {
+              "priceInCents": 1470,
+              "priceInCentsExcludingSupplement": 1470,
+              "supplementInCents": 0,
+              "buyableTicketSupplementPriceInCents": 0,
+              "product": "OVCHIPKAART_ENKELE_REIS",
+              "travelClass": "SECOND_CLASS",
+              "discountType": "NO_DISCOUNT"
+            }
+          ],
+          "travelDate": "2026-10-06"
+        }
+      ],
+      "productFare": {
+        "priceInCents": 1470,
+        "priceInCentsExcludingSupplement": 1470,
+        "buyableTicketPriceInCents": 1470,
+        "buyableTicketPriceInCentsExcludingSupplement": 1470,
+        "product": "OVCHIPKAART_ENKELE_REIS",
+        "travelClass": "SECOND_CLASS",
+        "discountType": "NO_DISCOUNT"
+      },
+      "fareOptions": {
+        "isInternationalBookable": false,
+        "isInternational": false,
+        "isEticketBuyable": true,
+        "isPossibleWithOvChipkaart": true,
+        "isTotalPriceUnknown": false
+      },
+      "type": "NS",
+      "shareUrl": {
+        "uri": "https://www.ns.nl/rpx?ctx=arnu%7CfromStation%3D8400621%7CrequestedFromStation%3D8400621%7CtoStation%3D8400282%7CrequestedToStation%3D8400282%7CplannedFromTime%3D2026-10-06T09%3A43%3A00%2B02%3A00%7CplannedArrivalTime%3D2026-10-06T10%3A20%3A00%2B02%3A00%7CexcludeHighSpeedTrains%3Dfalse%7CshowLiftInfo%3Dfalse%7CsearchForAccessibleTrip%3Dfalse%7ClocalTrainsOnly%3Dfalse%7CdisabledTransportModalities%3DBUS%2CFERRY%2CTRAM%2CMETRO%7CtravelAssistance%3Dfalse%7CtripSummaryHash%3D458011175"
+      },
+      "realtime": true,
+      "routeId": "=KR8WIpSBfG0MBg==",
+      "modalityListItems": [
+        {
+          "name": "Intercity",
+          "nameNesProperties": {
+            "color": "text-subtle",
+            "styles": {
+              "type": "TextStyles",
+              "strikethrough": false,
+              "bold": false
+            }
+          },
+          "iconNesProperties": {
+            "color": "text-body",
+            "icon": "train"
+          },
+          "actualTrack": "8",
+          "accessibilityName": "Intercity"
+        }
+      ]
+    },
+    {
+      "idx": 2,
+      "uid": "arnu|fromStation=8400621|requestedFromStation=8400621|toStation=8400282|requestedToStation=8400282|plannedFromTime=2026-10-06T09:58:00+02:00|plannedArrivalTime=2026-10-06T10:35:00+02:00|excludeHighSpeedTrains=false|showLiftInfo=false|searchForAccessibleTrip=false|localTrainsOnly=false|disabledTransportModalities=BUS,FERRY,TRAM,METRO|travelAssistance=false|tripSummaryHash=1719035371",
+      "ctxRecon": "arnu|fromStation=8400621|requestedFromStation=8400621|toStation=8400282|requestedToStation=8400282|plannedFromTime=2026-10-06T09:58:00+02:00|plannedArrivalTime=2026-10-06T10:35:00+02:00|excludeHighSpeedTrains=false|showLiftInfo=false|searchForAccessibleTrip=false|localTrainsOnly=false|disabledTransportModalities=BUS,FERRY,TRAM,METRO|travelAssistance=false|tripSummaryHash=1719035371",
+      "sourceCtxRecon": "¶HKI¶T$A=1@O=Utrecht Centraal@L=1100697@a=128@$A=1@O=Den Haag Centraal@L=1100998@a=128@$202610060958$202610061035$IC 1728 $$3$$$$$$¶KC¶#VE#2#CF#100#CA#0#CM#0#SICT#0#AM#16465#AM2#0#RT#31#¶KCC¶#VE#0#ERG#1#HIN#0#ECK#14998|14998|15035|15035|0|0|185|14984|3|0|10|0|0|-2147483648#¶KRCC¶#VE#1#MRTF#",
+      "plannedDurationInMinutes": 37,
+      "actualDurationInMinutes": 37,
+      "transfers": 0,
+      "status": "NORMAL",
+      "legs": [
+        {
+          "idx": "0",
+          "name": "IC 1728",
+          "travelType": "PUBLIC_TRANSIT",
+          "direction": "Den Haag Centraal",
+          "partCancelled": false,
+          "cancelled": false,
+          "isAfterCancelledLeg": false,
+          "isOnOrAfterCancelledLeg": false,
+          "changePossible": true,
+          "alternativeTransport": false,
+          "journeyDetailRef": "HARP_MM-2|#VN#1#ST#1790761283#PI#0#ZI#532325#TA#0#DA#61026#1S#1100691#1T#815#LS#1100998#LT#1035#PU#784#RT#3#CA#IC#ZE#1728#ZB#IC 1728 #PC#1#FR#1100691#FT#815#TO#1100998#TT#1035#",
+          "origin": {
+            "name": "Utrecht Centraal",
+            "rawLocationName": "Utrecht Centraal",
+            "lng": 5.11027765274048,
+            "lat": 52.0888900756836,
+            "countryCode": "NL",
+            "uicCode": "8400621",
+            "uicCdCode": "118400621",
+            "stationCode": "UT",
+            "type": "STATION",
+            "plannedTimeZoneOffset": 120,
+            "plannedDateTime": "2026-10-06T09:58:00+0200",
+            "actualTimeZoneOffset": 120,
+            "actualDateTime": "2026-10-06T09:58:00+0200",
+            "plannedTrack": "8",
+            "actualTrack": "8",
+            "checkinStatus": "CHECKIN",
+            "notes": []
+          },
+          "destination": {
+            "name": "Den Haag Centraal",
+            "rawLocationName": "Den Haag Centraal",
+            "lng": 4.32499980926514,
+            "lat": 52.0802764892578,
+            "countryCode": "NL",
+            "uicCode": "8400282",
+            "uicCdCode": "118400282",
+            "stationCode": "GVC",
+            "type": "STATION",
+            "plannedTimeZoneOffset": 120,
+            "plannedDateTime": "2026-10-06T10:35:00+0200",
+            "actualTimeZoneOffset": 120,
+            "actualDateTime": "2026-10-06T10:35:00+0200",
+            "plannedTrack": "8",
+            "actualTrack": "8",
+            "exitSide": "RIGHT",
+            "checkinStatus": "CHECKOUT",
+            "notes": []
+          },
+          "product": {
+            "productType": "Product",
+            "number": "1728",
+            "categoryCode": "IC",
+            "shortCategoryName": "IC",
+            "longCategoryName": "Intercity",
+            "operatorCode": "NS",
+            "operatorName": "NS",
+            "operatorAdministrativeCode": 100,
+            "type": "TRAIN",
+            "displayName": "NS Intercity",
+            "nameNesProperties": {
+              "color": "text-body"
+            },
+            "iconNesProperties": {
+              "color": "text-body",
+              "icon": "train"
+            },
+            "notes": [
+              [
+                {
+                  "value": "NS Intercity",
+                  "shortValue": "NS Intercity",
+                  "accessibilityValue": "NS Intercity",
+                  "key": "PRODUCT_NAME",
+                  "noteType": "ATTRIBUTE",
+                  "isPresentationRequired": true,
+                  "nesProperties": {
+                    "color": "text-body"
+                  }
+                }
+              ],
+              [
+                {
+                  "value": "richting Den Haag Centraal",
+                  "shortValue": "richting Den Haag Centraal",
+                  "accessibilityValue": "richting Den Haag Centraal",
+                  "key": "PRODUCT_DIRECTION",
+                  "noteType": "ATTRIBUTE",
+                  "isPresentationRequired": true,
+                  "nesProperties": {
+                    "color": "text-body"
+                  }
+                }
+              ],
+              [
+                {
+                  "value": "1 tussenstop",
+                  "shortValue": "1 tussenstop",
+                  "accessibilityValue": "1 tussenstop",
+                  "key": "PRODUCT_INTERMEDIATE_STOPS",
+                  "noteType": "ATTRIBUTE",
+                  "isPresentationRequired": true,
+                  "nesProperties": {
+                    "color": "text-body"
+                  }
+                }
+              ]
+            ],
+            "nesTagVariant": "Neutral"
+          },
+          "stops": [
+            {
+              "uicCode": "8400621",
+              "uicCdCode": "118400621",
+              "name": "Utrecht Centraal",
+              "lat": 52.0888900756836,
+              "lng": 5.11027765274048,
+              "countryCode": "NL",
+              "notes": [],
+              "routeIdx": 0,
+              "plannedDepartureDateTime": "2026-10-06T09:58:00+0200",
+              "plannedDepartureTimeZoneOffset": 120,
+              "actualDepartureDateTime": "2026-10-06T09:58:00+0200",
+              "actualDepartureTimeZoneOffset": 120,
+              "actualDepartureTrack": "8",
+              "plannedDepartureTrack": "8",
+              "plannedArrivalTrack": "8",
+              "actualArrivalTrack": "8",
+              "departureDelayInSeconds": 0,
+              "cancelled": false,
+              "borderStop": false,
+              "passing": false
+            },
+            {
+              "uicCode": "8400258",
+              "uicCdCode": "118400258",
+              "name": "Gouda",
+              "lat": 52.0175018310547,
+              "lng": 4.70444440841675,
+              "countryCode": "NL",
+              "notes": [],
+              "routeIdx": 6,
+              "plannedDepartureDateTime": "2026-10-06T10:17:00+0200",
+              "plannedDepartureTimeZoneOffset": 120,
+              "actualDepartureDateTime": "2026-10-06T10:17:00+0200",
+              "actualDepartureTimeZoneOffset": 120,
+              "plannedArrivalDateTime": "2026-10-06T10:16:00+0200",
+              "plannedArrivalTimeZoneOffset": 120,
+              "actualArrivalDateTime": "2026-10-06T10:16:00+0200",
+              "actualArrivalTimeZoneOffset": 120,
+              "actualDepartureTrack": "8",
+              "plannedDepartureTrack": "8",
+              "plannedArrivalTrack": "8",
+              "actualArrivalTrack": "8",
+              "departureDelayInSeconds": 0,
+              "arrivalDelayInSeconds": 0,
+              "cancelled": false,
+              "borderStop": false,
+              "passing": false
+            },
+            {
+              "uicCode": "8400282",
+              "uicCdCode": "118400282",
+              "name": "Den Haag Centraal",
+              "lat": 52.0802764892578,
+              "lng": 4.32499980926514,
+              "countryCode": "NL",
+              "notes": [],
+              "routeIdx": 12,
+              "plannedArrivalDateTime": "2026-10-06T10:35:00+0200",
+              "plannedArrivalTimeZoneOffset": 120,
+              "actualArrivalDateTime": "2026-10-06T10:35:00+0200",
+              "actualArrivalTimeZoneOffset": 120,
+              "actualDepartureTrack": "8",
+              "plannedDepartureTrack": "8",
+              "plannedArrivalTrack": "8",
+              "actualArrivalTrack": "8",
+              "arrivalDelayInSeconds": 0,
+              "cancelled": false,
+              "borderStop": false,
+              "passing": false
+            }
+          ],
+          "crowdForecast": "MEDIUM",
+          "shorterStock": false,
+          "journeyDetail": [
+            {
+              "type": "TRAIN_XML",
+              "link": {
+                "uri": "/api/v2/journey?id=HARP_MM-2|#VN#1#ST#1790761283#PI#0#ZI#532325#TA#0#DA#61026#1S#1100691#1T#815#LS#1100998#LT#1035#PU#784#RT#3#CA#IC#ZE#1728#ZB#IC 1728 #PC#1#FR#1100691#FT#815#TO#1100998#TT#1035#&train=1728&datetime=2026-10-06T09:58:00+02:00"
+              }
+            }
+          ],
+          "reachable": true,
+          "plannedDurationInMinutes": 37,
+          "actualDurationInMinutes": 37,
+          "nesProperties": {
+            "color": "text-info",
+            "scope": "LEG_LINE",
+            "styles": {
+              "type": "LineStyles",
+              "dashed": false
+            }
+          },
+          "duration": {
+            "value": "37 min.",
+            "accessibilityValue": "37 minuten",
+            "nesProperties": {
+              "color": "text-body"
+            }
+          },
+          "preSteps": [],
+          "postSteps": [],
+          "distanceInMeters": 58087
+        }
+      ],
+      "checksum": "3232cd58_3",
+      "crowdForecast": "MEDIUM",
+      "optimal": false,
+      "fareRoute": {
+        "routeId": "=KR8WIpSBfGy8Bg==",
+        "origin": {
+          "varCode": 621,
+          "name": "Utrecht Centraal"
+        },
+        "destination": {
+          "varCode": 282,
+          "name": "Den Haag Centraal"
+        }
+      },
+      "fares": [
+        {
+          "priceInCents": 2646,
+          "product": "OVCHIPKAART_ENKELE_REIS",
+          "travelClass": "FIRST_CLASS",
+          "discountType": "NO_DISCOUNT"
+        },
+        {
+          "priceInCents": 1470,
+          "product": "OVCHIPKAART_ENKELE_REIS",
+          "travelClass": "SECOND_CLASS",
+          "discountType": "NO_DISCOUNT"
+        },
+        {
+          "priceInCents": 2117,
+          "product": "OVCHIPKAART_ENKELE_REIS",
+          "travelClass": "FIRST_CLASS",
+          "discountType": "DISCOUNT_20_PERCENT"
+        },
+        {
+          "priceInCents": 1176,
+          "product": "OVCHIPKAART_ENKELE_REIS",
+          "travelClass": "SECOND_CLASS",
+          "discountType": "DISCOUNT_20_PERCENT"
+        },
+        {
+          "priceInCents": 1588,
+          "product": "OVCHIPKAART_ENKELE_REIS",
+          "travelClass": "FIRST_CLASS",
+          "discountType": "DISCOUNT_40_PERCENT"
+        },
+        {
+          "priceInCents": 882,
+          "product": "OVCHIPKAART_ENKELE_REIS",
+          "travelClass": "SECOND_CLASS",
+          "discountType": "DISCOUNT_40_PERCENT"
+        },
+        {
+          "priceInCents": 5292,
+          "product": "OVCHIPKAART_RETOUR",
+          "travelClass": "FIRST_CLASS",
+          "discountType": "NO_DISCOUNT"
+        },
+        {
+          "priceInCents": 2940,
+          "product": "OVCHIPKAART_RETOUR",
+          "travelClass": "SECOND_CLASS",
+          "discountType": "NO_DISCOUNT"
+        },
+        {
+          "priceInCents": 4234,
+          "product": "OVCHIPKAART_RETOUR",
+          "travelClass": "FIRST_CLASS",
+          "discountType": "DISCOUNT_20_PERCENT"
+        },
+        {
+          "priceInCents": 2352,
+          "product": "OVCHIPKAART_RETOUR",
+          "travelClass": "SECOND_CLASS",
+          "discountType": "DISCOUNT_20_PERCENT"
+        },
+        {
+          "priceInCents": 3176,
+          "product": "OVCHIPKAART_RETOUR",
+          "travelClass": "FIRST_CLASS",
+          "discountType": "DISCOUNT_40_PERCENT"
+        },
+        {
+          "priceInCents": 1764,
+          "product": "OVCHIPKAART_RETOUR",
+          "travelClass": "SECOND_CLASS",
+          "discountType": "DISCOUNT_40_PERCENT"
+        },
+        {
+          "priceInCents": 58500,
+          "product": "TRAJECT_VRIJ_JAAR",
+          "travelClass": "FIRST_CLASS",
+          "discountType": "NO_DISCOUNT"
+        },
+        {
+          "priceInCents": 34410,
+          "product": "TRAJECT_VRIJ_JAAR",
+          "travelClass": "SECOND_CLASS",
+          "discountType": "NO_DISCOUNT"
+        },
+        {
+          "priceInCents": 702000,
+          "product": "BUSINESS_CARD_TRAJECT_VRIJ_JAAR",
+          "travelClass": "FIRST_CLASS",
+          "discountType": "NO_DISCOUNT"
+        },
+        {
+          "priceInCents": 412920,
+          "product": "BUSINESS_CARD_TRAJECT_VRIJ_JAAR",
+          "travelClass": "SECOND_CLASS",
+          "discountType": "NO_DISCOUNT"
+        }
+      ],
+      "fareLegs": [
+        {
+          "origin": {
+            "name": "Utrecht Centraal",
+            "rawLocationName": "Utrecht Centraal",
+            "lng": 5.11027765274048,
+            "lat": 52.0888900756836,
+            "countryCode": "NL",
+            "uicCode": "8400621",
+            "uicCdCode": "118400621",
+            "stationCode": "UT",
+            "type": "STATION"
+          },
+          "destination": {
+            "name": "Den Haag Centraal",
+            "rawLocationName": "Den Haag Centraal",
+            "lng": 4.32499980926514,
+            "lat": 52.0802764892578,
+            "countryCode": "NL",
+            "uicCode": "8400282",
+            "uicCdCode": "118400282",
+            "stationCode": "GVC",
+            "type": "STATION"
+          },
+          "operator": "NS",
+          "productTypes": [
+            "TRAIN"
+          ],
+          "fares": [
+            {
+              "priceInCents": 1470,
+              "priceInCentsExcludingSupplement": 1470,
+              "supplementInCents": 0,
+              "buyableTicketSupplementPriceInCents": 0,
+              "product": "OVCHIPKAART_ENKELE_REIS",
+              "travelClass": "SECOND_CLASS",
+              "discountType": "NO_DISCOUNT"
+            }
+          ],
+          "travelDate": "2026-10-06"
+        }
+      ],
+      "productFare": {
+        "priceInCents": 1470,
+        "priceInCentsExcludingSupplement": 1470,
+        "buyableTicketPriceInCents": 1470,
+        "buyableTicketPriceInCentsExcludingSupplement": 1470,
+        "product": "OVCHIPKAART_ENKELE_REIS",
+        "travelClass": "SECOND_CLASS",
+        "discountType": "NO_DISCOUNT"
+      },
+      "fareOptions": {
+        "isInternationalBookable": false,
+        "isInternational": false,
+        "isEticketBuyable": true,
+        "isPossibleWithOvChipkaart": true,
+        "isTotalPriceUnknown": false
+      },
+      "type": "NS",
+      "shareUrl": {
+        "uri": "https://www.ns.nl/rpx?ctx=arnu%7CfromStation%3D8400621%7CrequestedFromStation%3D8400621%7CtoStation%3D8400282%7CrequestedToStation%3D8400282%7CplannedFromTime%3D2026-10-06T09%3A58%3A00%2B02%3A00%7CplannedArrivalTime%3D2026-10-06T10%3A35%3A00%2B02%3A00%7CexcludeHighSpeedTrains%3Dfalse%7CshowLiftInfo%3Dfalse%7CsearchForAccessibleTrip%3Dfalse%7ClocalTrainsOnly%3Dfalse%7CdisabledTransportModalities%3DBUS%2CFERRY%2CTRAM%2CMETRO%7CtravelAssistance%3Dfalse%7CtripSummaryHash%3D1719035371"
+      },
+      "realtime": true,
+      "routeId": "=KR8WIpSBfGy8Bg==",
+      "modalityListItems": [
+        {
+          "name": "Intercity",
+          "nameNesProperties": {
+            "color": "text-subtle",
+            "styles": {
+              "type": "TextStyles",
+              "strikethrough": false,
+              "bold": false
+            }
+          },
+          "iconNesProperties": {
+            "color": "text-body",
+            "icon": "train"
+          },
+          "actualTrack": "8",
+          "accessibilityName": "Intercity"
+        }
+      ]
+    },
+    {
+      "idx": 3,
+      "uid": "arnu|fromStation=8400621|requestedFromStation=8400621|toStation=8400282|requestedToStation=8400282|plannedFromTime=2026-10-06T10:13:00+02:00|plannedArrivalTime=2026-10-06T10:52:00+02:00|excludeHighSpeedTrains=false|showLiftInfo=false|searchForAccessibleTrip=false|localTrainsOnly=false|disabledTransportModalities=BUS,FERRY,TRAM,METRO|travelAssistance=false|tripSummaryHash=3723967325",
+      "ctxRecon": "arnu|fromStation=8400621|requestedFromStation=8400621|toStation=8400282|requestedToStation=8400282|plannedFromTime=2026-10-06T10:13:00+02:00|plannedArrivalTime=2026-10-06T10:52:00+02:00|excludeHighSpeedTrains=false|showLiftInfo=false|searchForAccessibleTrip=false|localTrainsOnly=false|disabledTransportModalities=BUS,FERRY,TRAM,METRO|travelAssistance=false|tripSummaryHash=3723967325",
+      "sourceCtxRecon": "¶HKI¶T$A=1@O=Utrecht Centraal@L=1100697@a=128@$A=1@O=Den Haag Centraal@L=1100762@a=128@$202610061013$202610061052$IC 528  $$1$$$$$$¶KC¶#VE#2#CF#100#CA#0#CM#0#SICT#0#AM#16465#AM2#0#RT#31#¶KCC¶#VE#0#ERG#1#HIN#0#ECK#15013|15013|15052|15052|0|0|185|14999|4|0|10|0|0|-2147483648#¶KRCC¶#VE#1#MRTF#",
+      "plannedDurationInMinutes": 39,
+      "actualDurationInMinutes": 39,
+      "transfers": 0,
+      "status": "NORMAL",
+      "legs": [
+        {
+          "idx": "0",
+          "name": "IC 528",
+          "travelType": "PUBLIC_TRANSIT",
+          "direction": "Den Haag Centraal",
+          "partCancelled": false,
+          "cancelled": false,
+          "isAfterCancelledLeg": false,
+          "isOnOrAfterCancelledLeg": false,
+          "changePossible": true,
+          "alternativeTransport": false,
+          "journeyDetailRef": "HARP_MM-2|#VN#1#ST#1790761283#PI#0#ZI#447417#TA#0#DA#61026#1S#1103399#1T#818#LS#1100762#LT#1052#PU#784#RT#1#CA#IC#ZE#528#ZB#IC 528  #PC#1#FR#1103399#FT#818#TO#1100762#TT#1052#",
+          "origin": {
+            "name": "Utrecht Centraal",
+            "rawLocationName": "Utrecht Centraal",
+            "lng": 5.11027765274048,
+            "lat": 52.0888900756836,
+            "countryCode": "NL",
+            "uicCode": "8400621",
+            "uicCdCode": "118400621",
+            "stationCode": "UT",
+            "type": "STATION",
+            "plannedTimeZoneOffset": 120,
+            "plannedDateTime": "2026-10-06T10:13:00+0200",
+            "actualTimeZoneOffset": 120,
+            "actualDateTime": "2026-10-06T10:13:00+0200",
+            "plannedTrack": "8",
+            "actualTrack": "8",
+            "checkinStatus": "CHECKIN",
+            "notes": []
+          },
+          "destination": {
+            "name": "Den Haag Centraal",
+            "rawLocationName": "Den Haag Centraal",
+            "lng": 4.32499980926514,
+            "lat": 52.0802764892578,
+            "countryCode": "NL",
+            "uicCode": "8400282",
+            "uicCdCode": "118400282",
+            "stationCode": "GVC",
+            "type": "STATION",
+            "plannedTimeZoneOffset": 120,
+            "plannedDateTime": "2026-10-06T10:52:00+0200",
+            "actualTimeZoneOffset": 120,
+            "actualDateTime": "2026-10-06T10:52:00+0200",
+            "plannedTrack": "7",
+            "actualTrack": "7",
+            "exitSide": "LEFT",
+            "checkinStatus": "CHECKOUT",
+            "notes": []
+          },
+          "product": {
+            "productType": "Product",
+            "number": "528",
+            "categoryCode": "IC",
+            "shortCategoryName": "IC",
+            "longCategoryName": "Intercity",
+            "operatorCode": "NS",
+            "operatorName": "NS",
+            "operatorAdministrativeCode": 100,
+            "type": "TRAIN",
+            "displayName": "NS Intercity",
+            "nameNesProperties": {
+              "color": "text-body"
+            },
+            "iconNesProperties": {
+              "color": "text-body",
+              "icon": "train"
+            },
+            "notes": [
+              [
+                {
+                  "value": "NS Intercity",
+                  "shortValue": "NS Intercity",
+                  "accessibilityValue": "NS Intercity",
+                  "key": "PRODUCT_NAME",
+                  "noteType": "ATTRIBUTE",
+                  "isPresentationRequired": true,
+                  "nesProperties": {
+                    "color": "text-body"
+                  }
+                }
+              ],
+              [
+                {
+                  "value": "richting Den Haag Centraal",
+                  "shortValue": "richting Den Haag Centraal",
+                  "accessibilityValue": "richting Den Haag Centraal",
+                  "key": "PRODUCT_DIRECTION",
+                  "noteType": "ATTRIBUTE",
+                  "isPresentationRequired": true,
+                  "nesProperties": {
+                    "color": "text-body"
+                  }
+                }
+              ],
+              [
+                {
+                  "value": "1 tussenstop",
+                  "shortValue": "1 tussenstop",
+                  "accessibilityValue": "1 tussenstop",
+                  "key": "PRODUCT_INTERMEDIATE_STOPS",
+                  "noteType": "ATTRIBUTE",
+                  "isPresentationRequired": true,
+                  "nesProperties": {
+                    "color": "text-body"
+                  }
+                }
+              ]
+            ],
+            "nesTagVariant": "Neutral"
+          },
+          "stops": [
+            {
+              "uicCode": "8400621",
+              "uicCdCode": "118400621",
+              "name": "Utrecht Centraal",
+              "lat": 52.0888900756836,
+              "lng": 5.11027765274048,
+              "countryCode": "NL",
+              "notes": [],
+              "routeIdx": 0,
+              "plannedDepartureDateTime": "2026-10-06T10:13:00+0200",
+              "plannedDepartureTimeZoneOffset": 120,
+              "actualDepartureDateTime": "2026-10-06T10:13:00+0200",
+              "actualDepartureTimeZoneOffset": 120,
+              "actualDepartureTrack": "8",
+              "plannedDepartureTrack": "8",
+              "plannedArrivalTrack": "8",
+              "actualArrivalTrack": "8",
+              "departureDelayInSeconds": 0,
+              "cancelled": false,
+              "borderStop": false,
+              "passing": false
+            },
+            {
+              "uicCode": "8400258",
+              "uicCdCode": "118400258",
+              "name": "Gouda",
+              "lat": 52.0175018310547,
+              "lng": 4.70444440841675,
+              "countryCode": "NL",
+              "notes": [],
+              "routeIdx": 6,
+              "plannedDepartureDateTime": "2026-10-06T10:34:00+0200",
+              "plannedDepartureTimeZoneOffset": 120,
+              "actualDepartureDateTime": "2026-10-06T10:34:00+0200",
+              "actualDepartureTimeZoneOffset": 120,
+              "plannedArrivalDateTime": "2026-10-06T10:31:00+0200",
+              "plannedArrivalTimeZoneOffset": 120,
+              "actualArrivalDateTime": "2026-10-06T10:31:00+0200",
+              "actualArrivalTimeZoneOffset": 120,
+              "actualDepartureTrack": "10",
+              "plannedDepartureTrack": "10",
+              "plannedArrivalTrack": "10",
+              "actualArrivalTrack": "10",
+              "departureDelayInSeconds": 0,
+              "arrivalDelayInSeconds": 0,
+              "cancelled": false,
+              "borderStop": false,
+              "passing": false
+            },
+            {
+              "uicCode": "8400282",
+              "uicCdCode": "118400282",
+              "name": "Den Haag Centraal",
+              "lat": 52.0802764892578,
+              "lng": 4.32499980926514,
+              "countryCode": "NL",
+              "notes": [],
+              "routeIdx": 12,
+              "plannedArrivalDateTime": "2026-10-06T10:52:00+0200",
+              "plannedArrivalTimeZoneOffset": 120,
+              "actualArrivalDateTime": "2026-10-06T10:52:00+0200",
+              "actualArrivalTimeZoneOffset": 120,
+              "actualDepartureTrack": "7",
+              "plannedDepartureTrack": "7",
+              "plannedArrivalTrack": "7",
+              "actualArrivalTrack": "7",
+              "arrivalDelayInSeconds": 0,
+              "cancelled": false,
+              "borderStop": false,
+              "passing": false
+            }
+          ],
+          "crowdForecast": "LOW",
+          "bicycleSpotCount": 6,
+          "shorterStock": false,
+          "journeyDetail": [
+            {
+              "type": "TRAIN_XML",
+              "link": {
+                "uri": "/api/v2/journey?id=HARP_MM-2|#VN#1#ST#1790761283#PI#0#ZI#447417#TA#0#DA#61026#1S#1103399#1T#818#LS#1100762#LT#1052#PU#784#RT#1#CA#IC#ZE#528#ZB#IC 528  #PC#1#FR#1103399#FT#818#TO#1100762#TT#1052#&train=528&datetime=2026-10-06T10:13:00+02:00"
+              }
+            }
+          ],
+          "reachable": true,
+          "plannedDurationInMinutes": 39,
+          "actualDurationInMinutes": 39,
+          "nesProperties": {
+            "color": "text-info",
+            "scope": "LEG_LINE",
+            "styles": {
+              "type": "LineStyles",
+              "dashed": false
+            }
+          },
+          "duration": {
+            "value": "39 min.",
+            "accessibilityValue": "39 minuten",
+            "nesProperties": {
+              "color": "text-body"
+            }
+          },
+          "preSteps": [],
+          "postSteps": [],
+          "distanceInMeters": 58087
+        }
+      ],
+      "checksum": "87488209_3",
+      "crowdForecast": "LOW",
+      "optimal": false,
+      "fareRoute": {
+        "routeId": "=KR8WIpSBfFQMCA==",
+        "origin": {
+          "varCode": 621,
+          "name": "Utrecht Centraal"
+        },
+        "destination": {
+          "varCode": 282,
+          "name": "Den Haag Centraal"
+        }
+      },
+      "fares": [
+        {
+          "priceInCents": 2646,
+          "product": "OVCHIPKAART_ENKELE_REIS",
+          "travelClass": "FIRST_CLASS",
+          "discountType": "NO_DISCOUNT"
+        },
+        {
+          "priceInCents": 1470,
+          "product": "OVCHIPKAART_ENKELE_REIS",
+          "travelClass": "SECOND_CLASS",
+          "discountType": "NO_DISCOUNT"
+        },
+        {
+          "priceInCents": 2117,
+          "product": "OVCHIPKAART_ENKELE_REIS",
+          "travelClass": "FIRST_CLASS",
+          "discountType": "DISCOUNT_20_PERCENT"
+        },
+        {
+          "priceInCents": 1176,
+          "product": "OVCHIPKAART_ENKELE_REIS",
+          "travelClass": "SECOND_CLASS",
+          "discountType": "DISCOUNT_20_PERCENT"
+        },
+        {
+          "priceInCents": 1588,
+          "product": "OVCHIPKAART_ENKELE_REIS",
+          "travelClass": "FIRST_CLASS",
+          "discountType": "DISCOUNT_40_PERCENT"
+        },
+        {
+          "priceInCents": 882,
+          "product": "OVCHIPKAART_ENKELE_REIS",
+          "travelClass": "SECOND_CLASS",
+          "discountType": "DISCOUNT_40_PERCENT"
+        },
+        {
+          "priceInCents": 5292,
+          "product": "OVCHIPKAART_RETOUR",
+          "travelClass": "FIRST_CLASS",
+          "discountType": "NO_DISCOUNT"
+        },
+        {
+          "priceInCents": 2940,
+          "product": "OVCHIPKAART_RETOUR",
+          "travelClass": "SECOND_CLASS",
+          "discountType": "NO_DISCOUNT"
+        },
+        {
+          "priceInCents": 4234,
+          "product": "OVCHIPKAART_RETOUR",
+          "travelClass": "FIRST_CLASS",
+          "discountType": "DISCOUNT_20_PERCENT"
+        },
+        {
+          "priceInCents": 2352,
+          "product": "OVCHIPKAART_RETOUR",
+          "travelClass": "SECOND_CLASS",
+          "discountType": "DISCOUNT_20_PERCENT"
+        },
+        {
+          "priceInCents": 3176,
+          "product": "OVCHIPKAART_RETOUR",
+          "travelClass": "FIRST_CLASS",
+          "discountType": "DISCOUNT_40_PERCENT"
+        },
+        {
+          "priceInCents": 1764,
+          "product": "OVCHIPKAART_RETOUR",
+          "travelClass": "SECOND_CLASS",
+          "discountType": "DISCOUNT_40_PERCENT"
+        },
+        {
+          "priceInCents": 58500,
+          "product": "TRAJECT_VRIJ_JAAR",
+          "travelClass": "FIRST_CLASS",
+          "discountType": "NO_DISCOUNT"
+        },
+        {
+          "priceInCents": 34410,
+          "product": "TRAJECT_VRIJ_JAAR",
+          "travelClass": "SECOND_CLASS",
+          "discountType": "NO_DISCOUNT"
+        },
+        {
+          "priceInCents": 702000,
+          "product": "BUSINESS_CARD_TRAJECT_VRIJ_JAAR",
+          "travelClass": "FIRST_CLASS",
+          "discountType": "NO_DISCOUNT"
+        },
+        {
+          "priceInCents": 412920,
+          "product": "BUSINESS_CARD_TRAJECT_VRIJ_JAAR",
+          "travelClass": "SECOND_CLASS",
+          "discountType": "NO_DISCOUNT"
+        }
+      ],
+      "fareLegs": [
+        {
+          "origin": {
+            "name": "Utrecht Centraal",
+            "rawLocationName": "Utrecht Centraal",
+            "lng": 5.11027765274048,
+            "lat": 52.0888900756836,
+            "countryCode": "NL",
+            "uicCode": "8400621",
+            "uicCdCode": "118400621",
+            "stationCode": "UT",
+            "type": "STATION"
+          },
+          "destination": {
+            "name": "Den Haag Centraal",
+            "rawLocationName": "Den Haag Centraal",
+            "lng": 4.32499980926514,
+            "lat": 52.0802764892578,
+            "countryCode": "NL",
+            "uicCode": "8400282",
+            "uicCdCode": "118400282",
+            "stationCode": "GVC",
+            "type": "STATION"
+          },
+          "operator": "NS",
+          "productTypes": [
+            "TRAIN"
+          ],
+          "fares": [
+            {
+              "priceInCents": 1470,
+              "priceInCentsExcludingSupplement": 1470,
+              "supplementInCents": 0,
+              "buyableTicketSupplementPriceInCents": 0,
+              "product": "OVCHIPKAART_ENKELE_REIS",
+              "travelClass": "SECOND_CLASS",
+              "discountType": "NO_DISCOUNT"
+            }
+          ],
+          "travelDate": "2026-10-06"
+        }
+      ],
+      "productFare": {
+        "priceInCents": 1470,
+        "priceInCentsExcludingSupplement": 1470,
+        "buyableTicketPriceInCents": 1470,
+        "buyableTicketPriceInCentsExcludingSupplement": 1470,
+        "product": "OVCHIPKAART_ENKELE_REIS",
+        "travelClass": "SECOND_CLASS",
+        "discountType": "NO_DISCOUNT"
+      },
+      "fareOptions": {
+        "isInternationalBookable": false,
+        "isInternational": false,
+        "isEticketBuyable": true,
+        "isPossibleWithOvChipkaart": true,
+        "isTotalPriceUnknown": false
+      },
+      "type": "NS",
+      "shareUrl": {
+        "uri": "https://www.ns.nl/rpx?ctx=arnu%7CfromStation%3D8400621%7CrequestedFromStation%3D8400621%7CtoStation%3D8400282%7CrequestedToStation%3D8400282%7CplannedFromTime%3D2026-10-06T10%3A13%3A00%2B02%3A00%7CplannedArrivalTime%3D2026-10-06T10%3A52%3A00%2B02%3A00%7CexcludeHighSpeedTrains%3Dfalse%7CshowLiftInfo%3Dfalse%7CsearchForAccessibleTrip%3Dfalse%7ClocalTrainsOnly%3Dfalse%7CdisabledTransportModalities%3DBUS%2CFERRY%2CTRAM%2CMETRO%7CtravelAssistance%3Dfalse%7CtripSummaryHash%3D3723967325"
+      },
+      "realtime": true,
+      "routeId": "=KR8WIpSBfFQMCA==",
+      "modalityListItems": [
+        {
+          "name": "Intercity",
+          "nameNesProperties": {
+            "color": "text-subtle",
+            "styles": {
+              "type": "TextStyles",
+              "strikethrough": false,
+              "bold": false
+            }
+          },
+          "iconNesProperties": {
+            "color": "text-body",
+            "icon": "train"
+          },
+          "actualTrack": "8",
+          "accessibilityName": "Intercity"
+        }
+      ]
+    }
+  ]
+}
