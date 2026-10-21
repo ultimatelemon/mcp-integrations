@@ -31,7 +31,7 @@ jobs:
 
   publish:
     needs: [quality]
-    uses: ultimatelemon/shared-actions/.github/workflows/docker-publish.yml@19145242a7f9e5ea7952ba60603e10dd740795ec
+    uses: ultimatelemon/shared-actions/.github/workflows/docker-publish.yml@v2
     permissions:
       contents: read
       packages: write
