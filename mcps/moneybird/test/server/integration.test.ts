@@ -1,9 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { Client, InMemoryTransport } from '@modelcontextprotocol/client';
-import { createMoneybirdServer } from '../../src/server/create.js';
-import { MemoryCredentialStore } from '../../src/config/store.js';
-import { configFromEnv } from '../../src/config/schema.js';
-import { stubFetch, type FetchStub } from '../support/fetch.js';
+import { createMoneybirdServer } from '../../src/server/create.ts';
+import { configFromEnv } from '../../src/config/schema.ts';
+import { stubFetch, type FetchStub } from '../support/fetch.ts';
 
 interface Harness {
   client: Client;
@@ -13,22 +12,26 @@ interface Harness {
 
 async function connect(
   env: Record<string, string>,
-  responses: Parameters<typeof stubFetch>[0],
+  responses: Parameters<typeof stubFetch>[0]
 ): Promise<Harness> {
   const http = stubFetch(responses);
-  const config = configFromEnv({ MONEYBIRD_API_TOKEN: 'test-token', ...env });
+  const config = configFromEnv(env);
 
-  const { server } = await createMoneybirdServer({
+  const { server } = createMoneybirdServer({
     config,
-    store: new MemoryCredentialStore(),
+    token: 'test-token',
     fetch: http.fetch,
-    version: '0.0.0-test',
+    version: '0.0.0-test'
   });
 
-  const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
+  const [clientTransport, serverTransport] =
+    InMemoryTransport.createLinkedPair();
   const client = new Client({ name: 'test', version: '0.0.0' });
 
-  await Promise.all([server.connect(serverTransport), client.connect(clientTransport)]);
+  await Promise.all([
+    server.connect(serverTransport),
+    client.connect(clientTransport)
+  ]);
 
   return {
     client,
@@ -36,12 +39,14 @@ async function connect(
     close: async () => {
       await client.close();
       await server.close();
-    },
+    }
   };
 }
 
 function textOf(result: unknown): string {
-  const content = (result as { content: Array<{ type: string; text?: string }> }).content;
+  const content = (
+    result as { content: Array<{ type: string; text?: string }> }
+  ).content;
   return content
     .filter((entry) => entry.type === 'text')
     .map((entry) => entry.text ?? '')
@@ -50,7 +55,10 @@ function textOf(result: unknown): string {
 
 describe('server over the MCP protocol', () => {
   it('lists only read tools by default', async () => {
-    const harness = await connect({ MONEYBIRD_ADMINISTRATION_ID: '123' }, { body: [] });
+    const harness = await connect(
+      { MONEYBIRD_ADMINISTRATION_ID: '123' },
+      { body: [] }
+    );
     try {
       const { tools } = await harness.client.listTools();
       const names = tools.map((tool) => tool.name);
@@ -66,10 +74,12 @@ describe('server over the MCP protocol', () => {
   it('exposes write tools once write access is enabled, but still hides deletes', async () => {
     const harness = await connect(
       { MONEYBIRD_ADMINISTRATION_ID: '123', MONEYBIRD_ALLOW_WRITE: 'true' },
-      { body: [] },
+      { body: [] }
     );
     try {
-      const names = (await harness.client.listTools()).tools.map((tool) => tool.name);
+      const names = (await harness.client.listTools()).tools.map(
+        (tool) => tool.name
+      );
 
       expect(names).toContain('create_contact');
       expect(names).not.toContain('delete_contact');
@@ -83,9 +93,9 @@ describe('server over the MCP protocol', () => {
       {
         MONEYBIRD_ADMINISTRATION_ID: '123',
         MONEYBIRD_ALLOW_WRITE: 'true',
-        MONEYBIRD_ALLOW_DELETE: 'true',
+        MONEYBIRD_ALLOW_DELETE: 'true'
       },
-      { body: [] },
+      { body: [] }
     );
     try {
       const { tools } = await harness.client.listTools();
@@ -105,16 +115,18 @@ describe('server over the MCP protocol', () => {
   it('calls Moneybird with the configured administration and returns the payload', async () => {
     const harness = await connect(
       { MONEYBIRD_ADMINISTRATION_ID: '123' },
-      { body: [{ id: '1', company_name: 'Acme BV' }] },
+      { body: [{ id: '1', company_name: 'Acme BV' }] }
     );
     try {
       const result = await harness.client.callTool({
         name: 'list_contacts',
-        arguments: { per_page: 10 },
+        arguments: { per_page: 10 }
       });
 
       const request = harness.http.lastRequest();
-      expect(request.url).toBe('https://moneybird.com/api/v2/123/contacts.json?per_page=10');
+      expect(request.url).toBe(
+        'https://moneybird.com/api/v2/123/contacts.json?per_page=10'
+      );
       expect(request.headers['authorization']).toBe('Bearer test-token');
       expect(textOf(result)).toContain('Acme BV');
     } finally {
@@ -123,15 +135,20 @@ describe('server over the MCP protocol', () => {
   });
 
   it('routes a filtered contact search to the filter endpoint', async () => {
-    const harness = await connect({ MONEYBIRD_ADMINISTRATION_ID: '123' }, { body: [] });
+    const harness = await connect(
+      { MONEYBIRD_ADMINISTRATION_ID: '123' },
+      { body: [] }
+    );
     try {
       await harness.client.callTool({
         name: 'list_contacts',
-        arguments: { filter: 'contact_type:company' },
+        arguments: { filter: 'contact_type:company' }
       });
 
       expect(harness.http.lastRequest().url).toContain('/contacts/filter.json');
-      expect(harness.http.lastRequest().url).toContain('filter=contact_type%3Acompany');
+      expect(harness.http.lastRequest().url).toContain(
+        'filter=contact_type%3Acompany'
+      );
     } finally {
       await harness.close();
     }
@@ -140,12 +157,12 @@ describe('server over the MCP protocol', () => {
   it('reports a Moneybird validation failure as a tool error rather than a transport error', async () => {
     const harness = await connect(
       { MONEYBIRD_ADMINISTRATION_ID: '123', MONEYBIRD_ALLOW_WRITE: 'true' },
-      { status: 422, body: { error: { company_name: ["can't be blank"] } } },
+      { status: 422, body: { error: { company_name: ["can't be blank"] } } }
     );
     try {
       const result = await harness.client.callTool({
         name: 'create_contact',
-        arguments: { contact: {} },
+        arguments: { contact: {} }
       });
 
       expect((result as { isError?: boolean }).isError).toBe(true);
@@ -156,10 +173,16 @@ describe('server over the MCP protocol', () => {
   });
 
   it('rejects a tool that is not exposed', async () => {
-    const harness = await connect({ MONEYBIRD_ADMINISTRATION_ID: '123' }, { body: [] });
+    const harness = await connect(
+      { MONEYBIRD_ADMINISTRATION_ID: '123' },
+      { body: [] }
+    );
     try {
       await expect(
-        harness.client.callTool({ name: 'delete_contact', arguments: { contact_id: '1' } }),
+        harness.client.callTool({
+          name: 'delete_contact',
+          arguments: { contact_id: '1' }
+        })
       ).rejects.toThrow();
     } finally {
       await harness.close();

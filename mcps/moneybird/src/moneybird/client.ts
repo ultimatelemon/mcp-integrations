@@ -2,17 +2,17 @@ import {
   MoneybirdError,
   MoneybirdNetworkError,
   createErrorForStatus,
-  parseErrorBody,
-} from './errors.js';
-import { readPageInfo, type PageInfo } from './pagination.js';
+  parseErrorBody
+} from './errors.ts';
+import { readPageInfo, type PageInfo } from './pagination.ts';
 import {
   GENERAL_BUDGET,
   REPORTS_BUDGET,
   SlidingWindowLimiter,
   backoffDelay,
   readRateLimit,
-  type RateLimitSnapshot,
-} from './rate-limit.js';
+  type RateLimitSnapshot
+} from './rate-limit.ts';
 
 export const DEFAULT_BASE_URL = 'https://moneybird.com/api/v2';
 
@@ -20,7 +20,9 @@ export const DEFAULT_BASE_URL = 'https://moneybird.com/api/v2';
  * Resolves the bearer token for a request; may refresh an expired OAuth token. Receives the
  * administration the request targets, because a Moneybird OAuth token is bound to one.
  */
-export type TokenProvider = (administrationId?: string) => string | Promise<string>;
+export type TokenProvider = (
+  administrationId?: string
+) => string | Promise<string>;
 
 /** Resolves the default administration, which can change while the server is running. */
 export type AdministrationProvider = () => string | undefined;
@@ -39,6 +41,11 @@ export interface MoneybirdClientOptions {
   fetch?: typeof globalThis.fetch;
   /** Disables the client-side pacing that keeps requests inside Moneybird's published budget. */
   disableRateLimiting?: boolean;
+  /**
+   * Budgets shared with other clients. Moneybird counts per IP, so every client in one process
+   * must draw from the same ones.
+   */
+  limiters?: Limiters;
   sleep?: (ms: number) => Promise<void>;
   random?: () => number;
   now?: () => number;
@@ -70,6 +77,26 @@ export interface MoneybirdResponse<T> {
   pageInfo: PageInfo;
   /** Set when `manualRedirect` was requested and Moneybird answered with a 3xx. */
   redirectUrl?: string;
+}
+
+export interface Limiters {
+  general: SlidingWindowLimiter;
+  reports: SlidingWindowLimiter;
+}
+
+export function createLimiters(now?: () => number): Limiters {
+  return {
+    general: new SlidingWindowLimiter(
+      GENERAL_BUDGET.limit,
+      GENERAL_BUDGET.windowMs,
+      now
+    ),
+    reports: new SlidingWindowLimiter(
+      REPORTS_BUDGET.limit,
+      REPORTS_BUDGET.windowMs,
+      now
+    )
+  };
 }
 
 const RETRYABLE_STATUSES = new Set([429, 500, 502, 503, 504]);
@@ -107,7 +134,9 @@ export class MoneybirdClient {
   constructor(options: MoneybirdClientOptions) {
     this.baseUrl = (options.baseUrl ?? DEFAULT_BASE_URL).replace(/\/+$/, '');
     this.getToken =
-      typeof options.token === 'string' ? () => options.token as string : options.token;
+      typeof options.token === 'string'
+        ? () => options.token as string
+        : options.token;
     this.resolveAdministrationId =
       typeof options.administrationId === 'function'
         ? options.administrationId
@@ -121,17 +150,9 @@ export class MoneybirdClient {
     this.random = options.random ?? Math.random;
 
     if (!options.disableRateLimiting) {
-      const now = options.now;
-      this.generalLimiter = new SlidingWindowLimiter(
-        GENERAL_BUDGET.limit,
-        GENERAL_BUDGET.windowMs,
-        now,
-      );
-      this.reportsLimiter = new SlidingWindowLimiter(
-        REPORTS_BUDGET.limit,
-        REPORTS_BUDGET.windowMs,
-        now,
-      );
+      const limiters = options.limiters ?? createLimiters(options.now);
+      this.generalLimiter = limiters.general;
+      this.reportsLimiter = limiters.reports;
     }
   }
 
@@ -144,7 +165,9 @@ export class MoneybirdClient {
     return this.resolveAdministrationId();
   }
 
-  async request<T = unknown>(options: RequestOptions): Promise<MoneybirdResponse<T>> {
+  async request<T = unknown>(
+    options: RequestOptions
+  ): Promise<MoneybirdResponse<T>> {
     const url = this.buildUrl(options);
     const method = options.method ?? 'GET';
 
@@ -164,7 +187,11 @@ export class MoneybirdClient {
 
       this.lastRateLimit = readRateLimit(response.headers);
 
-      if (options.manualRedirect && response.status >= 300 && response.status < 400) {
+      if (
+        options.manualRedirect &&
+        response.status >= 300 &&
+        response.status < 400
+      ) {
         return this.toRedirectResponse<T>(response, options);
       }
 
@@ -173,30 +200,40 @@ export class MoneybirdClient {
       }
 
       const error = await this.toApiError(response, method, url);
-      if (!RETRYABLE_STATUSES.has(response.status) || attempt === this.maxRetries) throw error;
+      if (
+        !RETRYABLE_STATUSES.has(response.status) ||
+        attempt === this.maxRetries
+      )
+        throw error;
 
       lastError = error;
       await this.sleep(
         backoffDelay({
           attempt,
           retryAfterSeconds: this.lastRateLimit.retryAfterSeconds,
-          random: this.random,
-        }),
+          random: this.random
+        })
       );
     }
 
     /* c8 ignore next -- the loop either returns or throws on its final attempt. */
-    throw lastError ?? new MoneybirdError('Request failed', { status: 0, method, url });
+    throw (
+      lastError ??
+      new MoneybirdError('Request failed', { status: 0, method, url })
+    );
   }
 
-  get<T = unknown>(path: string, options: Omit<RequestOptions, 'path' | 'method'> = {}) {
+  get<T = unknown>(
+    path: string,
+    options: Omit<RequestOptions, 'path' | 'method'> = {}
+  ) {
     return this.request<T>({ ...options, path, method: 'GET' });
   }
 
   post<T = unknown>(
     path: string,
     body?: unknown,
-    options: Omit<RequestOptions, 'path' | 'method' | 'body'> = {},
+    options: Omit<RequestOptions, 'path' | 'method' | 'body'> = {}
   ) {
     return this.request<T>({ ...options, path, method: 'POST', body });
   }
@@ -204,12 +241,15 @@ export class MoneybirdClient {
   patch<T = unknown>(
     path: string,
     body?: unknown,
-    options: Omit<RequestOptions, 'path' | 'method' | 'body'> = {},
+    options: Omit<RequestOptions, 'path' | 'method' | 'body'> = {}
   ) {
     return this.request<T>({ ...options, path, method: 'PATCH', body });
   }
 
-  delete<T = unknown>(path: string, options: Omit<RequestOptions, 'path' | 'method'> = {}) {
+  delete<T = unknown>(
+    path: string,
+    options: Omit<RequestOptions, 'path' | 'method'> = {}
+  ) {
     return this.request<T>({ ...options, path, method: 'DELETE' });
   }
 
@@ -223,11 +263,16 @@ export class MoneybirdClient {
 
     let prefix = '';
     if (scoped) {
-      const administrationId = options.administrationId ?? this.resolveAdministrationId();
+      const administrationId =
+        options.administrationId ?? this.resolveAdministrationId();
       if (!administrationId) {
         throw new MoneybirdError(
           'No administration selected. Set MONEYBIRD_ADMINISTRATION_ID or pass administration_id.',
-          { status: 0, method: options.method ?? 'GET', url: `${this.baseUrl}/${path}` },
+          {
+            status: 0,
+            method: options.method ?? 'GET',
+            url: `${this.baseUrl}/${path}`
+          }
         );
       }
       prefix = `${encodeURIComponent(administrationId)}/`;
@@ -240,30 +285,43 @@ export class MoneybirdClient {
     return url.toString();
   }
 
-  private async send(url: string, method: string, options: RequestOptions): Promise<Response> {
-    const token = await this.getToken(options.administrationId ?? this.resolveAdministrationId());
+  private async send(
+    url: string,
+    method: string,
+    options: RequestOptions
+  ): Promise<Response> {
+    const token = await this.getToken(
+      options.administrationId ?? this.resolveAdministrationId()
+    );
     const headers = new Headers({
       authorization: `Bearer ${token}`,
       accept: 'application/json',
-      'user-agent': this.userAgent,
+      'user-agent': this.userAgent
     });
     if (this.timeZone) headers.set('time-zone', this.timeZone);
-    if (options.body !== undefined) headers.set('content-type', 'application/json');
+    if (options.body !== undefined)
+      headers.set('content-type', 'application/json');
 
     const timeout = AbortSignal.timeout(this.requestTimeoutMs);
-    const signal = options.signal ? AbortSignal.any([options.signal, timeout]) : timeout;
+    const signal = options.signal
+      ? AbortSignal.any([options.signal, timeout])
+      : timeout;
 
     return this.fetchImpl(url, {
       method,
       headers,
       signal,
       redirect: options.manualRedirect ? 'manual' : 'follow',
-      ...(options.body !== undefined ? { body: JSON.stringify(options.body) } : {}),
+      ...(options.body !== undefined
+        ? { body: JSON.stringify(options.body) }
+        : {})
     });
   }
 
   private async awaitRateLimitSlot(path: string): Promise<void> {
-    const limiter = isReportsPath(path) ? this.reportsLimiter : this.generalLimiter;
+    const limiter = isReportsPath(path)
+      ? this.reportsLimiter
+      : this.generalLimiter;
     if (!limiter) return;
     const delay = limiter.delayUntilSlot();
     if (delay > 0) await this.sleep(delay);
@@ -272,7 +330,7 @@ export class MoneybirdClient {
 
   private async toSuccessResponse<T>(
     response: Response,
-    options: RequestOptions,
+    options: RequestOptions
   ): Promise<MoneybirdResponse<T>> {
     return {
       data: (await readBody(response)) as T,
@@ -281,12 +339,15 @@ export class MoneybirdClient {
       rateLimit: readRateLimit(response.headers),
       pageInfo: readPageInfo(response.headers, {
         page: numeric(options.query?.['page']),
-        perPage: numeric(options.query?.['per_page']),
-      }),
+        perPage: numeric(options.query?.['per_page'])
+      })
     };
   }
 
-  private toRedirectResponse<T>(response: Response, options: RequestOptions): MoneybirdResponse<T> {
+  private toRedirectResponse<T>(
+    response: Response,
+    options: RequestOptions
+  ): MoneybirdResponse<T> {
     const location = response.headers.get('location') ?? '';
     return {
       data: { url: location } as T,
@@ -295,28 +356,36 @@ export class MoneybirdClient {
       rateLimit: readRateLimit(response.headers),
       pageInfo: readPageInfo(response.headers, {
         page: numeric(options.query?.['page']),
-        perPage: numeric(options.query?.['per_page']),
+        perPage: numeric(options.query?.['per_page'])
       }),
-      redirectUrl: location,
+      redirectUrl: location
     };
   }
 
   private async toApiError(
     response: Response,
     method: string,
-    url: string,
+    url: string
   ): Promise<MoneybirdError> {
     const body = await readBody(response);
-    return createErrorForStatus(response.status, parseErrorBody(response.status, body), {
-      method,
-      url,
-      body,
-      requestId: response.headers.get('x-request-id') ?? undefined,
-      retryAfterSeconds: readRateLimit(response.headers).retryAfterSeconds,
-    });
+    return createErrorForStatus(
+      response.status,
+      parseErrorBody(response.status, body),
+      {
+        method,
+        url,
+        body,
+        requestId: response.headers.get('x-request-id') ?? undefined,
+        retryAfterSeconds: readRateLimit(response.headers).retryAfterSeconds
+      }
+    );
   }
 
-  private toNetworkError(cause: unknown, method: string, url: string): MoneybirdNetworkError {
+  private toNetworkError(
+    cause: unknown,
+    method: string,
+    url: string
+  ): MoneybirdNetworkError {
     const isTimeout = cause instanceof Error && cause.name === 'TimeoutError';
     const message = isTimeout
       ? `Request timed out after ${this.requestTimeoutMs}ms`
@@ -325,7 +394,9 @@ export class MoneybirdClient {
   }
 }
 
-function numeric(value: string | number | boolean | undefined): number | undefined {
+function numeric(
+  value: string | number | boolean | undefined
+): number | undefined {
   if (value === undefined) return undefined;
   const parsed = Number(value);
   return Number.isFinite(parsed) ? parsed : undefined;

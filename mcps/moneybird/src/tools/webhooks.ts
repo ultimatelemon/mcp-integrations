@@ -5,8 +5,8 @@ import {
   emptyResult,
   listResult,
   textResult,
-  type ToolDefinition,
-} from './common.js';
+  type ToolDefinition
+} from './common.ts';
 
 /**
  * The event names the OpenAPI spec actually shows, taken from the `action` field of the document
@@ -40,10 +40,10 @@ export const webhooksTools: readonly ToolDefinition[] = [
     inputSchema: z.object({ administration_id: administrationIdField }),
     handler: async (args, { client }) => {
       const response = await client.get('webhooks', {
-        administrationId: args.administration_id,
+        administrationId: args.administration_id
       });
       return listResult(response);
-    },
+    }
   }),
 
   defineTool({
@@ -60,11 +60,15 @@ export const webhooksTools: readonly ToolDefinition[] = [
     irreversible: true,
     inputSchema: z.object({
       administration_id: administrationIdField,
-      url: z.string().describe('HTTPS endpoint that will receive the event payloads.'),
+      url: z
+        .string()
+        .describe('HTTPS endpoint that will receive the event payloads.'),
       enabled_events: z
         .array(z.string())
         .optional()
-        .describe('Events or event groups to subscribe to. Omit to receive all events.'),
+        .describe(
+          'Events or event groups to subscribe to. Omit to receive all events.'
+        )
     }),
     handler: async (args, { client }) => {
       // Unlike the rest of the API this body carries no resource envelope.
@@ -72,32 +76,35 @@ export const webhooksTools: readonly ToolDefinition[] = [
         'webhooks',
         {
           url: args.url,
-          ...(args.enabled_events ? { enabled_events: args.enabled_events } : {}),
+          ...(args.enabled_events
+            ? { enabled_events: args.enabled_events }
+            : {})
         },
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
     name: 'activate_webhook',
     title: 'Activate webhook',
-    description: 'Reactivate a deactivated webhook so it receives event notifications again.',
+    description:
+      'Reactivate a deactivated webhook so it receives event notifications again.',
     toolset: 'webhooks',
     access: 'write',
     inputSchema: z.object({
       administration_id: administrationIdField,
-      webhook_id: z.string(),
+      webhook_id: z.string()
     }),
     handler: async (args, { client }) => {
       const response = await client.patch(
         `webhooks/${encodeURIComponent(args.webhook_id)}/activate`,
         undefined,
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -110,16 +117,16 @@ export const webhooksTools: readonly ToolDefinition[] = [
     access: 'write',
     inputSchema: z.object({
       administration_id: administrationIdField,
-      webhook_id: z.string(),
+      webhook_id: z.string()
     }),
     handler: async (args, { client }) => {
       const response = await client.patch(
         `webhooks/${encodeURIComponent(args.webhook_id)}/deactivate`,
         undefined,
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -133,14 +140,14 @@ export const webhooksTools: readonly ToolDefinition[] = [
     irreversible: true,
     inputSchema: z.object({
       administration_id: administrationIdField,
-      webhook_id: z.string(),
+      webhook_id: z.string()
     }),
     handler: async (args, { client }) => {
       await client.delete(`webhooks/${encodeURIComponent(args.webhook_id)}`, {
-        administrationId: args.administration_id,
+        administrationId: args.administration_id
       });
       return emptyResult(`Webhook ${args.webhook_id} deleted.`);
-    },
+    }
   }),
 
   defineTool({
@@ -155,15 +162,15 @@ export const webhooksTools: readonly ToolDefinition[] = [
     irreversible: true,
     inputSchema: z.object({
       administration_id: administrationIdField,
-      contact_id: z.string().describe('Contact whose portal the link opens.'),
+      contact_id: z.string().describe('Contact whose portal the link opens.')
     }),
     handler: async (args, { client }) => {
       const response = await client.get(
         `customer_contact_portal/${encodeURIComponent(args.contact_id)}`,
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -177,15 +184,15 @@ export const webhooksTools: readonly ToolDefinition[] = [
     irreversible: true,
     inputSchema: z.object({
       administration_id: administrationIdField,
-      contact_id: z.string(),
+      contact_id: z.string()
     }),
     handler: async (args, { client }) => {
       const response = await client.get(
         `customer_contact_portal/${encodeURIComponent(args.contact_id)}/invoices`,
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -201,15 +208,15 @@ export const webhooksTools: readonly ToolDefinition[] = [
     inputSchema: z.object({
       administration_id: administrationIdField,
       contact_id: z.string(),
-      subscription_id: z.string(),
+      subscription_id: z.string()
     }),
     handler: async (args, { client }) => {
       const response = await client.get(
         `customer_contact_portal/${encodeURIComponent(args.contact_id)}/subscriptions/${encodeURIComponent(args.subscription_id)}`,
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -225,9 +232,9 @@ export const webhooksTools: readonly ToolDefinition[] = [
     inputSchema: z.object({ administration_id: administrationIdField }),
     handler: async (args, { client }) => {
       const response = await client.get('verifications', {
-        administrationId: args.administration_id,
+        administrationId: args.administration_id
       });
       return textResult(response.data);
-    },
-  }),
+    }
+  })
 ] as const;

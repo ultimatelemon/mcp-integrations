@@ -8,8 +8,8 @@ import {
   listResult,
   paginationFields,
   textResult,
-  type ToolDefinition,
-} from './common.js';
+  type ToolDefinition
+} from './common.ts';
 
 const DOCUMENT_FILTER_KEYS =
   'period (named period such as this_year/prev_quarter, or a range like 20260101..20260131), ' +
@@ -27,11 +27,16 @@ const DOCUMENT_PATHS = {
   receipt: 'documents/receipts',
   general_document: 'documents/general_documents',
   general_journal_document: 'documents/general_journal_documents',
-  typeless_document: 'documents/typeless_documents',
+  typeless_document: 'documents/typeless_documents'
 } as const;
 
 const notableDocumentType = z
-  .enum(['purchase_invoice', 'receipt', 'general_document', 'general_journal_document'])
+  .enum([
+    'purchase_invoice',
+    'receipt',
+    'general_document',
+    'general_journal_document'
+  ])
   .describe('Typeless documents do not accept notes.');
 
 const attachableDocumentType = z.enum([
@@ -39,7 +44,7 @@ const attachableDocumentType = z.enum([
   'receipt',
   'general_document',
   'general_journal_document',
-  'typeless_document',
+  'typeless_document'
 ]);
 
 const payableDocumentType = z
@@ -67,10 +72,13 @@ const detailAttributes = z
       .string()
       .optional()
       .describe(
-        'Range like `20260101..20261231` or a preset such as `this_quarter`; defers the amount over that period.',
+        'Range like `20260101..20261231` or a preset such as `this_quarter`; defers the amount over that period.'
       ),
     price: money.optional(),
-    amount: z.union([z.string(), z.number()]).optional().describe('Quantity, defaults to 1.'),
+    amount: z
+      .union([z.string(), z.number()])
+      .optional()
+      .describe('Quantity, defaults to 1.'),
     tax_rate_id: z.union([z.string(), z.number()]).optional(),
     ledger_account_id: z
       .union([z.string(), z.number()])
@@ -80,7 +88,7 @@ const detailAttributes = z
     product_id: z.union([z.string(), z.number()]).optional(),
     row_order: z.union([z.string(), z.number()]).optional(),
     automated_tax_enabled: z.boolean().optional(),
-    _destroy: z.boolean().optional().describe('Removes the line named by `id`.'),
+    _destroy: z.boolean().optional().describe('Removes the line named by `id`.')
   })
   .loose();
 
@@ -88,71 +96,95 @@ const detailAttributes = z
 const detailsAttributesField = z
   .union([z.array(detailAttributes), z.record(z.string(), detailAttributes)])
   .optional()
-  .describe('Document lines, as a list or as an object keyed by index, e.g. `{"0": {...}}`.');
+  .describe(
+    'Document lines, as a list or as an object keyed by index, e.g. `{"0": {...}}`.'
+  );
 
 const fiscalAllocationAttributes = z
   .object({
     id: z.union([z.string(), z.number()]).optional(),
     ledger_account_id: z.union([z.string(), z.number()]).optional(),
     private_ledger_account_id: z.union([z.string(), z.number()]).optional(),
-    percentage: money.optional().describe('Share booked to the private ledger account.'),
-    _destroy: z.boolean().optional(),
+    percentage: money
+      .optional()
+      .describe('Share booked to the private ledger account.'),
+    _destroy: z.boolean().optional()
   })
   .loose();
 
 const fiscalAllocationsAttributesField = z
-  .union([z.array(fiscalAllocationAttributes), z.record(z.string(), fiscalAllocationAttributes)])
+  .union([
+    z.array(fiscalAllocationAttributes),
+    z.record(z.string(), fiscalAllocationAttributes)
+  ])
   .optional()
   .describe(
-    'Splits the document between business and private use, as a list or an index-keyed object.',
+    'Splits the document between business and private use, as a list or an index-keyed object.'
   );
 
 const purchaseInvoiceAttributes = z
   .object({
-    contact_id: z.union([z.string(), z.number()]).optional().describe('The supplier.'),
+    contact_id: z
+      .union([z.string(), z.number()])
+      .optional()
+      .describe('The supplier.'),
     reference: z.string().optional().describe("The supplier's invoice number."),
     date: z.string().optional().describe('Invoice date, `YYYY-MM-DD`.'),
     due_date: z.string().optional().describe('`YYYY-MM-DD`.'),
-    currency: z.string().length(3).optional().describe('ISO 4217 currency code.'),
+    currency: z
+      .string()
+      .length(3)
+      .optional()
+      .describe('ISO 4217 currency code.'),
     prices_are_incl_tax: z.boolean().optional(),
     revenue_invoice: z
       .boolean()
       .optional()
       .describe(
-        'Books the document as income instead of expense, e.g. a credit note from a supplier.',
+        'Books the document as income instead of expense, e.g. a credit note from a supplier.'
       ),
     details_attributes: detailsAttributesField,
-    fiscal_allocations_attributes: fiscalAllocationsAttributesField,
+    fiscal_allocations_attributes: fiscalAllocationsAttributesField
   })
   .loose();
 
 const receiptAttributes = z
   .object({
-    contact_id: z.union([z.string(), z.number()]).optional().describe('The supplier.'),
+    contact_id: z
+      .union([z.string(), z.number()])
+      .optional()
+      .describe('The supplier.'),
     reference: z.string().optional(),
     date: z.string().optional().describe('Receipt date, `YYYY-MM-DD`.'),
-    currency: z.string().length(3).optional().describe('ISO 4217 currency code.'),
+    currency: z
+      .string()
+      .length(3)
+      .optional()
+      .describe('ISO 4217 currency code.'),
     prices_are_incl_tax: z.boolean().optional(),
     details_attributes: detailsAttributesField,
-    fiscal_allocations_attributes: fiscalAllocationsAttributesField,
+    fiscal_allocations_attributes: fiscalAllocationsAttributesField
   })
   .loose();
 
 const generalDocumentAttributes = z
   .object({
     reference: z.string().optional().describe('Required when creating.'),
-    date: z.string().optional().describe('`YYYY-MM-DD`. Required when creating.'),
+    date: z
+      .string()
+      .optional()
+      .describe('`YYYY-MM-DD`. Required when creating.'),
     due_date: z.string().optional(),
     reminder_date: z.string().optional(),
     contact_id: z.union([z.string(), z.number()]).optional(),
     reminder: z
       .object({
         date: z.string(),
-        message: z.string().optional(),
+        message: z.string().optional()
       })
       .loose()
       .optional()
-      .describe('Creates a reminder to-do for this document.'),
+      .describe('Creates a reminder to-do for this document.')
   })
   .loose();
 
@@ -170,7 +202,10 @@ const generalJournalDocumentEntry = z
     project_id: z.union([z.string(), z.number()]).optional(),
     contact_id: z.union([z.string(), z.number()]).optional(),
     row_order: z.union([z.string(), z.number()]).optional(),
-    _destroy: z.boolean().optional().describe('Removes the entry named by `id`.'),
+    _destroy: z
+      .boolean()
+      .optional()
+      .describe('Removes the entry named by `id`.')
   })
   .loose();
 
@@ -181,14 +216,18 @@ const generalJournalDocumentAttributes = z
     journal_type: z
       .string()
       .optional()
-      .describe('`fiscal_year_ending` for a year-end entry; omit for a normal one.'),
+      .describe(
+        '`fiscal_year_ending` for a year-end entry; omit for a normal one.'
+      ),
     general_journal_document_entries_attributes: z
       .union([
         z.array(generalJournalDocumentEntry),
-        z.record(z.string(), generalJournalDocumentEntry),
+        z.record(z.string(), generalJournalDocumentEntry)
       ])
       .optional()
-      .describe('Journal entries, as a list or as an object keyed by index, e.g. `{"0": {...}}`.'),
+      .describe(
+        'Journal entries, as a list or as an object keyed by index, e.g. `{"0": {...}}`.'
+      )
   })
   .loose();
 
@@ -196,7 +235,7 @@ const typelessDocumentAttributes = z
   .object({
     reference: z.string().optional(),
     date: z.string().optional().describe('`YYYY-MM-DD`, defaults to today.'),
-    contact_id: z.union([z.string(), z.number()]).optional(),
+    contact_id: z.union([z.string(), z.number()]).optional()
   })
   .loose();
 
@@ -205,7 +244,9 @@ const paymentFields = {
   price: money,
   price_base: money
     .optional()
-    .describe('Amount in the administration currency when the document is in a foreign currency.'),
+    .describe(
+      'Amount in the administration currency when the document is in a foreign currency.'
+    ),
   financial_account_id: z.union([z.string(), z.number()]).optional(),
   financial_mutation_id: z
     .union([z.string(), z.number()])
@@ -223,15 +264,15 @@ const paymentFields = {
       'rounding_error',
       'bank_transfer',
       'balance_settlement',
-      'invoices_settlement',
+      'invoices_settlement'
     ])
     .optional()
     .describe(
       '`private_payment` and `cash_payment` need `financial_account_id`, `bank_transfer` needs ' +
-        '`financial_mutation_id`, `balance_settlement` needs `ledger_account_id`, `invoices_settlement` needs `invoice_id`.',
+        '`financial_mutation_id`, `balance_settlement` needs `ledger_account_id`, `invoices_settlement` needs `invoice_id`.'
     ),
   ledger_account_id: z.union([z.string(), z.number()]).optional(),
-  invoice_id: z.union([z.string(), z.number()]).optional(),
+  invoice_id: z.union([z.string(), z.number()]).optional()
 };
 
 function paymentBody(args: {
@@ -266,17 +307,17 @@ export const purchasesTools: readonly ToolDefinition[] = [
     inputSchema: z.object({
       administration_id: administrationIdField,
       filter: filterField('period:prev_year,state:open').describe(
-        `Comma-separated \`key:value\` filter. Keys: ${DOCUMENT_FILTER_KEYS}. ${FILTER_NOTE}`,
+        `Comma-separated \`key:value\` filter. Keys: ${DOCUMENT_FILTER_KEYS}. ${FILTER_NOTE}`
       ),
-      ...paginationFields,
+      ...paginationFields
     }),
     handler: async (args, { client }) => {
       const response = await client.get('documents/purchase_invoices', {
         administrationId: args.administration_id,
-        query: listQuery(args),
+        query: listQuery(args)
       });
       return listResult(response);
-    },
+    }
   }),
 
   defineTool({
@@ -288,15 +329,15 @@ export const purchasesTools: readonly ToolDefinition[] = [
     access: 'read',
     inputSchema: z.object({
       administration_id: administrationIdField,
-      purchase_invoice_id: z.string(),
+      purchase_invoice_id: z.string()
     }),
     handler: async (args, { client }) => {
       const response = await client.get(
         `documents/purchase_invoices/${encodeURIComponent(args.purchase_invoice_id)}`,
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -310,16 +351,16 @@ export const purchasesTools: readonly ToolDefinition[] = [
     access: 'write',
     inputSchema: z.object({
       administration_id: administrationIdField,
-      purchase_invoice: purchaseInvoiceAttributes,
+      purchase_invoice: purchaseInvoiceAttributes
     }),
     handler: async (args, { client }) => {
       const response = await client.post(
         'documents/purchase_invoices',
         { purchase_invoice: args.purchase_invoice },
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -333,36 +374,39 @@ export const purchasesTools: readonly ToolDefinition[] = [
     inputSchema: z.object({
       administration_id: administrationIdField,
       purchase_invoice_id: z.string(),
-      purchase_invoice: purchaseInvoiceAttributes,
+      purchase_invoice: purchaseInvoiceAttributes
     }),
     handler: async (args, { client }) => {
       const response = await client.patch(
         `documents/purchase_invoices/${encodeURIComponent(args.purchase_invoice_id)}`,
         { purchase_invoice: args.purchase_invoice },
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
     name: 'delete_purchase_invoice',
     title: 'Delete purchase invoice',
-    description: 'Permanently delete a purchase invoice, including its lines and bookings.',
+    description:
+      'Permanently delete a purchase invoice, including its lines and bookings.',
     toolset: 'purchases',
     access: 'destroy',
     irreversible: true,
     inputSchema: z.object({
       administration_id: administrationIdField,
-      purchase_invoice_id: z.string(),
+      purchase_invoice_id: z.string()
     }),
     handler: async (args, { client }) => {
       await client.delete(
         `documents/purchase_invoices/${encodeURIComponent(args.purchase_invoice_id)}`,
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
-      return emptyResult(`Purchase invoice ${args.purchase_invoice_id} deleted.`);
-    },
+      return emptyResult(
+        `Purchase invoice ${args.purchase_invoice_id} deleted.`
+      );
+    }
   }),
 
   defineTool({
@@ -377,17 +421,17 @@ export const purchasesTools: readonly ToolDefinition[] = [
     inputSchema: z.object({
       administration_id: administrationIdField,
       purchase_invoice_id: z.string(),
-      ...paymentFields,
+      ...paymentFields
     }),
     handler: async (args, { client }) => {
       const { administration_id, purchase_invoice_id, ...payment } = args;
       const response = await client.post(
         `documents/purchase_invoices/${encodeURIComponent(purchase_invoice_id)}/payments`,
         paymentBody(payment),
-        { administrationId: administration_id },
+        { administrationId: administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -401,38 +445,39 @@ export const purchasesTools: readonly ToolDefinition[] = [
     inputSchema: z.object({
       administration_id: administrationIdField,
       filter: filterField('period:this_quarter,state:open').describe(
-        `Comma-separated \`key:value\` filter. Keys: ${DOCUMENT_FILTER_KEYS}. ${FILTER_NOTE}`,
+        `Comma-separated \`key:value\` filter. Keys: ${DOCUMENT_FILTER_KEYS}. ${FILTER_NOTE}`
       ),
-      ...paginationFields,
+      ...paginationFields
     }),
     handler: async (args, { client }) => {
       const response = await client.get('documents/receipts', {
         administrationId: args.administration_id,
-        query: listQuery(args),
+        query: listQuery(args)
       });
       return listResult(response);
-    },
+    }
   }),
 
   defineTool({
     name: 'get_receipt',
     title: 'Get receipt',
-    description: 'Retrieve one receipt by id, with its lines, payments, attachments and notes.',
+    description:
+      'Retrieve one receipt by id, with its lines, payments, attachments and notes.',
     toolset: 'purchases',
     access: 'read',
     inputSchema: z.object({
       administration_id: administrationIdField,
-      receipt_id: z.string(),
+      receipt_id: z.string()
     }),
     handler: async (args, { client }) => {
       const response = await client.get(
         `documents/receipts/${encodeURIComponent(args.receipt_id)}`,
         {
-          administrationId: args.administration_id,
-        },
+          administrationId: args.administration_id
+        }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -449,7 +494,7 @@ export const purchasesTools: readonly ToolDefinition[] = [
       financial_account_id: z
         .union([z.string(), z.number()])
         .optional()
-        .describe('Marks the receipt as paid from this financial account.'),
+        .describe('Marks the receipt as paid from this financial account.')
     }),
     handler: async (args, { client }) => {
       const response = await client.post(
@@ -458,12 +503,12 @@ export const purchasesTools: readonly ToolDefinition[] = [
           receipt: args.receipt,
           ...(args.financial_account_id !== undefined
             ? { payment: { financial_account_id: args.financial_account_id } }
-            : {}),
+            : {})
         },
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -481,7 +526,7 @@ export const purchasesTools: readonly ToolDefinition[] = [
       financial_account_id: z
         .union([z.string(), z.number()])
         .optional()
-        .describe('Marks the receipt as paid from this financial account.'),
+        .describe('Marks the receipt as paid from this financial account.')
     }),
     handler: async (args, { client }) => {
       const response = await client.patch(
@@ -490,31 +535,35 @@ export const purchasesTools: readonly ToolDefinition[] = [
           receipt: args.receipt,
           ...(args.financial_account_id !== undefined
             ? { payment: { financial_account_id: args.financial_account_id } }
-            : {}),
+            : {})
         },
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
     name: 'delete_receipt',
     title: 'Delete receipt',
-    description: 'Permanently delete a receipt, including its lines and bookings.',
+    description:
+      'Permanently delete a receipt, including its lines and bookings.',
     toolset: 'purchases',
     access: 'destroy',
     irreversible: true,
     inputSchema: z.object({
       administration_id: administrationIdField,
-      receipt_id: z.string(),
+      receipt_id: z.string()
     }),
     handler: async (args, { client }) => {
-      await client.delete(`documents/receipts/${encodeURIComponent(args.receipt_id)}`, {
-        administrationId: args.administration_id,
-      });
+      await client.delete(
+        `documents/receipts/${encodeURIComponent(args.receipt_id)}`,
+        {
+          administrationId: args.administration_id
+        }
+      );
       return emptyResult(`Receipt ${args.receipt_id} deleted.`);
-    },
+    }
   }),
 
   defineTool({
@@ -529,17 +578,17 @@ export const purchasesTools: readonly ToolDefinition[] = [
     inputSchema: z.object({
       administration_id: administrationIdField,
       receipt_id: z.string(),
-      ...paymentFields,
+      ...paymentFields
     }),
     handler: async (args, { client }) => {
       const { administration_id, receipt_id, ...payment } = args;
       const response = await client.post(
         `documents/receipts/${encodeURIComponent(receipt_id)}/payments`,
         paymentBody(payment),
-        { administrationId: administration_id },
+        { administrationId: administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -553,56 +602,58 @@ export const purchasesTools: readonly ToolDefinition[] = [
     inputSchema: z.object({
       administration_id: administrationIdField,
       filter: filterField('period:this_year,attachment:with').describe(
-        `Comma-separated \`key:value\` filter. Keys: ${DOCUMENT_FILTER_KEYS}. ${FILTER_NOTE}`,
+        `Comma-separated \`key:value\` filter. Keys: ${DOCUMENT_FILTER_KEYS}. ${FILTER_NOTE}`
       ),
-      ...paginationFields,
+      ...paginationFields
     }),
     handler: async (args, { client }) => {
       const response = await client.get('documents/general_documents', {
         administrationId: args.administration_id,
-        query: listQuery(args),
+        query: listQuery(args)
       });
       return listResult(response);
-    },
+    }
   }),
 
   defineTool({
     name: 'get_general_document',
     title: 'Get general document',
-    description: 'Retrieve one general document by id, with its attachments and notes.',
+    description:
+      'Retrieve one general document by id, with its attachments and notes.',
     toolset: 'purchases',
     access: 'read',
     inputSchema: z.object({
       administration_id: administrationIdField,
-      general_document_id: z.string(),
+      general_document_id: z.string()
     }),
     handler: async (args, { client }) => {
       const response = await client.get(
         `documents/general_documents/${encodeURIComponent(args.general_document_id)}`,
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
     name: 'create_general_document',
     title: 'Create general document',
-    description: 'File a general document. `reference` and `date` are required.',
+    description:
+      'File a general document. `reference` and `date` are required.',
     toolset: 'purchases',
     access: 'write',
     inputSchema: z.object({
       administration_id: administrationIdField,
-      general_document: generalDocumentAttributes,
+      general_document: generalDocumentAttributes
     }),
     handler: async (args, { client }) => {
       const response = await client.post(
         'documents/general_documents',
         { general_document: args.general_document },
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -616,19 +667,24 @@ export const purchasesTools: readonly ToolDefinition[] = [
       administration_id: administrationIdField,
       general_document_id: z.string(),
       general_document: generalDocumentAttributes,
-      remove_contact: z.boolean().optional().describe('Unlinks the document from its contact.'),
+      remove_contact: z
+        .boolean()
+        .optional()
+        .describe('Unlinks the document from its contact.')
     }),
     handler: async (args, { client }) => {
       const response = await client.patch(
         `documents/general_documents/${encodeURIComponent(args.general_document_id)}`,
         {
           general_document: args.general_document,
-          ...(args.remove_contact !== undefined ? { remove_contact: args.remove_contact } : {}),
+          ...(args.remove_contact !== undefined
+            ? { remove_contact: args.remove_contact }
+            : {})
         },
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -640,15 +696,17 @@ export const purchasesTools: readonly ToolDefinition[] = [
     irreversible: true,
     inputSchema: z.object({
       administration_id: administrationIdField,
-      general_document_id: z.string(),
+      general_document_id: z.string()
     }),
     handler: async (args, { client }) => {
       await client.delete(
         `documents/general_documents/${encodeURIComponent(args.general_document_id)}`,
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
-      return emptyResult(`General document ${args.general_document_id} deleted.`);
-    },
+      return emptyResult(
+        `General document ${args.general_document_id} deleted.`
+      );
+    }
   }),
 
   defineTool({
@@ -662,13 +720,13 @@ export const purchasesTools: readonly ToolDefinition[] = [
     inputSchema: z.object({
       administration_id: administrationIdField,
       filter: filterField('period:prev_year').describe(
-        `Comma-separated \`key:value\` filter. Keys: ${DOCUMENT_FILTER_KEYS}. ${FILTER_NOTE}`,
+        `Comma-separated \`key:value\` filter. Keys: ${DOCUMENT_FILTER_KEYS}. ${FILTER_NOTE}`
       ),
       exclude_new_general_journal_documents: z
         .boolean()
         .optional()
         .describe('Leaves out entries that are still in the `new` state.'),
-      ...paginationFields,
+      ...paginationFields
     }),
     handler: async (args, { client }) => {
       const response = await client.get('documents/general_journal_documents', {
@@ -676,31 +734,35 @@ export const purchasesTools: readonly ToolDefinition[] = [
         query: {
           ...listQuery(args),
           ...(args.exclude_new_general_journal_documents !== undefined
-            ? { exclude_new_general_journal_documents: args.exclude_new_general_journal_documents }
-            : {}),
-        },
+            ? {
+                exclude_new_general_journal_documents:
+                  args.exclude_new_general_journal_documents
+              }
+            : {})
+        }
       });
       return listResult(response);
-    },
+    }
   }),
 
   defineTool({
     name: 'get_general_journal_document',
     title: 'Get general journal document',
-    description: 'Retrieve one general journal document by id, with its debit and credit entries.',
+    description:
+      'Retrieve one general journal document by id, with its debit and credit entries.',
     toolset: 'purchases',
     access: 'read',
     inputSchema: z.object({
       administration_id: administrationIdField,
-      general_journal_document_id: z.string(),
+      general_journal_document_id: z.string()
     }),
     handler: async (args, { client }) => {
       const response = await client.get(
         `documents/general_journal_documents/${encodeURIComponent(args.general_journal_document_id)}`,
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -715,16 +777,16 @@ export const purchasesTools: readonly ToolDefinition[] = [
     access: 'write',
     inputSchema: z.object({
       administration_id: administrationIdField,
-      general_journal_document: generalJournalDocumentAttributes,
+      general_journal_document: generalJournalDocumentAttributes
     }),
     handler: async (args, { client }) => {
       const response = await client.post(
         'documents/general_journal_documents',
         { general_journal_document: args.general_journal_document },
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -743,39 +805,44 @@ export const purchasesTools: readonly ToolDefinition[] = [
       all_taxes: z
         .boolean()
         .optional()
-        .describe('Allows every tax rate to be picked on the entries, not just the usual ones.'),
+        .describe(
+          'Allows every tax rate to be picked on the entries, not just the usual ones.'
+        )
     }),
     handler: async (args, { client }) => {
       const response = await client.patch(
         `documents/general_journal_documents/${encodeURIComponent(args.general_journal_document_id)}`,
         {
           general_journal_document: args.general_journal_document,
-          ...(args.all_taxes !== undefined ? { all_taxes: args.all_taxes } : {}),
+          ...(args.all_taxes !== undefined ? { all_taxes: args.all_taxes } : {})
         },
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
     name: 'delete_general_journal_document',
     title: 'Delete general journal document',
-    description: 'Permanently delete a manual journal entry and reverse its bookings.',
+    description:
+      'Permanently delete a manual journal entry and reverse its bookings.',
     toolset: 'purchases',
     access: 'destroy',
     irreversible: true,
     inputSchema: z.object({
       administration_id: administrationIdField,
-      general_journal_document_id: z.string(),
+      general_journal_document_id: z.string()
     }),
     handler: async (args, { client }) => {
       await client.delete(
         `documents/general_journal_documents/${encodeURIComponent(args.general_journal_document_id)}`,
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
-      return emptyResult(`General journal document ${args.general_journal_document_id} deleted.`);
-    },
+      return emptyResult(
+        `General journal document ${args.general_journal_document_id} deleted.`
+      );
+    }
   }),
 
   defineTool({
@@ -789,17 +856,17 @@ export const purchasesTools: readonly ToolDefinition[] = [
     inputSchema: z.object({
       administration_id: administrationIdField,
       filter: filterField('period:this_month').describe(
-        `Comma-separated \`key:value\` filter. Keys: ${DOCUMENT_FILTER_KEYS}. ${FILTER_NOTE}`,
+        `Comma-separated \`key:value\` filter. Keys: ${DOCUMENT_FILTER_KEYS}. ${FILTER_NOTE}`
       ),
-      ...paginationFields,
+      ...paginationFields
     }),
     handler: async (args, { client }) => {
       const response = await client.get('documents/typeless_documents', {
         administrationId: args.administration_id,
-        query: listQuery(args),
+        query: listQuery(args)
       });
       return listResult(response);
-    },
+    }
   }),
 
   defineTool({
@@ -810,15 +877,15 @@ export const purchasesTools: readonly ToolDefinition[] = [
     access: 'read',
     inputSchema: z.object({
       administration_id: administrationIdField,
-      typeless_document_id: z.string(),
+      typeless_document_id: z.string()
     }),
     handler: async (args, { client }) => {
       const response = await client.get(
         `documents/typeless_documents/${encodeURIComponent(args.typeless_document_id)}`,
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -832,16 +899,16 @@ export const purchasesTools: readonly ToolDefinition[] = [
     access: 'write',
     inputSchema: z.object({
       administration_id: administrationIdField,
-      typeless_document: typelessDocumentAttributes,
+      typeless_document: typelessDocumentAttributes
     }),
     handler: async (args, { client }) => {
       const response = await client.post(
         'documents/typeless_documents',
         { typeless_document: args.typeless_document },
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -853,15 +920,17 @@ export const purchasesTools: readonly ToolDefinition[] = [
     irreversible: true,
     inputSchema: z.object({
       administration_id: administrationIdField,
-      typeless_document_id: z.string(),
+      typeless_document_id: z.string()
     }),
     handler: async (args, { client }) => {
       await client.delete(
         `documents/typeless_documents/${encodeURIComponent(args.typeless_document_id)}`,
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
-      return emptyResult(`Typeless document ${args.typeless_document_id} deleted.`);
-    },
+      return emptyResult(
+        `Typeless document ${args.typeless_document_id} deleted.`
+      );
+    }
   }),
 
   defineTool({
@@ -881,7 +950,7 @@ export const purchasesTools: readonly ToolDefinition[] = [
       assignee_id: z
         .union([z.string(), z.number()])
         .optional()
-        .describe('User the to-do is assigned to.'),
+        .describe('User the to-do is assigned to.')
     }),
     handler: async (args, { client }) => {
       const response = await client.post(
@@ -890,13 +959,15 @@ export const purchasesTools: readonly ToolDefinition[] = [
           note: {
             note: args.note,
             ...(args.todo !== undefined ? { todo: args.todo } : {}),
-            ...(args.assignee_id !== undefined ? { assignee_id: args.assignee_id } : {}),
-          },
+            ...(args.assignee_id !== undefined
+              ? { assignee_id: args.assignee_id }
+              : {})
+          }
         },
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -911,22 +982,23 @@ export const purchasesTools: readonly ToolDefinition[] = [
       administration_id: administrationIdField,
       document_type: attachableDocumentType,
       document_id: z.string(),
-      attachment_id: z.string(),
+      attachment_id: z.string()
     }),
     handler: async (args, { client }) => {
       const response = await client.get(
         `${DOCUMENT_PATHS[args.document_type]}/${encodeURIComponent(args.document_id)}` +
           `/attachments/${encodeURIComponent(args.attachment_id)}/download`,
-        { administrationId: args.administration_id, manualRedirect: true },
+        { administrationId: args.administration_id, manualRedirect: true }
       );
       return textResult({ url: response.redirectUrl });
-    },
+    }
   }),
 
   defineTool({
     name: 'delete_document_attachment',
     title: 'Delete document attachment',
-    description: 'Permanently remove one attachment from a document; the document itself is kept.',
+    description:
+      'Permanently remove one attachment from a document; the document itself is kept.',
     toolset: 'purchases',
     access: 'destroy',
     irreversible: true,
@@ -934,16 +1006,16 @@ export const purchasesTools: readonly ToolDefinition[] = [
       administration_id: administrationIdField,
       document_type: attachableDocumentType,
       document_id: z.string(),
-      attachment_id: z.string(),
+      attachment_id: z.string()
     }),
     handler: async (args, { client }) => {
       await client.delete(
         `${DOCUMENT_PATHS[args.document_type]}/${encodeURIComponent(args.document_id)}` +
           `/attachments/${encodeURIComponent(args.attachment_id)}`,
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return emptyResult(`Attachment ${args.attachment_id} deleted.`);
-    },
+    }
   }),
 
   defineTool({
@@ -958,15 +1030,15 @@ export const purchasesTools: readonly ToolDefinition[] = [
       administration_id: administrationIdField,
       document_type: payableDocumentType,
       document_id: z.string(),
-      payment_id: z.string(),
+      payment_id: z.string()
     }),
     handler: async (args, { client }) => {
       await client.delete(
         `${DOCUMENT_PATHS[args.document_type]}/${encodeURIComponent(args.document_id)}` +
           `/payments/${encodeURIComponent(args.payment_id)}`,
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return emptyResult(`Payment ${args.payment_id} deleted.`);
-    },
-  }),
+    }
+  })
 ] as const;

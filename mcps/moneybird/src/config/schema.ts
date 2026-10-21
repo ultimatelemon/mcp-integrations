@@ -10,7 +10,7 @@ export const TOOLSETS = [
   'reports',
   'assets',
   'tasks',
-  'webhooks',
+  'webhooks'
 ] as const;
 
 export const Toolset = z.enum(TOOLSETS);
@@ -19,48 +19,15 @@ export type Toolset = z.infer<typeof Toolset>;
 /** Full toolsets enabled by default. Essential tools and `moneybird_api` are always there. */
 export const DEFAULT_TOOLSETS: readonly Toolset[] = [];
 
-export const OAUTH_SCOPES = [
-  'sales_invoices',
-  'documents',
-  'estimates',
-  'bank',
-  'time_entries',
-  'settings',
-] as const;
-
-export const OAuthScope = z.enum(OAUTH_SCOPES);
-export type OAuthScope = z.infer<typeof OAuthScope>;
-
-export const Transport = z.enum(['stdio', 'http']);
-export type Transport = z.infer<typeof Transport>;
-
 export const ServerConfig = z.object({
-  apiToken: z.string().min(1).optional(),
   administrationId: z.string().optional(),
   baseUrl: z.string().url().optional(),
   timeZone: z.string().optional(),
   toolsets: z.array(Toolset),
   allowWrite: z.boolean(),
   allowDelete: z.boolean(),
-  transport: Transport,
-  host: z.string(),
-  port: z.number().int().min(0).max(65_535),
-  oauth: z
-    .object({
-      clientId: z.string().min(1),
-      clientSecret: z.string().min(1),
-      scopes: z.array(OAuthScope).nonempty(),
-      redirectUri: z.string().url().optional(),
-    })
-    .optional(),
-  /** Public origin the OAuth flow advertises itself on, e.g. `https://mcp.example.com`. */
-  publicUrl: z.string().url().optional(),
-  /** Postgres holding the authorization server's state. Required by the `oauth` HTTP mode. */
-  databaseUrl: z.string().min(1).optional(),
-  /** 32 bytes of hex encrypting Moneybird tokens at rest. Required by the `oauth` HTTP mode. */
-  tokenEncryptionKey: z.string().min(1).optional(),
   requestTimeoutMs: z.number().int().positive(),
-  maxRetries: z.number().int().min(0),
+  maxRetries: z.number().int().min(0)
 });
 export type ServerConfig = z.infer<typeof ServerConfig>;
 
@@ -99,7 +66,7 @@ export function resolveToolsets(raw: string | undefined): Toolset[] {
   if (normalised.includes('all')) return [...TOOLSETS];
 
   const selected = new Set<Toolset>(
-    normalised.some((entry) => entry.startsWith('-')) ? DEFAULT_TOOLSETS : [],
+    normalised.some((entry) => entry.startsWith('-')) ? DEFAULT_TOOLSETS : []
   );
 
   for (const entry of normalised) {
@@ -112,7 +79,7 @@ export function resolveToolsets(raw: string | undefined): Toolset[] {
     const parsed = Toolset.safeParse(name);
     if (!parsed.success) {
       throw new ConfigError(
-        `Unknown toolset "${name}". Valid toolsets: ${TOOLSETS.join(', ')} (or "all").`,
+        `Unknown toolset "${name}". Valid toolsets: ${TOOLSETS.join(', ')} (or "all").`
       );
     }
     if (removing) selected.delete(parsed.data);
@@ -122,77 +89,91 @@ export function resolveToolsets(raw: string | undefined): Toolset[] {
   return TOOLSETS.filter((toolset) => selected.has(toolset));
 }
 
-function resolveScopes(raw: string | undefined): OAuthScope[] {
-  const entries = parseList(raw);
-  if (entries.length === 0) return [...OAUTH_SCOPES];
-
-  return entries.map((entry) => {
-    const parsed = OAuthScope.safeParse(entry.toLowerCase());
-    if (!parsed.success) {
-      throw new ConfigError(
-        `Unknown OAuth scope "${entry}". Valid scopes: ${OAUTH_SCOPES.join(', ')}.`,
-      );
-    }
-    return parsed.data;
-  });
-}
-
-/** Reads configuration from the environment; CLI flags are layered on top by the caller. */
-export function configFromEnv(env: NodeJS.ProcessEnv = process.env): ServerConfig {
-  const clientId = env['MONEYBIRD_CLIENT_ID'];
-  const clientSecret = env['MONEYBIRD_CLIENT_SECRET'];
-
-  if ((clientId && !clientSecret) || (!clientId && clientSecret)) {
-    throw new ConfigError(
-      'OAuth needs both MONEYBIRD_CLIENT_ID and MONEYBIRD_CLIENT_SECRET; only one was set.',
-    );
-  }
-
-  const transport = Transport.safeParse((env['MONEYBIRD_TRANSPORT'] ?? 'stdio').toLowerCase());
-  if (!transport.success) {
-    throw new ConfigError('MONEYBIRD_TRANSPORT must be "stdio" or "http".');
-  }
-
+/** Server-wide defaults from the environment; each caller can override them with headers. */
+export function configFromEnv(
+  env: NodeJS.ProcessEnv = process.env
+): ServerConfig {
   const config: ServerConfig = {
-    ...(env['MONEYBIRD_API_TOKEN'] ? { apiToken: env['MONEYBIRD_API_TOKEN'] } : {}),
     ...(env['MONEYBIRD_ADMINISTRATION_ID']
       ? { administrationId: env['MONEYBIRD_ADMINISTRATION_ID'] }
       : {}),
-    ...(env['MONEYBIRD_BASE_URL'] ? { baseUrl: env['MONEYBIRD_BASE_URL'] } : {}),
-    ...(env['MONEYBIRD_TIME_ZONE'] ? { timeZone: env['MONEYBIRD_TIME_ZONE'] } : {}),
+    ...(env['MONEYBIRD_BASE_URL']
+      ? { baseUrl: env['MONEYBIRD_BASE_URL'] }
+      : {}),
+    ...(env['MONEYBIRD_TIME_ZONE']
+      ? { timeZone: env['MONEYBIRD_TIME_ZONE'] }
+      : {}),
     toolsets: resolveToolsets(env['MONEYBIRD_TOOLSETS']),
     allowWrite: parseBoolean(env['MONEYBIRD_ALLOW_WRITE'], false),
     allowDelete: parseBoolean(env['MONEYBIRD_ALLOW_DELETE'], false),
-    transport: transport.data,
-    host: env['MONEYBIRD_HOST'] ?? '127.0.0.1',
-    port: parseInteger(env['PORT'] ?? env['MONEYBIRD_PORT'], 3000),
-    ...(clientId && clientSecret
-      ? {
-          oauth: {
-            clientId,
-            clientSecret,
-            scopes: resolveScopes(env['MONEYBIRD_OAUTH_SCOPES']) as [OAuthScope, ...OAuthScope[]],
-            ...(env['MONEYBIRD_REDIRECT_URI']
-              ? { redirectUri: env['MONEYBIRD_REDIRECT_URI'] }
-              : {}),
-          },
-        }
-      : {}),
-    ...(env['MONEYBIRD_PUBLIC_URL']
-      ? { publicUrl: env['MONEYBIRD_PUBLIC_URL'].replace(/\/+$/, '') }
-      : {}),
-    ...(env['MONEYBIRD_DATABASE_URL'] ? { databaseUrl: env['MONEYBIRD_DATABASE_URL'] } : {}),
-    ...(env['MONEYBIRD_TOKEN_ENCRYPTION_KEY']
-      ? { tokenEncryptionKey: env['MONEYBIRD_TOKEN_ENCRYPTION_KEY'] }
-      : {}),
     requestTimeoutMs: parseInteger(env['MONEYBIRD_REQUEST_TIMEOUT_MS'], 30_000),
-    maxRetries: parseInteger(env['MONEYBIRD_MAX_RETRIES'], 3),
+    maxRetries: parseInteger(env['MONEYBIRD_MAX_RETRIES'], 3)
   };
-
   return ServerConfig.parse(config);
 }
 
+export const ACCESS_LEVELS = ['read', 'write', 'delete'] as const;
+export type AccessLevel = (typeof ACCESS_LEVELS)[number];
+
+export const CALLER_HEADERS = {
+  access: 'x-moneybird-access',
+  toolsets: 'x-moneybird-toolsets',
+  administration: 'x-moneybird-administration'
+} as const;
+
+export interface CallerConfig {
+  config: ServerConfig;
+  /** Header values that were ignored, for the model to relay to the user. */
+  warnings: string[];
+}
+
+/**
+ * Applies one caller's headers on top of the server defaults. A bad value is ignored rather than
+ * failing the request, so a typo in a connector setting still leaves a working server.
+ */
+export function callerConfig(
+  defaults: ServerConfig,
+  headers: Headers
+): CallerConfig {
+  const config: ServerConfig = { ...defaults };
+  const warnings: string[] = [];
+
+  const access = headers.get(CALLER_HEADERS.access)?.trim().toLowerCase();
+  if (access) {
+    if ((ACCESS_LEVELS as readonly string[]).includes(access)) {
+      config.allowWrite = access !== 'read';
+      config.allowDelete = access === 'delete';
+    } else {
+      warnings.push(
+        `Ignored X-Moneybird-Access "${access}"; use one of ${ACCESS_LEVELS.join(', ')}.`
+      );
+    }
+  }
+
+  const toolsets = headers.get(CALLER_HEADERS.toolsets);
+  if (toolsets?.trim()) {
+    try {
+      config.toolsets = resolveToolsets(toolsets);
+    } catch (error) {
+      warnings.push(
+        `Ignored X-Moneybird-Toolsets: ${error instanceof Error ? error.message : String(error)}`
+      );
+    }
+  }
+
+  const administration = headers.get(CALLER_HEADERS.administration)?.trim();
+  if (administration) config.administrationId = administration;
+
+  return { config, warnings };
+}
+
 /** Deleting is gated behind its own flag, so `allowWrite` alone never permits destruction. */
-export function permissionsFor(config: ServerConfig): { write: boolean; destroy: boolean } {
-  return { write: config.allowWrite, destroy: config.allowWrite && config.allowDelete };
+export function permissionsFor(config: ServerConfig): {
+  write: boolean;
+  destroy: boolean;
+} {
+  return {
+    write: config.allowWrite,
+    destroy: config.allowWrite && config.allowDelete
+  };
 }

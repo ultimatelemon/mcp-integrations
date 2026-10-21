@@ -7,8 +7,8 @@ import {
   listResult,
   paginationFields,
   textResult,
-  type ToolDefinition,
-} from './common.js';
+  type ToolDefinition
+} from './common.ts';
 
 /**
  * Appended to every `reports/*` tool description.
@@ -30,7 +30,7 @@ const periodField = z
   .describe(
     `Reporting period, defaults to \`this_month\`. ${PERIOD_RANGE_FORMATS} ` +
       'Presets: `this_month`, `prev_month`, `next_month`, `this_quarter`, `prev_quarter`, `next_quarter`, ' +
-      '`this_year`, `prev_year`, `next_year`. Maximum span is 12 months.',
+      '`this_year`, `prev_year`, `next_year`. Maximum span is 12 months.'
   );
 
 const periodMonthField = z
@@ -39,7 +39,7 @@ const periodMonthField = z
   .describe(
     'Reporting period, defaults to `this_month`. This endpoint accepts exactly one whole month: `YYYYMM` ' +
       '(e.g. `202501`), `YYYYMM..YYYYMM` with the same month on both sides, or `YYYYMMDD..YYYYMMDD` spanning ' +
-      'one whole month. Presets: `this_month`, `prev_month`, `next_month`. Quarter and year presets are rejected here.',
+      'one whole month. Presets: `this_month`, `prev_month`, `next_month`. Quarter and year presets are rejected here.'
   );
 
 const periodUntilField = z
@@ -47,38 +47,54 @@ const periodUntilField = z
   .optional()
   .describe(
     'Cut-off period the ageing is calculated up to, defaults to `this_month`. Either `YYYYMM` (e.g. `202501`) ' +
-      'or one of `this_month`, `prev_month`, `this_quarter`, `prev_quarter`, `this_year`, `prev_year`.',
+      'or one of `this_month`, `prev_month`, `this_quarter`, `prev_quarter`, `this_year`, `prev_year`.'
   );
 
 /** The `period_month` parameter is named `period` on the wire; only its accepted values differ. */
-function periodQuery(period: string | undefined): Record<string, string | undefined> {
+function periodQuery(
+  period: string | undefined
+): Record<string, string | undefined> {
   return period ? { period } : {};
 }
 
 const exportYearField = z
   .string()
-  .describe('Calendar year to export, e.g. "2024". Must contain journal entries.');
+  .describe(
+    'Calendar year to export, e.g. "2024". Must contain journal entries.'
+  );
 
 const financialMutationAttributes = z
   .object({
     id: z
       .union([z.string(), z.number()])
       .optional()
-      .describe('Id of an existing mutation to update; omit when adding a new one.'),
+      .describe(
+        'Id of an existing mutation to update; omit when adding a new one.'
+      ),
     date: z.string().optional().describe('Transaction date, YYYY-MM-DD.'),
     valutation_date: z
       .string()
       .optional()
       .describe('Value date, YYYY-MM-DD, when it differs from `date`.'),
-    message: z.string().optional().describe('Bank narrative of the transaction.'),
+    message: z
+      .string()
+      .optional()
+      .describe('Bank narrative of the transaction.'),
     amount: z
       .string()
       .optional()
       .describe('Decimal string; negative for money leaving the account.'),
-    contra_account_name: z.string().optional().describe("Counterparty's account holder name."),
+    contra_account_name: z
+      .string()
+      .optional()
+      .describe("Counterparty's account holder name."),
     contra_account_number: z.string().optional().describe('Counterparty IBAN.'),
     batch_reference: z.string().optional(),
-    offset: z.number().int().optional().describe('Position of this mutation within the statement.'),
+    offset: z
+      .number()
+      .int()
+      .optional()
+      .describe('Position of this mutation within the statement.'),
     account_servicer_transaction_id: z
       .string()
       .optional()
@@ -86,15 +102,18 @@ const financialMutationAttributes = z
     _destroy: z
       .boolean()
       .optional()
-      .describe('Set to true to remove this mutation from the statement.'),
+      .describe('Set to true to remove this mutation from the statement.')
   })
   .loose();
 
 const financialMutationsField = z
-  .union([z.array(financialMutationAttributes), z.record(z.string(), financialMutationAttributes)])
+  .union([
+    z.array(financialMutationAttributes),
+    z.record(z.string(), financialMutationAttributes)
+  ])
   .optional()
   .describe(
-    'Either an array of mutations, or an index-keyed object such as `{"0": {...}, "1": {...}}`.',
+    'Either an array of mutations, or an index-keyed object such as `{"0": {...}, "1": {...}}`.'
   );
 
 export const reportsTools: readonly ToolDefinition[] = [
@@ -115,18 +134,20 @@ export const reportsTools: readonly ToolDefinition[] = [
       project_id: z
         .union([z.string(), z.number()])
         .optional()
-        .describe('Limit the report to one project.'),
+        .describe('Limit the report to one project.')
     }),
     handler: async (args, { client }) => {
       const response = await client.get('reports/profit_loss', {
         administrationId: args.administration_id,
         query: {
           ...periodQuery(args.period),
-          ...(args.project_id !== undefined ? { project_id: String(args.project_id) } : {}),
-        },
+          ...(args.project_id !== undefined
+            ? { project_id: String(args.project_id) }
+            : {})
+        }
       });
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -139,15 +160,15 @@ export const reportsTools: readonly ToolDefinition[] = [
     access: 'read',
     inputSchema: z.object({
       administration_id: administrationIdField,
-      period: periodField,
+      period: periodField
     }),
     handler: async (args, { client }) => {
       const response = await client.get('reports/balance_sheet', {
         administrationId: args.administration_id,
-        query: periodQuery(args.period),
+        query: periodQuery(args.period)
       });
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -160,15 +181,15 @@ export const reportsTools: readonly ToolDefinition[] = [
     access: 'read',
     inputSchema: z.object({
       administration_id: administrationIdField,
-      period: periodField,
+      period: periodField
     }),
     handler: async (args, { client }) => {
       const response = await client.get('reports/general_ledger', {
         administrationId: args.administration_id,
-        query: periodQuery(args.period),
+        query: periodQuery(args.period)
       });
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -186,8 +207,8 @@ export const reportsTools: readonly ToolDefinition[] = [
         .union([z.string(), z.number()])
         .optional()
         .describe(
-          'Limit the report to one bank account; call list_financial_accounts for the ids.',
-        ),
+          'Limit the report to one bank account; call list_financial_accounts for the ids.'
+        )
     }),
     handler: async (args, { client }) => {
       const response = await client.get('reports/cash_flow', {
@@ -196,11 +217,11 @@ export const reportsTools: readonly ToolDefinition[] = [
           ...periodQuery(args.period),
           ...(args.financial_account_id !== undefined
             ? { financial_account_id: String(args.financial_account_id) }
-            : {}),
-        },
+            : {})
+        }
       });
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -213,15 +234,15 @@ export const reportsTools: readonly ToolDefinition[] = [
     access: 'read',
     inputSchema: z.object({
       administration_id: administrationIdField,
-      period: periodMonthField,
+      period: periodMonthField
     }),
     handler: async (args, { client }) => {
       const response = await client.get('reports/tax', {
         administrationId: args.administration_id,
-        query: periodQuery(args.period),
+        query: periodQuery(args.period)
       });
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -234,15 +255,15 @@ export const reportsTools: readonly ToolDefinition[] = [
     access: 'read',
     inputSchema: z.object({
       administration_id: administrationIdField,
-      period: periodMonthField,
+      period: periodMonthField
     }),
     handler: async (args, { client }) => {
       const response = await client.get('reports/assets', {
         administrationId: args.administration_id,
-        query: periodQuery(args.period),
+        query: periodQuery(args.period)
       });
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -255,15 +276,15 @@ export const reportsTools: readonly ToolDefinition[] = [
     access: 'read',
     inputSchema: z.object({
       administration_id: administrationIdField,
-      period: periodMonthField,
+      period: periodMonthField
     }),
     handler: async (args, { client }) => {
       const response = await client.get('reports/subscriptions', {
         administrationId: args.administration_id,
-        query: periodQuery(args.period),
+        query: periodQuery(args.period)
       });
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -284,11 +305,15 @@ export const reportsTools: readonly ToolDefinition[] = [
       project_id: z
         .string()
         .optional()
-        .describe('Project id, or the literal "null" for entries without a project.'),
+        .describe(
+          'Project id, or the literal "null" for entries without a project.'
+        ),
       contact_id: z
         .string()
         .optional()
-        .describe('Contact id, or the literal "null" for entries without a contact.'),
+        .describe(
+          'Contact id, or the literal "null" for entries without a contact.'
+        ),
       ledger_account_id: z.union([z.string(), z.number()]).optional(),
       account_type: z
         .enum([
@@ -303,15 +328,21 @@ export const reportsTools: readonly ToolDefinition[] = [
           'other_income_expenses',
           'other',
           'temporary',
-          'provisions',
+          'provisions'
         ])
         .optional()
         .describe('Restrict to ledger accounts of this type.'),
-      ...paginationFields,
+      ...paginationFields
     }),
     handler: async (args, { client }) => {
-      if (!args.project_id && !args.contact_id && args.ledger_account_id === undefined) {
-        throw new Error('Provide at least one of project_id, contact_id or ledger_account_id.');
+      if (
+        !args.project_id &&
+        !args.contact_id &&
+        args.ledger_account_id === undefined
+      ) {
+        throw new Error(
+          'Provide at least one of project_id, contact_id or ledger_account_id.'
+        );
       }
       if (args.account_type && !args.contact_id && !args.project_id) {
         throw new Error('account_type also requires contact_id or project_id.');
@@ -326,11 +357,11 @@ export const reportsTools: readonly ToolDefinition[] = [
           ...(args.ledger_account_id !== undefined
             ? { ledger_account_id: String(args.ledger_account_id) }
             : {}),
-          ...(args.account_type ? { account_type: args.account_type } : {}),
-        },
+          ...(args.account_type ? { account_type: args.account_type } : {})
+        }
       });
       return listResult(response);
-    },
+    }
   }),
 
   defineTool({
@@ -346,18 +377,18 @@ export const reportsTools: readonly ToolDefinition[] = [
       administration_id: administrationIdField,
       ledger_account_id: z.string(),
       period: periodMonthField,
-      ...paginationFields,
+      ...paginationFields
     }),
     handler: async (args, { client }) => {
       const response = await client.get(
         `reports/ledger_accounts/${encodeURIComponent(args.ledger_account_id)}`,
         {
           administrationId: args.administration_id,
-          query: { ...listQuery(args), ...periodQuery(args.period) },
-        },
+          query: { ...listQuery(args), ...periodQuery(args.period) }
+        }
       );
       return listResult(response);
-    },
+    }
   }),
 
   defineTool({
@@ -372,15 +403,15 @@ export const reportsTools: readonly ToolDefinition[] = [
     inputSchema: z.object({
       administration_id: administrationIdField,
       period: periodMonthField,
-      ...paginationFields,
+      ...paginationFields
     }),
     handler: async (args, { client }) => {
       const response = await client.get('reports/revenue_by_contact', {
         administrationId: args.administration_id,
-        query: { ...listQuery(args), ...periodQuery(args.period) },
+        query: { ...listQuery(args), ...periodQuery(args.period) }
       });
       return listResult(response);
-    },
+    }
   }),
 
   defineTool({
@@ -395,95 +426,101 @@ export const reportsTools: readonly ToolDefinition[] = [
     inputSchema: z.object({
       administration_id: administrationIdField,
       period: periodMonthField,
-      ...paginationFields,
+      ...paginationFields
     }),
     handler: async (args, { client }) => {
       const response = await client.get('reports/expenses_by_contact', {
         administrationId: args.administration_id,
-        query: { ...listQuery(args), ...periodQuery(args.period) },
+        query: { ...listQuery(args), ...periodQuery(args.period) }
       });
       return listResult(response);
-    },
+    }
   }),
 
   defineTool({
     name: 'get_revenue_by_project_report',
     title: 'Revenue by project report',
-    description: 'Revenue in the period totalled per project.' + RATE_LIMIT_NOTE,
+    description:
+      'Revenue in the period totalled per project.' + RATE_LIMIT_NOTE,
     toolset: 'reports',
     access: 'read',
     inputSchema: z.object({
       administration_id: administrationIdField,
       period: periodMonthField,
-      ...paginationFields,
+      ...paginationFields
     }),
     handler: async (args, { client }) => {
       const response = await client.get('reports/revenue_by_project', {
         administrationId: args.administration_id,
-        query: { ...listQuery(args), ...periodQuery(args.period) },
+        query: { ...listQuery(args), ...periodQuery(args.period) }
       });
       return listResult(response);
-    },
+    }
   }),
 
   defineTool({
     name: 'get_expenses_by_project_report',
     title: 'Expenses by project report',
-    description: 'Expenses in the period totalled per project.' + RATE_LIMIT_NOTE,
+    description:
+      'Expenses in the period totalled per project.' + RATE_LIMIT_NOTE,
     toolset: 'reports',
     access: 'read',
     inputSchema: z.object({
       administration_id: administrationIdField,
       period: periodMonthField,
-      ...paginationFields,
+      ...paginationFields
     }),
     handler: async (args, { client }) => {
       const response = await client.get('reports/expenses_by_project', {
         administrationId: args.administration_id,
-        query: { ...listQuery(args), ...periodQuery(args.period) },
+        query: { ...listQuery(args), ...periodQuery(args.period) }
       });
       return listResult(response);
-    },
+    }
   }),
 
   defineTool({
     name: 'get_debtors_report',
     title: 'Debtors report',
-    description: 'Outstanding customer balances at the end of the period.' + RATE_LIMIT_NOTE,
+    description:
+      'Outstanding customer balances at the end of the period.' +
+      RATE_LIMIT_NOTE,
     toolset: 'reports',
     access: 'read',
     inputSchema: z.object({
       administration_id: administrationIdField,
       period: periodMonthField,
-      ...paginationFields,
+      ...paginationFields
     }),
     handler: async (args, { client }) => {
       const response = await client.get('reports/debtors', {
         administrationId: args.administration_id,
-        query: { ...listQuery(args), ...periodQuery(args.period) },
+        query: { ...listQuery(args), ...periodQuery(args.period) }
       });
       return listResult(response);
-    },
+    }
   }),
 
   defineTool({
     name: 'get_creditors_report',
     title: 'Creditors report',
-    description: 'Outstanding supplier balances at the end of the period.' + RATE_LIMIT_NOTE,
+    description:
+      'Outstanding supplier balances at the end of the period.' +
+      RATE_LIMIT_NOTE,
     toolset: 'reports',
     access: 'read',
     inputSchema: z.object({
       administration_id: administrationIdField,
       period: periodMonthField,
-      ...paginationFields,
+      ...paginationFields
     }),
     handler: async (args, { client }) => {
       const response = await client.get('reports/creditors', {
         administrationId: args.administration_id,
-        query: { ...listQuery(args), ...periodQuery(args.period) },
+        query: { ...listQuery(args), ...periodQuery(args.period) }
       });
       return listResult(response);
-    },
+    }
   }),
 
   defineTool({
@@ -497,18 +534,18 @@ export const reportsTools: readonly ToolDefinition[] = [
     inputSchema: z.object({
       administration_id: administrationIdField,
       period_until: periodUntilField,
-      ...paginationFields,
+      ...paginationFields
     }),
     handler: async (args, { client }) => {
       const response = await client.get('reports/debtors_aging', {
         administrationId: args.administration_id,
         query: {
           ...listQuery(args),
-          ...(args.period_until ? { period_until: args.period_until } : {}),
-        },
+          ...(args.period_until ? { period_until: args.period_until } : {})
+        }
       });
       return listResult(response);
-    },
+    }
   }),
 
   defineTool({
@@ -522,18 +559,18 @@ export const reportsTools: readonly ToolDefinition[] = [
     inputSchema: z.object({
       administration_id: administrationIdField,
       period_until: periodUntilField,
-      ...paginationFields,
+      ...paginationFields
     }),
     handler: async (args, { client }) => {
       const response = await client.get('reports/creditors_aging', {
         administrationId: args.administration_id,
         query: {
           ...listQuery(args),
-          ...(args.period_until ? { period_until: args.period_until } : {}),
-        },
+          ...(args.period_until ? { period_until: args.period_until } : {})
+        }
       });
       return listResult(response);
-    },
+    }
   }),
 
   defineTool({
@@ -552,18 +589,18 @@ export const reportsTools: readonly ToolDefinition[] = [
       version: z
         .enum(['3.2', '4.0'])
         .optional()
-        .describe('XAF version; Moneybird defaults to 3.2.'),
+        .describe('XAF version; Moneybird defaults to 3.2.')
     }),
     handler: async (args, { client }) => {
       await client.post(
         'reports/export/auditfile',
         { year: args.year, ...(args.version ? { version: args.version } : {}) },
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return emptyResult(
-        `Auditfile export for ${args.year} queued. Poll list_downloads with download_type "auditfile" until it appears.`,
+        `Auditfile export for ${args.year} queued. Poll list_downloads with download_type "auditfile" until it appears.`
       );
-    },
+    }
   }),
 
   defineTool({
@@ -578,18 +615,18 @@ export const reportsTools: readonly ToolDefinition[] = [
     access: 'write',
     inputSchema: z.object({
       administration_id: administrationIdField,
-      year: exportYearField,
+      year: exportYearField
     }),
     handler: async (args, { client }) => {
       await client.post(
         'reports/export/brugstaat',
         { year: args.year },
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return emptyResult(
-        `Brugstaat export for ${args.year} queued. Poll list_downloads with download_type "brugstaat" until it appears.`,
+        `Brugstaat export for ${args.year} queued. Poll list_downloads with download_type "brugstaat" until it appears.`
       );
-    },
+    }
   }),
 
   defineTool({
@@ -604,19 +641,19 @@ export const reportsTools: readonly ToolDefinition[] = [
     access: 'write',
     inputSchema: z.object({
       administration_id: administrationIdField,
-      year: exportYearField,
+      year: exportYearField
     }),
     handler: async (args, { client }) => {
       await client.post(
         'reports/export/ledger_accounts',
         { year: args.year },
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return emptyResult(
         `Ledger accounts export for ${args.year} queued. Poll list_downloads with download_type ` +
-          '"export_ledger_account_report" until it appears.',
+          '"export_ledger_account_report" until it appears.'
       );
-    },
+    }
   }),
 
   defineTool({
@@ -634,17 +671,21 @@ export const reportsTools: readonly ToolDefinition[] = [
         .optional()
         .describe(
           'Narrow to one type, e.g. `auditfile`, `brugstaat`, `export_ledger_account_report`, `export_contacts`. ' +
-            'The `download_type` field of a listed download shows the exact values in use.',
+            'The `download_type` field of a listed download shows the exact values in use.'
         ),
       downloaded: z
         .boolean()
         .optional()
-        .describe('Only downloads that have (or have not) been fetched before.'),
+        .describe(
+          'Only downloads that have (or have not) been fetched before.'
+        ),
       failed: z
         .boolean()
         .optional()
-        .describe('Only downloads whose preparation failed, or only those that succeeded.'),
-      ...paginationFields,
+        .describe(
+          'Only downloads whose preparation failed, or only those that succeeded.'
+        ),
+      ...paginationFields
     }),
     handler: async (args, { client }) => {
       const response = await client.get('downloads', {
@@ -652,12 +693,14 @@ export const reportsTools: readonly ToolDefinition[] = [
         query: {
           ...listQuery(args),
           ...(args.download_type ? { download_type: args.download_type } : {}),
-          ...(args.downloaded !== undefined ? { downloaded: args.downloaded } : {}),
-          ...(args.failed !== undefined ? { failed: args.failed } : {}),
-        },
+          ...(args.downloaded !== undefined
+            ? { downloaded: args.downloaded }
+            : {}),
+          ...(args.failed !== undefined ? { failed: args.failed } : {})
+        }
       });
       return listResult(response);
-    },
+    }
   }),
 
   defineTool({
@@ -670,16 +713,19 @@ export const reportsTools: readonly ToolDefinition[] = [
     access: 'read',
     inputSchema: z.object({
       administration_id: administrationIdField,
-      download_id: z.string(),
+      download_id: z.string()
     }),
     handler: async (args, { client }) => {
       const response = await client.post(
         `downloads/${encodeURIComponent(args.download_id)}/download`,
         undefined,
-        { administrationId: args.administration_id, manualRedirect: true },
+        { administrationId: args.administration_id, manualRedirect: true }
       );
-      return textResult({ download_url: response.redirectUrl, valid_for_seconds: 30 });
-    },
+      return textResult({
+        download_url: response.redirectUrl,
+        valid_for_seconds: 30
+      });
+    }
   }),
 
   defineTool({
@@ -695,11 +741,13 @@ export const reportsTools: readonly ToolDefinition[] = [
       financial_account_id: z
         .union([z.string(), z.number()])
         .describe(
-          'Bank account the statement belongs to; call list_financial_accounts for the ids.',
+          'Bank account the statement belongs to; call list_financial_accounts for the ids.'
         ),
       reference: z
         .string()
-        .describe('Unique reference, e.g. the bank statement number. Required by Moneybird.'),
+        .describe(
+          'Unique reference, e.g. the bank statement number. Required by Moneybird.'
+        ),
       official_date: z
         .string()
         .optional()
@@ -708,7 +756,7 @@ export const reportsTools: readonly ToolDefinition[] = [
         .string()
         .optional()
         .describe('Official bank balance as a decimal string.'),
-      financial_mutations_attributes: financialMutationsField,
+      financial_mutations_attributes: financialMutationsField
     }),
     handler: async (args, { client }) => {
       const response = await client.post(
@@ -717,17 +765,24 @@ export const reportsTools: readonly ToolDefinition[] = [
           financial_statement: {
             financial_account_id: args.financial_account_id,
             ...(args.reference ? { reference: args.reference } : {}),
-            ...(args.official_date ? { official_date: args.official_date } : {}),
-            ...(args.official_balance ? { official_balance: args.official_balance } : {}),
-            ...(args.financial_mutations_attributes
-              ? { financial_mutations_attributes: args.financial_mutations_attributes }
+            ...(args.official_date
+              ? { official_date: args.official_date }
               : {}),
-          },
+            ...(args.official_balance
+              ? { official_balance: args.official_balance }
+              : {}),
+            ...(args.financial_mutations_attributes
+              ? {
+                  financial_mutations_attributes:
+                    args.financial_mutations_attributes
+                }
+              : {})
+          }
         },
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -750,7 +805,7 @@ export const reportsTools: readonly ToolDefinition[] = [
         .string()
         .optional()
         .describe('Official bank balance as a decimal string.'),
-      financial_mutations_attributes: financialMutationsField,
+      financial_mutations_attributes: financialMutationsField
     }),
     handler: async (args, { client }) => {
       const response = await client.patch(
@@ -758,17 +813,24 @@ export const reportsTools: readonly ToolDefinition[] = [
         {
           financial_statement: {
             ...(args.reference ? { reference: args.reference } : {}),
-            ...(args.official_date ? { official_date: args.official_date } : {}),
-            ...(args.official_balance ? { official_balance: args.official_balance } : {}),
-            ...(args.financial_mutations_attributes
-              ? { financial_mutations_attributes: args.financial_mutations_attributes }
+            ...(args.official_date
+              ? { official_date: args.official_date }
               : {}),
-          },
+            ...(args.official_balance
+              ? { official_balance: args.official_balance }
+              : {}),
+            ...(args.financial_mutations_attributes
+              ? {
+                  financial_mutations_attributes:
+                    args.financial_mutations_attributes
+                }
+              : {})
+          }
         },
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -782,14 +844,16 @@ export const reportsTools: readonly ToolDefinition[] = [
     irreversible: true,
     inputSchema: z.object({
       administration_id: administrationIdField,
-      financial_statement_id: z.string(),
+      financial_statement_id: z.string()
     }),
     handler: async (args, { client }) => {
       await client.delete(
         `financial_statements/${encodeURIComponent(args.financial_statement_id)}`,
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
-      return emptyResult(`Financial statement ${args.financial_statement_id} deleted.`);
-    },
-  }),
+      return emptyResult(
+        `Financial statement ${args.financial_statement_id} deleted.`
+      );
+    }
+  })
 ] as const;

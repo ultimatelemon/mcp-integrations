@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { buildFilter, parseLinkHeader, readPageInfo } from '../../src/moneybird/pagination.js';
+import {
+  buildFilter,
+  parseLinkHeader,
+  readPageInfo
+} from '../../src/moneybird/pagination.ts';
 
 describe('parseLinkHeader', () => {
   it('parses multiple comma-separated rels', () => {
@@ -9,14 +13,15 @@ describe('parseLinkHeader', () => {
 
     expect(parseLinkHeader(header)).toEqual({
       next: 'https://moneybird.com/api/v2/123/contacts.json?page=2',
-      prev: 'https://moneybird.com/api/v2/123/contacts.json?page=1',
+      prev: 'https://moneybird.com/api/v2/123/contacts.json?page=1'
     });
   });
 
   it('accepts an unquoted rel value', () => {
-    const header = '<https://moneybird.com/api/v2/123/contacts.json?page=2>; rel=next';
+    const header =
+      '<https://moneybird.com/api/v2/123/contacts.json?page=2>; rel=next';
     expect(parseLinkHeader(header)).toEqual({
-      next: 'https://moneybird.com/api/v2/123/contacts.json?page=2',
+      next: 'https://moneybird.com/api/v2/123/contacts.json?page=2'
     });
   });
 
@@ -34,7 +39,7 @@ describe('readPageInfo', () => {
     const headers = new Headers({
       link:
         '<https://moneybird.com/api/v2/123/contacts.json?page=3>; rel="next", ' +
-        '<https://moneybird.com/api/v2/123/contacts.json?page=1>; rel="prev"',
+        '<https://moneybird.com/api/v2/123/contacts.json?page=1>; rel="prev"'
     });
 
     const info = readPageInfo(headers, { page: 2, perPage: 50 });
@@ -45,7 +50,7 @@ describe('readPageInfo', () => {
       hasNextPage: true,
       hasPreviousPage: true,
       nextPage: 3,
-      previousPage: 1,
+      previousPage: 1
     });
   });
 
@@ -55,7 +60,7 @@ describe('readPageInfo', () => {
       hasNextPage: false,
       hasPreviousPage: false,
       nextPage: undefined,
-      previousPage: undefined,
+      previousPage: undefined
     });
   });
 
@@ -72,13 +77,13 @@ describe('readPageInfo', () => {
 describe('buildFilter', () => {
   it('joins key:value pairs with commas', () => {
     expect(buildFilter({ contact_type: 'company', state: 'open' })).toBe(
-      'contact_type:company,state:open',
+      'contact_type:company,state:open'
     );
   });
 
   it('drops undefined values', () => {
     expect(buildFilter({ contact_type: 'company', reference: undefined })).toBe(
-      'contact_type:company',
+      'contact_type:company'
     );
   });
 

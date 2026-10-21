@@ -3,10 +3,11 @@ import {
   ConfigError,
   DEFAULT_TOOLSETS,
   TOOLSETS,
+  callerConfig,
   configFromEnv,
   permissionsFor,
-  resolveToolsets,
-} from '../../src/config/schema.js';
+  resolveToolsets
+} from '../../src/config/schema.ts';
 
 describe('resolveToolsets', () => {
   it('returns the defaults when nothing is configured', () => {
@@ -27,11 +28,15 @@ describe('resolveToolsets', () => {
 
   it('subtracts a toolset from the defaults with a leading "-"', () => {
     const result = resolveToolsets('-banking');
-    expect(result).toEqual(DEFAULT_TOOLSETS.filter((toolset) => toolset !== 'banking'));
+    expect(result).toEqual(
+      DEFAULT_TOOLSETS.filter((toolset) => toolset !== 'banking')
+    );
   });
 
   it('throws a ConfigError naming an unknown toolset', () => {
-    expect(() => resolveToolsets('not-a-toolset')).toThrow(/Unknown toolset "not-a-toolset"/);
+    expect(() => resolveToolsets('not-a-toolset')).toThrow(
+      /Unknown toolset "not-a-toolset"/
+    );
   });
 
   it('throws a ConfigError for an unknown toolset being subtracted', () => {
@@ -40,7 +45,7 @@ describe('resolveToolsets', () => {
 });
 
 describe('configFromEnv', () => {
-  const base = { MONEYBIRD_API_TOKEN: 'token' };
+  const base = {};
 
   it.each([
     ['1', true],
@@ -50,7 +55,7 @@ describe('configFromEnv', () => {
     ['0', false],
     ['false', false],
     ['no', false],
-    ['off', false],
+    ['off', false]
   ])('parses MONEYBIRD_ALLOW_WRITE=%s as %s', (raw, expected) => {
     const config = configFromEnv({ ...base, MONEYBIRD_ALLOW_WRITE: raw });
     expect(config.allowWrite).toBe(expected);
@@ -61,67 +66,100 @@ describe('configFromEnv', () => {
     expect(config.allowWrite).toBe(false);
     expect(config.allowDelete).toBe(false);
   });
-
-  it('throws when a client id is set without a client secret', () => {
-    expect(() => configFromEnv({ ...base, MONEYBIRD_CLIENT_ID: 'abc' })).toThrow(ConfigError);
-  });
-
-  it('throws when a client secret is set without a client id', () => {
-    expect(() => configFromEnv({ ...base, MONEYBIRD_CLIENT_SECRET: 'shh' })).toThrow(ConfigError);
-  });
-
-  it('accepts a client id and secret together and builds the oauth config', () => {
-    const config = configFromEnv({
-      MONEYBIRD_CLIENT_ID: 'abc',
-      MONEYBIRD_CLIENT_SECRET: 'shh',
-    });
-    expect(config.oauth).toMatchObject({ clientId: 'abc', clientSecret: 'shh' });
-  });
-
-  it('throws for an invalid transport', () => {
-    expect(() => configFromEnv({ ...base, MONEYBIRD_TRANSPORT: 'carrier-pigeon' })).toThrow(
-      /MONEYBIRD_TRANSPORT must be "stdio" or "http"/,
-    );
-  });
-
-  it('accepts a valid transport case-insensitively', () => {
-    expect(configFromEnv({ ...base, MONEYBIRD_TRANSPORT: 'HTTP' }).transport).toBe('http');
-  });
 });
 
 describe('permissionsFor', () => {
   const config = (overrides: { allowWrite: boolean; allowDelete: boolean }) =>
     configFromEnv({
-      MONEYBIRD_API_TOKEN: 'token',
       MONEYBIRD_ALLOW_WRITE: String(overrides.allowWrite),
-      MONEYBIRD_ALLOW_DELETE: String(overrides.allowDelete),
+      MONEYBIRD_ALLOW_DELETE: String(overrides.allowDelete)
     });
 
   it('grants neither write nor destroy by default', () => {
-    expect(permissionsFor(config({ allowWrite: false, allowDelete: false }))).toEqual({
+    expect(
+      permissionsFor(config({ allowWrite: false, allowDelete: false }))
+    ).toEqual({
       write: false,
-      destroy: false,
+      destroy: false
     });
   });
 
   it('grants write but not destroy when only allowWrite is set', () => {
-    expect(permissionsFor(config({ allowWrite: true, allowDelete: false }))).toEqual({
+    expect(
+      permissionsFor(config({ allowWrite: true, allowDelete: false }))
+    ).toEqual({
       write: true,
-      destroy: false,
+      destroy: false
     });
   });
 
   it('does not grant destroy from allowDelete alone', () => {
-    expect(permissionsFor(config({ allowWrite: false, allowDelete: true }))).toEqual({
+    expect(
+      permissionsFor(config({ allowWrite: false, allowDelete: true }))
+    ).toEqual({
       write: false,
-      destroy: false,
+      destroy: false
     });
   });
 
   it('grants destroy only when both allowWrite and allowDelete are set', () => {
-    expect(permissionsFor(config({ allowWrite: true, allowDelete: true }))).toEqual({
+    expect(
+      permissionsFor(config({ allowWrite: true, allowDelete: true }))
+    ).toEqual({
       write: true,
-      destroy: true,
+      destroy: true
     });
+  });
+});
+
+describe('callerConfig', () => {
+  const defaults = configFromEnv({ MONEYBIRD_ADMINISTRATION_ID: '1' });
+
+  it('keeps the server defaults without headers', () => {
+    const { config, warnings } = callerConfig(defaults, new Headers());
+    expect(config).toEqual(defaults);
+    expect(warnings).toEqual([]);
+  });
+
+  it.each([
+    ['read', false, false],
+    ['write', true, false],
+    ['DELETE', true, true]
+  ])('maps X-Moneybird-Access %s', (access, write, destroy) => {
+    const { config } = callerConfig(
+      defaults,
+      new Headers({ 'x-moneybird-access': access })
+    );
+    expect(permissionsFor(config)).toEqual({ write, destroy });
+  });
+
+  it('takes toolsets and the default administration from headers', () => {
+    const { config } = callerConfig(
+      defaults,
+      new Headers({
+        'x-moneybird-toolsets': 'invoicing, core',
+        'x-moneybird-administration': '42'
+      })
+    );
+    expect(config.toolsets).toEqual(['core', 'invoicing']);
+    expect(config.administrationId).toBe('42');
+  });
+
+  it('ignores bad values and reports them instead of failing', () => {
+    const { config, warnings } = callerConfig(
+      defaults,
+      new Headers({
+        'x-moneybird-access': 'admin',
+        'x-moneybird-toolsets': 'nope'
+      })
+    );
+    expect(config).toEqual(defaults);
+    expect(warnings).toHaveLength(2);
+    expect(warnings.join(' ')).toMatch(/admin.*nope/s);
+  });
+
+  it('does not change the defaults it was given', () => {
+    callerConfig(defaults, new Headers({ 'x-moneybird-access': 'delete' }));
+    expect(defaults.allowDelete).toBe(false);
   });
 });

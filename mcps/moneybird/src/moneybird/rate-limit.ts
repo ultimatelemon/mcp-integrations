@@ -26,7 +26,7 @@ export function readRateLimit(headers: Headers): RateLimitSnapshot {
     limit: intHeader(headers, 'ratelimit-limit'),
     remaining: intHeader(headers, 'ratelimit-remaining'),
     reset: intHeader(headers, 'ratelimit-reset'),
-    retryAfterSeconds: intHeader(headers, 'retry-after'),
+    retryAfterSeconds: intHeader(headers, 'retry-after')
   };
 }
 
@@ -39,12 +39,15 @@ export function readRateLimit(headers: Headers): RateLimitSnapshot {
  */
 export class SlidingWindowLimiter {
   private readonly timestamps: number[] = [];
+  private readonly limit: number;
+  private readonly windowMs: number;
+  private readonly now: () => number;
 
-  constructor(
-    private readonly limit: number,
-    private readonly windowMs: number,
-    private readonly now: () => number = Date.now,
-  ) {}
+  constructor(limit: number, windowMs: number, now: () => number = Date.now) {
+    this.limit = limit;
+    this.windowMs = windowMs;
+    this.now = now;
+  }
 
   /** Milliseconds to wait before a request would fit inside the window; 0 when it fits now. */
   delayUntilSlot(): number {
@@ -68,7 +71,11 @@ export class SlidingWindowLimiter {
   private evictExpired(): void {
     const cutoff = this.now() - this.windowMs;
     let drop = 0;
-    while (drop < this.timestamps.length && (this.timestamps[drop] ?? 0) <= cutoff) drop += 1;
+    while (
+      drop < this.timestamps.length &&
+      (this.timestamps[drop] ?? 0) <= cutoff
+    )
+      drop += 1;
     if (drop > 0) this.timestamps.splice(0, drop);
   }
 }
@@ -87,7 +94,7 @@ export function backoffDelay({
   baseMs = 500,
   maxMs = 30_000,
   retryAfterSeconds,
-  random = Math.random,
+  random = Math.random
 }: BackoffOptions): number {
   if (retryAfterSeconds !== undefined && retryAfterSeconds >= 0) {
     return Math.min(retryAfterSeconds * 1000, maxMs);

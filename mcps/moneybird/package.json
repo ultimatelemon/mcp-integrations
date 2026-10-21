@@ -1,76 +1,50 @@
 {
-  "name": "moneybird-mcp",
+  "name": "@ultimatelemon-eu/moneybird",
   "version": "0.1.0",
-  "description": "Model Context Protocol server for the Moneybird accounting API",
-  "keywords": [
-    "mcp",
-    "model-context-protocol",
-    "moneybird",
-    "accounting",
-    "invoicing",
-    "bookkeeping",
-    "claude"
-  ],
+  "description": "MCP server for the Moneybird accounting API, where every caller brings their own API token.",
   "license": "MIT",
-  "author": "HalloSouf",
+  "private": true,
+  "type": "module",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/HalloSouf/moneybird-mcp.git"
+    "url": "git+https://github.com/ultimatelemon/mcp-integrations.git",
+    "directory": "mcps/moneybird"
   },
-  "homepage": "https://github.com/HalloSouf/moneybird-mcp#readme",
-  "bugs": {
-    "url": "https://github.com/HalloSouf/moneybird-mcp/issues"
-  },
-  "type": "module",
   "engines": {
-    "node": ">=20"
+    "node": ">=24"
   },
-  "bin": {
-    "moneybird-mcp": "dist/bin.js"
-  },
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
-    },
-    "./package.json": "./package.json"
-  },
-  "files": [
-    "dist",
-    "migrations",
-    "spec/endpoints.json",
-    "README.md",
-    "LICENSE"
-  ],
   "scripts": {
+    "dev": "node --watch --env-file-if-exists=.env src/server.ts",
     "build": "tsc -p tsconfig.build.json",
-    "dev": "tsc -p tsconfig.build.json --watch",
+    "start": "node dist/server.js",
+    "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "docs:tools": "npm run build && node --experimental-strip-types scripts/generate-tool-docs.ts",
-    "spec:refresh": "node --experimental-strip-types scripts/refresh-spec.ts",
-    "prepublishOnly": "npm run build"
+    "docs:tools": "node scripts/generate-tool-docs.ts",
+    "spec:refresh": "node scripts/refresh-spec.ts"
   },
+  "prettier": "@ultimatelemon-eu/prettier-config",
   "dependencies": {
-    "@modelcontextprotocol/node": "^2.0.0",
-    "@modelcontextprotocol/server": "^2.0.0",
-    "pg": "^8.23.0",
+    "@modelcontextprotocol/node": "^2.1.1",
+    "@modelcontextprotocol/server": "^2.3.1",
+    "@ultimatelemon-eu/mcp-http": "^2.2.0",
+    "pino": "^10.4.0",
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@modelcontextprotocol/client": "^2.0.0",
-    "@types/node": "^22.15.0",
-    "@types/pg": "^8.23.1",
-    "@vitest/coverage-v8": "^3.2.4",
-    "prettier": "^3.6.2",
-    "typescript": "^5.9.2",
-    "vitest": "^3.2.4",
-    "yaml": "^2.9.0"
+    "@modelcontextprotocol/client": "^2.3.1",
+    "@types/node": "^24.19.2",
+    "@ultimatelemon-eu/eslint-config": "^1.1.1",
+    "@ultimatelemon-eu/prettier-config": "^1.0.1",
+    "eslint": "^10.13.0",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^17.13.0",
+    "prettier": "^3.9.10",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.72.0",
+    "vitest": "^5.0.5",
+    "yaml": "^2.9.1"
   }
 }

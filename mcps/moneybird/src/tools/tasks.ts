@@ -7,31 +7,39 @@ import {
   listResult,
   paginationFields,
   textResult,
-  type ToolDefinition,
-} from './common.js';
+  type ToolDefinition
+} from './common.ts';
 
 const reportType = z
   .enum(['balance_sheet', 'profit_loss', 'debtor', 'creditor', 'assets'])
-  .describe('Report the tasks are generated from. Changing it regenerates them.');
+  .describe(
+    'Report the tasks are generated from. Changing it regenerates them.'
+  );
 
 /** PATCH accepts only these three; the period bounds are settable at creation time only. */
 const taskListAttributes = z
   .object({
     name: z.string().optional(),
     description: z.string().optional(),
-    deadline_on: z.string().optional().describe('Date, YYYY-MM-DD.'),
+    deadline_on: z.string().optional().describe('Date, YYYY-MM-DD.')
   })
   .loose();
 
 const newTaskListAttributes = taskListAttributes.extend({
-  period_begin: z.string().optional().describe('Start of the period the list covers, YYYY-MM-DD.'),
-  period_end: z.string().optional().describe('End of the period the list covers, YYYY-MM-DD.'),
+  period_begin: z
+    .string()
+    .optional()
+    .describe('Start of the period the list covers, YYYY-MM-DD.'),
+  period_end: z
+    .string()
+    .optional()
+    .describe('End of the period the list covers, YYYY-MM-DD.')
 });
 
 const groupAttributes = z
   .object({
     name: z.string().optional(),
-    report_type: reportType.optional(),
+    report_type: reportType.optional()
   })
   .loose();
 
@@ -52,7 +60,7 @@ const taskAttributes = z
     generate_subtasks: z
       .boolean()
       .optional()
-      .describe('Generate a subtask per child of the related ledger account.'),
+      .describe('Generate a subtask per child of the related ledger account.')
   })
   .loose();
 
@@ -63,11 +71,15 @@ const taskListTemplateAttributes = z
     period: z
       .string()
       .optional()
-      .describe('ISO 8601 duration (P1M, P3M, P1Y) or `monthly`, `quarterly`, `yearly`, `none`.'),
+      .describe(
+        'ISO 8601 duration (P1M, P3M, P1Y) or `monthly`, `quarterly`, `yearly`, `none`.'
+      ),
     deadline_after: z
       .string()
       .optional()
-      .describe('ISO 8601 duration offsetting the deadline from the period end, e.g. `P14D`.'),
+      .describe(
+        'ISO 8601 duration offsetting the deadline from the period end, e.g. `P14D`.'
+      )
   })
   .loose();
 
@@ -82,15 +94,15 @@ export const tasksTools: readonly ToolDefinition[] = [
     access: 'read',
     inputSchema: z.object({
       administration_id: administrationIdField,
-      ...paginationFields,
+      ...paginationFields
     }),
     handler: async (args, { client }) => {
       const response = await client.get('task_lists', {
         administrationId: args.administration_id,
-        query: listQuery(args),
+        query: listQuery(args)
       });
       return listResult(response);
-    },
+    }
   }),
 
   defineTool({
@@ -101,14 +113,17 @@ export const tasksTools: readonly ToolDefinition[] = [
     access: 'read',
     inputSchema: z.object({
       administration_id: administrationIdField,
-      task_list_id: z.string(),
+      task_list_id: z.string()
     }),
     handler: async (args, { client }) => {
-      const response = await client.get(`task_lists/${encodeURIComponent(args.task_list_id)}`, {
-        administrationId: args.administration_id,
-      });
+      const response = await client.get(
+        `task_lists/${encodeURIComponent(args.task_list_id)}`,
+        {
+          administrationId: args.administration_id
+        }
+      );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -123,17 +138,17 @@ export const tasksTools: readonly ToolDefinition[] = [
       administration_id: administrationIdField,
       task_list: newTaskListAttributes.extend({
         name: z.string(),
-        template_id: z.union([z.string(), z.number()]).optional(),
-      }),
+        template_id: z.union([z.string(), z.number()]).optional()
+      })
     }),
     handler: async (args, { client }) => {
       const response = await client.post(
         'task_lists',
         { task_list: args.task_list },
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -145,35 +160,39 @@ export const tasksTools: readonly ToolDefinition[] = [
     inputSchema: z.object({
       administration_id: administrationIdField,
       task_list_id: z.string(),
-      task_list: taskListAttributes,
+      task_list: taskListAttributes
     }),
     handler: async (args, { client }) => {
       const response = await client.patch(
         `task_lists/${encodeURIComponent(args.task_list_id)}`,
         { task_list: args.task_list },
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
     name: 'delete_task_list',
     title: 'Delete task list',
-    description: 'Permanently delete a task list together with all its groups and tasks.',
+    description:
+      'Permanently delete a task list together with all its groups and tasks.',
     toolset: 'tasks',
     access: 'destroy',
     irreversible: true,
     inputSchema: z.object({
       administration_id: administrationIdField,
-      task_list_id: z.string(),
+      task_list_id: z.string()
     }),
     handler: async (args, { client }) => {
-      await client.delete(`task_lists/${encodeURIComponent(args.task_list_id)}`, {
-        administrationId: args.administration_id,
-      });
+      await client.delete(
+        `task_lists/${encodeURIComponent(args.task_list_id)}`,
+        {
+          administrationId: args.administration_id
+        }
+      );
       return emptyResult(`Task list ${args.task_list_id} deleted.`);
-    },
+    }
   }),
 
   defineTool({
@@ -187,16 +206,16 @@ export const tasksTools: readonly ToolDefinition[] = [
     inputSchema: z.object({
       administration_id: administrationIdField,
       task_list_id: z.string(),
-      group: groupAttributes.extend({ name: z.string() }),
+      group: groupAttributes.extend({ name: z.string() })
     }),
     handler: async (args, { client }) => {
       const response = await client.post(
         `task_lists/${encodeURIComponent(args.task_list_id)}/groups`,
         { group: args.group },
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -207,14 +226,17 @@ export const tasksTools: readonly ToolDefinition[] = [
     access: 'read',
     inputSchema: z.object({
       administration_id: administrationIdField,
-      group_id: z.string().describe('Task list group id.'),
+      group_id: z.string().describe('Task list group id.')
     }),
     handler: async (args, { client }) => {
-      const response = await client.get(`task_list_groups/${encodeURIComponent(args.group_id)}`, {
-        administrationId: args.administration_id,
-      });
+      const response = await client.get(
+        `task_list_groups/${encodeURIComponent(args.group_id)}`,
+        {
+          administrationId: args.administration_id
+        }
+      );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -228,16 +250,16 @@ export const tasksTools: readonly ToolDefinition[] = [
     inputSchema: z.object({
       administration_id: administrationIdField,
       group_id: z.string(),
-      group: groupAttributes,
+      group: groupAttributes
     }),
     handler: async (args, { client }) => {
       const response = await client.patch(
         `task_list_groups/${encodeURIComponent(args.group_id)}`,
         { group: args.group },
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -249,14 +271,17 @@ export const tasksTools: readonly ToolDefinition[] = [
     irreversible: true,
     inputSchema: z.object({
       administration_id: administrationIdField,
-      group_id: z.string(),
+      group_id: z.string()
     }),
     handler: async (args, { client }) => {
-      await client.delete(`task_list_groups/${encodeURIComponent(args.group_id)}`, {
-        administrationId: args.administration_id,
-      });
+      await client.delete(
+        `task_list_groups/${encodeURIComponent(args.group_id)}`,
+        {
+          administrationId: args.administration_id
+        }
+      );
       return emptyResult(`Task list group ${args.group_id} deleted.`);
-    },
+    }
   }),
 
   defineTool({
@@ -270,16 +295,16 @@ export const tasksTools: readonly ToolDefinition[] = [
     inputSchema: z.object({
       administration_id: administrationIdField,
       group_id: z.string().describe('Task list group id to add the task to.'),
-      task: taskAttributes.extend({ name: z.string() }),
+      task: taskAttributes.extend({ name: z.string() })
     }),
     handler: async (args, { client }) => {
       const response = await client.post(
         `task_list_groups/${encodeURIComponent(args.group_id)}/tasks`,
         { task: args.task },
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -290,14 +315,17 @@ export const tasksTools: readonly ToolDefinition[] = [
     access: 'read',
     inputSchema: z.object({
       administration_id: administrationIdField,
-      task_id: z.string(),
+      task_id: z.string()
     }),
     handler: async (args, { client }) => {
-      const response = await client.get(`task_list_tasks/${encodeURIComponent(args.task_id)}`, {
-        administrationId: args.administration_id,
-      });
+      const response = await client.get(
+        `task_list_tasks/${encodeURIComponent(args.task_id)}`,
+        {
+          administrationId: args.administration_id
+        }
+      );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -309,16 +337,16 @@ export const tasksTools: readonly ToolDefinition[] = [
     inputSchema: z.object({
       administration_id: administrationIdField,
       task_id: z.string(),
-      task: taskAttributes,
+      task: taskAttributes
     }),
     handler: async (args, { client }) => {
       const response = await client.patch(
         `task_list_tasks/${encodeURIComponent(args.task_id)}`,
         { task: args.task },
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -332,14 +360,17 @@ export const tasksTools: readonly ToolDefinition[] = [
     irreversible: true,
     inputSchema: z.object({
       administration_id: administrationIdField,
-      task_id: z.string(),
+      task_id: z.string()
     }),
     handler: async (args, { client }) => {
-      await client.delete(`task_list_tasks/${encodeURIComponent(args.task_id)}`, {
-        administrationId: args.administration_id,
-      });
+      await client.delete(
+        `task_list_tasks/${encodeURIComponent(args.task_id)}`,
+        {
+          administrationId: args.administration_id
+        }
+      );
       return emptyResult(`Task ${args.task_id} deleted.`);
-    },
+    }
   }),
 
   defineTool({
@@ -356,7 +387,7 @@ export const tasksTools: readonly ToolDefinition[] = [
       assignee_id: z
         .union([z.string(), z.number()])
         .optional()
-        .describe('User id to assign. Omit to unassign the task.'),
+        .describe('User id to assign. Omit to unassign the task.')
     }),
     handler: async (args, { client }) => {
       const path = `task_list_tasks/${encodeURIComponent(args.task_id)}/assignment`;
@@ -367,10 +398,10 @@ export const tasksTools: readonly ToolDefinition[] = [
       const response = await client.post(
         path,
         { assignee_id: args.assignee_id },
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -381,16 +412,16 @@ export const tasksTools: readonly ToolDefinition[] = [
     access: 'write',
     inputSchema: z.object({
       administration_id: administrationIdField,
-      task_id: z.string(),
+      task_id: z.string()
     }),
     handler: async (args, { client }) => {
       const response = await client.post(
         `task_list_tasks/${encodeURIComponent(args.task_id)}/completion`,
         undefined,
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data ?? `Task ${args.task_id} completed.`);
-    },
+    }
   }),
 
   defineTool({
@@ -402,15 +433,15 @@ export const tasksTools: readonly ToolDefinition[] = [
     access: 'write',
     inputSchema: z.object({
       administration_id: administrationIdField,
-      task_id: z.string(),
+      task_id: z.string()
     }),
     handler: async (args, { client }) => {
       const response = await client.delete(
         `task_list_tasks/${encodeURIComponent(args.task_id)}/completion`,
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data ?? `Task ${args.task_id} reopened.`);
-    },
+    }
   }),
 
   defineTool({
@@ -423,16 +454,21 @@ export const tasksTools: readonly ToolDefinition[] = [
       administration_id: administrationIdField,
       task_id: z.string(),
       note: z.string(),
-      todo: z.boolean().optional().describe('Mark the note as a to-do item.'),
+      todo: z.boolean().optional().describe('Mark the note as a to-do item.')
     }),
     handler: async (args, { client }) => {
       const response = await client.post(
         `task_list_tasks/${encodeURIComponent(args.task_id)}/notes`,
-        { note: { note: args.note, ...(args.todo !== undefined ? { todo: args.todo } : {}) } },
-        { administrationId: args.administration_id },
+        {
+          note: {
+            note: args.note,
+            ...(args.todo !== undefined ? { todo: args.todo } : {})
+          }
+        },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -446,10 +482,10 @@ export const tasksTools: readonly ToolDefinition[] = [
     inputSchema: z.object({ administration_id: administrationIdField }),
     handler: async (args, { client }) => {
       const response = await client.get('task_list_templates', {
-        administrationId: args.administration_id,
+        administrationId: args.administration_id
       });
       return listResult(response);
-    },
+    }
   }),
 
   defineTool({
@@ -460,15 +496,15 @@ export const tasksTools: readonly ToolDefinition[] = [
     access: 'read',
     inputSchema: z.object({
       administration_id: administrationIdField,
-      template_id: z.string(),
+      template_id: z.string()
     }),
     handler: async (args, { client }) => {
       const response = await client.get(
         `task_list_templates/${encodeURIComponent(args.template_id)}`,
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -481,16 +517,18 @@ export const tasksTools: readonly ToolDefinition[] = [
     access: 'write',
     inputSchema: z.object({
       administration_id: administrationIdField,
-      task_list_template: taskListTemplateAttributes.extend({ name: z.string() }),
+      task_list_template: taskListTemplateAttributes.extend({
+        name: z.string()
+      })
     }),
     handler: async (args, { client }) => {
       const response = await client.post(
         'task_list_templates',
         { task_list_template: args.task_list_template },
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -503,35 +541,39 @@ export const tasksTools: readonly ToolDefinition[] = [
     inputSchema: z.object({
       administration_id: administrationIdField,
       template_id: z.string(),
-      task_list_template: taskListTemplateAttributes,
+      task_list_template: taskListTemplateAttributes
     }),
     handler: async (args, { client }) => {
       const response = await client.patch(
         `task_list_templates/${encodeURIComponent(args.template_id)}`,
         { task_list_template: args.task_list_template },
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
     name: 'delete_task_list_template',
     title: 'Delete task list template',
-    description: 'Permanently delete a task list template and all its groups and tasks.',
+    description:
+      'Permanently delete a task list template and all its groups and tasks.',
     toolset: 'tasks',
     access: 'destroy',
     irreversible: true,
     inputSchema: z.object({
       administration_id: administrationIdField,
-      template_id: z.string(),
+      template_id: z.string()
     }),
     handler: async (args, { client }) => {
-      await client.delete(`task_list_templates/${encodeURIComponent(args.template_id)}`, {
-        administrationId: args.administration_id,
-      });
+      await client.delete(
+        `task_list_templates/${encodeURIComponent(args.template_id)}`,
+        {
+          administrationId: args.administration_id
+        }
+      );
       return emptyResult(`Task list template ${args.template_id} deleted.`);
-    },
+    }
   }),
 
   defineTool({
@@ -544,16 +586,16 @@ export const tasksTools: readonly ToolDefinition[] = [
     inputSchema: z.object({
       administration_id: administrationIdField,
       template_id: z.string(),
-      group: groupAttributes.extend({ name: z.string() }),
+      group: groupAttributes.extend({ name: z.string() })
     }),
     handler: async (args, { client }) => {
       const response = await client.post(
         `task_list_templates/${encodeURIComponent(args.template_id)}/groups`,
         { group: args.group },
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -567,16 +609,16 @@ export const tasksTools: readonly ToolDefinition[] = [
     inputSchema: z.object({
       administration_id: administrationIdField,
       template_id: z.string(),
-      task_list: newTaskListAttributes.optional(),
+      task_list: newTaskListAttributes.optional()
     }),
     handler: async (args, { client }) => {
       const response = await client.post(
         `task_list_templates/${encodeURIComponent(args.template_id)}/task_lists`,
         args.task_list ? { task_list: args.task_list } : undefined,
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -590,10 +632,10 @@ export const tasksTools: readonly ToolDefinition[] = [
     inputSchema: z.object({ administration_id: administrationIdField }),
     handler: async (args, { client }) => {
       const response = await client.get('workflows', {
-        administrationId: args.administration_id,
+        administrationId: args.administration_id
       });
       return listResult(response);
-    },
+    }
   }),
 
   defineTool({
@@ -605,13 +647,16 @@ export const tasksTools: readonly ToolDefinition[] = [
     access: 'read',
     inputSchema: z.object({
       administration_id: administrationIdField,
-      workflow_id: z.string(),
+      workflow_id: z.string()
     }),
     handler: async (args, { client }) => {
-      const response = await client.get(`workflows/${encodeURIComponent(args.workflow_id)}`, {
-        administrationId: args.administration_id,
-      });
+      const response = await client.get(
+        `workflows/${encodeURIComponent(args.workflow_id)}`,
+        {
+          administrationId: args.administration_id
+        }
+      );
       return textResult(response.data);
-    },
-  }),
+    }
+  })
 ] as const;

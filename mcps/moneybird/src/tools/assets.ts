@@ -7,8 +7,8 @@ import {
   listResult,
   paginationFields,
   textResult,
-  type ToolDefinition,
-} from './common.js';
+  type ToolDefinition
+} from './common.ts';
 
 const VALUE_CHANGE_DATE =
   'Date of the value change, YYYY-MM-DD. Must be after the purchase date, and may be neither in the future nor ' +
@@ -18,11 +18,15 @@ const assetIdField = z.string().describe('Moneybird asset id.');
 
 const valueChangePlanAttributes = z
   .object({
-    lifespan_in_years: z.union([z.string(), z.number()]).describe('Depreciation period in years.'),
+    lifespan_in_years: z
+      .union([z.string(), z.number()])
+      .describe('Depreciation period in years.'),
     residual_value: z
       .string()
       .optional()
-      .describe('Value left at the end of the lifespan, decimal string. Defaults to "0".'),
+      .describe(
+        'Value left at the end of the lifespan, decimal string. Defaults to "0".'
+      )
   })
   .loose();
 
@@ -32,10 +36,15 @@ const assetAttributes = z
     ledger_account_id: z
       .union([z.string(), z.number()])
       .optional()
-      .describe('Fixed asset ledger account to book on; call list_ledger_accounts for the ids.'),
+      .describe(
+        'Fixed asset ledger account to book on; call list_ledger_accounts for the ids.'
+      ),
     purchase_date: z.string().optional().describe('YYYY-MM-DD.'),
-    purchase_value: z.string().optional().describe('Decimal string, e.g. "12500.00".'),
-    value_change_plan_attributes: valueChangePlanAttributes.optional(),
+    purchase_value: z
+      .string()
+      .optional()
+      .describe('Decimal string, e.g. "12500.00".'),
+    value_change_plan_attributes: valueChangePlanAttributes.optional()
   })
   .loose();
 
@@ -57,8 +66,10 @@ export const assetsTools: readonly ToolDefinition[] = [
       active: z
         .boolean()
         .optional()
-        .describe('Defaults to true. Set to false to include disposed and future assets as well.'),
-      ...paginationFields,
+        .describe(
+          'Defaults to true. Set to false to include disposed and future assets as well.'
+        ),
+      ...paginationFields
     }),
     handler: async (args, { client }) => {
       const response = await client.get('assets', {
@@ -68,11 +79,11 @@ export const assetsTools: readonly ToolDefinition[] = [
           ...(args.ledger_account_id !== undefined
             ? { ledger_account_id: String(args.ledger_account_id) }
             : {}),
-          ...(args.active !== undefined ? { active: args.active } : {}),
-        },
+          ...(args.active !== undefined ? { active: args.active } : {})
+        }
       });
       return listResult(response);
-    },
+    }
   }),
 
   defineTool({
@@ -85,14 +96,17 @@ export const assetsTools: readonly ToolDefinition[] = [
     access: 'read',
     inputSchema: z.object({
       administration_id: administrationIdField,
-      asset_id: assetIdField,
+      asset_id: assetIdField
     }),
     handler: async (args, { client }) => {
-      const response = await client.get(`assets/${encodeURIComponent(args.asset_id)}`, {
-        administrationId: args.administration_id,
-      });
+      const response = await client.get(
+        `assets/${encodeURIComponent(args.asset_id)}`,
+        {
+          administrationId: args.administration_id
+        }
+      );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -106,16 +120,16 @@ export const assetsTools: readonly ToolDefinition[] = [
     access: 'write',
     inputSchema: z.object({
       administration_id: administrationIdField,
-      asset: assetAttributes,
+      asset: assetAttributes
     }),
     handler: async (args, { client }) => {
       const response = await client.post(
         'assets',
         { asset: args.asset },
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -129,16 +143,16 @@ export const assetsTools: readonly ToolDefinition[] = [
     inputSchema: z.object({
       administration_id: administrationIdField,
       asset_id: assetIdField,
-      asset: assetAttributes,
+      asset: assetAttributes
     }),
     handler: async (args, { client }) => {
       const response = await client.patch(
         `assets/${encodeURIComponent(args.asset_id)}`,
         { asset: args.asset },
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -151,14 +165,14 @@ export const assetsTools: readonly ToolDefinition[] = [
     irreversible: true,
     inputSchema: z.object({
       administration_id: administrationIdField,
-      asset_id: assetIdField,
+      asset_id: assetIdField
     }),
     handler: async (args, { client }) => {
       await client.delete(`assets/${encodeURIComponent(args.asset_id)}`, {
-        administrationId: args.administration_id,
+        administrationId: args.administration_id
       });
       return emptyResult(`Asset ${args.asset_id} deleted.`);
-    },
+    }
   }),
 
   defineTool({
@@ -177,14 +191,16 @@ export const assetsTools: readonly ToolDefinition[] = [
       date: z.string().describe(VALUE_CHANGE_DATE),
       amount: z
         .string()
-        .describe('Decimal string; negative decreases the asset value, positive increases it.'),
+        .describe(
+          'Decimal string; negative decreases the asset value, positive increases it.'
+        ),
       description: z.string(),
       externally_booked: z
         .boolean()
         .optional()
         .describe(
-          'True when the change is already booked elsewhere and Moneybird should not book it. Defaults to false.',
-        ),
+          'True when the change is already booked elsewhere and Moneybird should not book it. Defaults to false.'
+        )
     }),
     handler: async (args, { client }) => {
       const response = await client.post(
@@ -195,12 +211,12 @@ export const assetsTools: readonly ToolDefinition[] = [
           description: args.description,
           ...(args.externally_booked !== undefined
             ? { externally_booked: args.externally_booked }
-            : {}),
+            : {})
         },
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -219,14 +235,16 @@ export const assetsTools: readonly ToolDefinition[] = [
       date: z.string().describe(VALUE_CHANGE_DATE),
       amount: z
         .string()
-        .describe('Decimal string; negative decreases the asset value, positive increases it.'),
+        .describe(
+          'Decimal string; negative decreases the asset value, positive increases it.'
+        ),
       description: z.string(),
       externally_booked: z
         .boolean()
         .optional()
         .describe(
-          'True when the change is already booked elsewhere and Moneybird should not book it. Defaults to false.',
-        ),
+          'True when the change is already booked elsewhere and Moneybird should not book it. Defaults to false.'
+        )
     }),
     handler: async (args, { client }) => {
       const response = await client.post(
@@ -237,12 +255,12 @@ export const assetsTools: readonly ToolDefinition[] = [
           description: args.description,
           ...(args.externally_booked !== undefined
             ? { externally_booked: args.externally_booked }
-            : {}),
+            : {})
         },
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -258,16 +276,16 @@ export const assetsTools: readonly ToolDefinition[] = [
     inputSchema: z.object({
       administration_id: administrationIdField,
       asset_id: assetIdField,
-      date: z.string().describe(VALUE_CHANGE_DATE),
+      date: z.string().describe(VALUE_CHANGE_DATE)
     }),
     handler: async (args, { client }) => {
       const response = await client.post(
         `assets/${encodeURIComponent(args.asset_id)}/value_changes/divestment`,
         { date: args.date },
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -284,16 +302,16 @@ export const assetsTools: readonly ToolDefinition[] = [
       administration_id: administrationIdField,
       asset_id: assetIdField,
       date: z.string().describe(VALUE_CHANGE_DATE),
-      description: z.string(),
+      description: z.string()
     }),
     handler: async (args, { client }) => {
       const response = await client.post(
         `assets/${encodeURIComponent(args.asset_id)}/value_changes/full_depreciation`,
         { date: args.date, description: args.description },
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -308,18 +326,18 @@ export const assetsTools: readonly ToolDefinition[] = [
     irreversible: true,
     inputSchema: z.object({
       administration_id: administrationIdField,
-      asset_id: assetIdField,
+      asset_id: assetIdField
     }),
     handler: async (args, { client }) => {
       await client.post(
         `assets/${encodeURIComponent(args.asset_id)}/value_changes/retroactive_linear_value_changes`,
         undefined,
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return emptyResult(
-        `Retroactive linear value changes queued for asset ${args.asset_id}. Call get_asset to check the result.`,
+        `Retroactive linear value changes queued for asset ${args.asset_id}. Call get_asset to check the result.`
       );
-    },
+    }
   }),
 
   defineTool({
@@ -339,18 +357,18 @@ export const assetsTools: readonly ToolDefinition[] = [
         .string()
         .describe(
           'Disposal date, YYYY-MM-DD. Must be after the purchase date, and neither in the future nor inside the ' +
-            'locked period of the administration.',
+            'locked period of the administration.'
         ),
-      reason: z.enum(['out_of_use', 'sold', 'private_withdrawal', 'divested']),
+      reason: z.enum(['out_of_use', 'sold', 'private_withdrawal', 'divested'])
     }),
     handler: async (args, { client }) => {
       const response = await client.post(
         `assets/${encodeURIComponent(args.asset_id)}/disposals`,
         { date: args.date, reason: args.reason },
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -369,28 +387,35 @@ export const assetsTools: readonly ToolDefinition[] = [
         .union([z.string(), z.number()])
         .optional()
         .describe(
-          'Id of a document detail line. Mutually exclusive with general_journal_document_entry_id.',
+          'Id of a document detail line. Mutually exclusive with general_journal_document_entry_id.'
         ),
       general_journal_document_entry_id: z
         .union([z.string(), z.number()])
         .optional()
-        .describe('Id of a general journal document entry. Mutually exclusive with detail_id.'),
+        .describe(
+          'Id of a general journal document entry. Mutually exclusive with detail_id.'
+        )
     }),
     handler: async (args, { client }) => {
       const hasDetail = args.detail_id !== undefined;
       const hasEntry = args.general_journal_document_entry_id !== undefined;
       if (hasDetail === hasEntry) {
-        throw new Error('Provide exactly one of detail_id or general_journal_document_entry_id.');
+        throw new Error(
+          'Provide exactly one of detail_id or general_journal_document_entry_id.'
+        );
       }
       const response = await client.post(
         `assets/${encodeURIComponent(args.asset_id)}/sources`,
         hasDetail
           ? { detail_id: args.detail_id }
-          : { general_journal_document_entry_id: args.general_journal_document_entry_id },
-        { administrationId: args.administration_id },
+          : {
+              general_journal_document_entry_id:
+                args.general_journal_document_entry_id
+            },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -404,15 +429,17 @@ export const assetsTools: readonly ToolDefinition[] = [
     inputSchema: z.object({
       administration_id: administrationIdField,
       asset_id: assetIdField,
-      source_id: z.string(),
+      source_id: z.string()
     }),
     handler: async (args, { client }) => {
       await client.delete(
         `assets/${encodeURIComponent(args.asset_id)}/sources/${encodeURIComponent(args.source_id)}`,
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
-      return emptyResult(`Source ${args.source_id} removed from asset ${args.asset_id}.`);
-    },
+      return emptyResult(
+        `Source ${args.source_id} removed from asset ${args.asset_id}.`
+      );
+    }
   }),
 
   defineTool({
@@ -427,16 +454,18 @@ export const assetsTools: readonly ToolDefinition[] = [
     inputSchema: z.object({
       administration_id: administrationIdField,
       asset_id: assetIdField,
-      amount: z.string().describe('Amount taken from the reinvestment reserve, decimal string.'),
+      amount: z
+        .string()
+        .describe('Amount taken from the reinvestment reserve, decimal string.')
     }),
     handler: async (args, { client }) => {
       const response = await client.post(
         `assets/${encodeURIComponent(args.asset_id)}/reinvestment_reserve_purchase`,
         { amount: args.amount },
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -448,15 +477,17 @@ export const assetsTools: readonly ToolDefinition[] = [
     irreversible: true,
     inputSchema: z.object({
       administration_id: administrationIdField,
-      asset_id: assetIdField,
+      asset_id: assetIdField
     }),
     handler: async (args, { client }) => {
       await client.delete(
         `assets/${encodeURIComponent(args.asset_id)}/reinvestment_reserve_purchase`,
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
-      return emptyResult(`Reinvestment reserve purchase removed from asset ${args.asset_id}.`);
-    },
+      return emptyResult(
+        `Reinvestment reserve purchase removed from asset ${args.asset_id}.`
+      );
+    }
   }),
 
   defineTool({
@@ -470,34 +501,44 @@ export const assetsTools: readonly ToolDefinition[] = [
     inputSchema: z.object({
       administration_id: administrationIdField,
       asset_id: assetIdField,
-      amount: z.string().describe('Part of the book result booked to the reserve, decimal string.'),
+      amount: z
+        .string()
+        .describe(
+          'Part of the book result booked to the reserve, decimal string.'
+        )
     }),
     handler: async (args, { client }) => {
       const response = await client.post(
         `assets/${encodeURIComponent(args.asset_id)}/reinvestment_reserve_sale`,
         { amount: args.amount },
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
     name: 'delete_asset_reinvestment_reserve_sale',
     title: 'Delete reinvestment reserve sale',
-    description: "Remove the reinvestment reserve booking from an asset's disposal.",
+    description:
+      "Remove the reinvestment reserve booking from an asset's disposal.",
     toolset: 'assets',
     access: 'destroy',
     irreversible: true,
     inputSchema: z.object({
       administration_id: administrationIdField,
-      asset_id: assetIdField,
+      asset_id: assetIdField
     }),
     handler: async (args, { client }) => {
-      await client.delete(`assets/${encodeURIComponent(args.asset_id)}/reinvestment_reserve_sale`, {
-        administrationId: args.administration_id,
-      });
-      return emptyResult(`Reinvestment reserve sale removed from asset ${args.asset_id}.`);
-    },
-  }),
+      await client.delete(
+        `assets/${encodeURIComponent(args.asset_id)}/reinvestment_reserve_sale`,
+        {
+          administrationId: args.administration_id
+        }
+      );
+      return emptyResult(
+        `Reinvestment reserve sale removed from asset ${args.asset_id}.`
+      );
+    }
+  })
 ] as const;

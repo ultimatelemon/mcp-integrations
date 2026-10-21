@@ -1,8 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { MoneybirdError, parseErrorBody } from '../../src/moneybird/errors.js';
+import { MoneybirdError, parseErrorBody } from '../../src/moneybird/errors.ts';
 
 function errorWithStatus(status: number): MoneybirdError {
-  return new MoneybirdError('failure', { status, method: 'GET', url: 'https://example.test' });
+  return new MoneybirdError('failure', {
+    status,
+    method: 'GET',
+    url: 'https://example.test'
+  });
 }
 
 describe('parseErrorBody', () => {
@@ -11,14 +15,14 @@ describe('parseErrorBody', () => {
     expect(parsed).toEqual({
       message: 'Invalid credentials',
       validation: undefined,
-      details: undefined,
+      details: undefined
     });
   });
 
   it('parses the non-symbolic shape, field messages plus machine-readable details', () => {
     const parsed = parseErrorBody(422, {
       error: { company_name: ["can't be blank"] },
-      details: { company_name: [{ error: 'blank' }] },
+      details: { company_name: [{ error: 'blank' }] }
     });
 
     expect(parsed.message).toBe("company_name: can't be blank");
@@ -28,10 +32,15 @@ describe('parseErrorBody', () => {
 
   it('joins multiple fields and multiple messages per field', () => {
     const parsed = parseErrorBody(422, {
-      error: { company_name: ["can't be blank", 'is too short'], email: ['is invalid'] },
+      error: {
+        company_name: ["can't be blank", 'is too short'],
+        email: ['is invalid']
+      }
     });
 
-    expect(parsed.message).toBe("company_name: can't be blank, is too short; email: is invalid");
+    expect(parsed.message).toBe(
+      "company_name: can't be blank, is too short; email: is invalid"
+    );
   });
 
   it('trims and returns a plain string body as-is', () => {
@@ -39,7 +48,7 @@ describe('parseErrorBody', () => {
     expect(parsed).toEqual({
       message: 'Internal Server Error',
       validation: undefined,
-      details: undefined,
+      details: undefined
     });
   });
 
@@ -66,11 +75,17 @@ describe('parseErrorBody', () => {
 });
 
 describe('MoneybirdError.isRetryable', () => {
-  it.each([429, 500, 502, 503, 504, 0])('treats status %d as retryable', (status) => {
-    expect(errorWithStatus(status).isRetryable).toBe(true);
-  });
+  it.each([429, 500, 502, 503, 504, 0])(
+    'treats status %d as retryable',
+    (status) => {
+      expect(errorWithStatus(status).isRetryable).toBe(true);
+    }
+  );
 
-  it.each([400, 401, 403, 404, 422])('treats status %d as not retryable', (status) => {
-    expect(errorWithStatus(status).isRetryable).toBe(false);
-  });
+  it.each([400, 401, 403, 404, 422])(
+    'treats status %d as not retryable',
+    (status) => {
+      expect(errorWithStatus(status).isRetryable).toBe(false);
+    }
+  );
 });

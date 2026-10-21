@@ -45,9 +45,13 @@ export function stubFetch(responses: StubResponse | StubResponse[]): FetchStub {
   let last: StubResponse | undefined;
 
   const fetchImpl = vi.fn(
-    async (input: Parameters<typeof globalThis.fetch>[0], init?: RequestInit) => {
+    (input: Parameters<typeof globalThis.fetch>[0], init?: RequestInit) => {
       const url =
-        typeof input === 'string' ? input : input instanceof URL ? input.toString() : input.url;
+        typeof input === 'string'
+          ? input
+          : input instanceof URL
+            ? input.toString()
+            : input.url;
       const headers: Record<string, string> = {};
       new Headers(init?.headers).forEach((value, key) => {
         headers[key] = value;
@@ -67,29 +71,33 @@ export function stubFetch(responses: StubResponse | StubResponse[]): FetchStub {
         method: init?.method ?? 'GET',
         headers,
         body,
-        redirect: init?.redirect,
+        redirect: init?.redirect
       });
 
       const next = queue.shift() ?? last;
-      if (!next) throw new Error(`No stubbed response for ${init?.method ?? 'GET'} ${url}`);
+      if (!next) {
+        return Promise.reject(
+          new Error(`No stubbed response for ${init?.method ?? 'GET'} ${url}`)
+        );
+      }
       last = next;
 
-      if (next.throws) throw next.throws;
-      return toResponse(next);
-    },
+      if (next.throws) return Promise.reject(next.throws);
+      return Promise.resolve(toResponse(next));
+    }
   );
 
   return {
-    fetch: fetchImpl as unknown as typeof globalThis.fetch,
+    fetch: fetchImpl,
     requests,
     lastRequest(): RecordedRequest {
       if (requests.length !== 1) {
         throw new Error(`Expected exactly one request, saw ${requests.length}`);
       }
       return requests[0] as RecordedRequest;
-    },
+    }
   };
 }
 
 /** Resolves immediately so retry backoff does not slow the suite down. */
-export const instantSleep = async (): Promise<void> => undefined;
+export const instantSleep = (): Promise<void> => Promise.resolve();

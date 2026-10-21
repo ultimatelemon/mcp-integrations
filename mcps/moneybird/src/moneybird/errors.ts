@@ -36,7 +36,10 @@ export class MoneybirdError extends Error {
   readonly body: unknown;
 
   constructor(message: string, options: MoneybirdErrorOptions) {
-    super(message, options.cause !== undefined ? { cause: options.cause } : undefined);
+    super(
+      message,
+      options.cause !== undefined ? { cause: options.cause } : undefined
+    );
     this.name = 'MoneybirdError';
     this.status = options.status;
     this.method = options.method;
@@ -84,7 +87,7 @@ export class MoneybirdRateLimitError extends MoneybirdError {
 
   constructor(
     message: string,
-    options: MoneybirdErrorOptions & { retryAfterSeconds?: number | undefined },
+    options: MoneybirdErrorOptions & { retryAfterSeconds?: number | undefined }
   ) {
     super(message, options);
     this.name = 'MoneybirdRateLimitError';
@@ -121,7 +124,8 @@ function toDetails(value: unknown): ValidationDetails | undefined {
     if (!Array.isArray(entries)) continue;
     out[field] = entries.filter(isRecord).map((entry) => {
       const normalised: Record<string, string> = {};
-      for (const [key, val] of Object.entries(entry)) normalised[key] = String(val);
+      for (const [key, val] of Object.entries(entry))
+        normalised[key] = String(val);
       return normalised;
     });
   }
@@ -145,7 +149,7 @@ const STATUS_FALLBACKS: Record<number, string> = {
   406: 'Not acceptable',
   422: 'Unprocessable entity',
   429: 'Rate limit exceeded',
-  500: 'Moneybird server error',
+  500: 'Moneybird server error'
 };
 
 export interface ParsedErrorBody {
@@ -181,7 +185,7 @@ export function parseErrorBody(status: number, body: unknown): ParsedErrorBody {
   return {
     message: typeof message === 'string' ? message : fallback,
     validation: undefined,
-    details,
+    details
   };
 }
 
@@ -191,22 +195,23 @@ export function createErrorForStatus(
   parsed: ParsedErrorBody,
   options: Omit<MoneybirdErrorOptions, 'status' | 'validation' | 'details'> & {
     retryAfterSeconds?: number | undefined;
-  },
+  }
 ): MoneybirdError {
   const base: MoneybirdErrorOptions = {
     ...options,
     status,
     validation: parsed.validation,
-    details: parsed.details,
+    details: parsed.details
   };
 
-  if (status === 401 || status === 403) return new MoneybirdAuthError(parsed.message, base);
+  if (status === 401 || status === 403)
+    return new MoneybirdAuthError(parsed.message, base);
   if (status === 404) return new MoneybirdNotFoundError(parsed.message, base);
   if (status === 422) return new MoneybirdValidationError(parsed.message, base);
   if (status === 429) {
     return new MoneybirdRateLimitError(parsed.message, {
       ...base,
-      retryAfterSeconds: options.retryAfterSeconds,
+      retryAfterSeconds: options.retryAfterSeconds
     });
   }
   return new MoneybirdError(parsed.message, base);

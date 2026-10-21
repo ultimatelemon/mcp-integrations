@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { SlidingWindowLimiter, backoffDelay } from '../../src/moneybird/rate-limit.js';
+import {
+  SlidingWindowLimiter,
+  backoffDelay
+} from '../../src/moneybird/rate-limit.ts';
 
 function clock(startAt = 0) {
   let now = startAt;
@@ -7,7 +10,7 @@ function clock(startAt = 0) {
     now: () => now,
     advance: (ms: number) => {
       now += ms;
-    },
+    }
   };
 }
 
@@ -56,7 +59,9 @@ describe('backoffDelay', () => {
   });
 
   it('caps Retry-After at maxMs', () => {
-    expect(backoffDelay({ attempt: 0, retryAfterSeconds: 120, maxMs: 30_000 })).toBe(30_000);
+    expect(
+      backoffDelay({ attempt: 0, retryAfterSeconds: 120, maxMs: 30_000 })
+    ).toBe(30_000);
   });
 
   it('keeps jitter within the exponential ceiling', () => {
@@ -65,7 +70,12 @@ describe('backoffDelay', () => {
   });
 
   it('caps the exponential ceiling at maxMs', () => {
-    const delay = backoffDelay({ attempt: 10, baseMs: 500, maxMs: 5000, random: () => 1 });
+    const delay = backoffDelay({
+      attempt: 10,
+      baseMs: 500,
+      maxMs: 5000,
+      random: () => 1
+    });
     expect(delay).toBe(5000);
   });
 

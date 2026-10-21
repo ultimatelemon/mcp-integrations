@@ -27,10 +27,12 @@ async function knownEndpoints(): Promise<Set<string>> {
   return new Set(
     spec.operations.map((operation) => {
       const path = normalise(
-        operation.path.replace('{format}', '').replace('{administration_id}/', ''),
+        operation.path
+          .replace('{format}', '')
+          .replace('{administration_id}/', '')
       );
       return `${operation.method} ${path}`;
-    }),
+    })
   );
 }
 
@@ -49,10 +51,13 @@ interface Call {
  */
 async function toolCalls(): Promise<Call[]> {
   const files = (await readdir(TOOLS_DIR)).filter(
-    (name) => name.endsWith('.ts') && !['common.ts', 'registry.ts', 'index.ts'].includes(name),
+    (name) =>
+      name.endsWith('.ts') &&
+      !['common.ts', 'registry.ts', 'index.ts'].includes(name)
   );
 
-  const pattern = /client\.(get|post|patch|delete)(?:<[^>]*>)?\(\s*(`[^`]*`|'[^']*')/g;
+  const pattern =
+    /client\.(get|post|patch|delete)(?:<[^>]*>)?\(\s*(`[^`]*`|'[^']*')/g;
   const calls: Call[] = [];
 
   for (const file of files) {
@@ -67,7 +72,7 @@ async function toolCalls(): Promise<Call[]> {
         file,
         line: source.slice(0, match.index).split('\n').length,
         method: (match[1] as string).toUpperCase(),
-        path,
+        path
       });
     }
   }
@@ -89,19 +94,25 @@ describe('tool endpoints', () => {
       if (call.path.startsWith('*')) {
         const suffix = call.path.slice(call.path.indexOf('/') + 1);
         return ![...known].some(
-          (entry) => entry === `${call.method} ${call.path}` || entry.endsWith(`/${suffix}`),
+          (entry) =>
+            entry === `${call.method} ${call.path}` ||
+            entry.endsWith(`/${suffix}`)
         );
       }
       return !known.has(`${call.method} ${call.path}`);
     });
 
     expect(
-      unverified.map((call) => `${call.file}:${call.line} ${call.method} ${call.path}`),
+      unverified.map(
+        (call) => `${call.file}:${call.line} ${call.method} ${call.path}`
+      )
     ).toEqual([]);
   });
 
   it('never sends a .json suffix, since the client appends it', async () => {
-    const offenders = (await toolCalls()).filter((call) => call.path.includes('.json'));
+    const offenders = (await toolCalls()).filter((call) =>
+      call.path.includes('.json')
+    );
     expect(offenders.map((call) => `${call.file}:${call.line}`)).toEqual([]);
   });
 });

@@ -47,7 +47,7 @@ function intHeader(headers: Headers, name: string): number | undefined {
 
 export function readPageInfo(
   headers: Headers,
-  requested: { page?: number | undefined; perPage?: number | undefined } = {},
+  requested: { page?: number | undefined; perPage?: number | undefined } = {}
 ): PageInfo {
   const links = parseLinkHeader(headers.get('link'));
   const nextPage = pageNumberFrom(links['next']);
@@ -58,9 +58,10 @@ export function readPageInfo(
     perPage: requested.perPage,
     totalCount: intHeader(headers, 'x-total-count'),
     hasNextPage: links['next'] !== undefined,
-    hasPreviousPage: links['prev'] !== undefined || links['previous'] !== undefined,
+    hasPreviousPage:
+      links['prev'] !== undefined || links['previous'] !== undefined,
     nextPage,
-    previousPage,
+    previousPage
   };
 }
 
@@ -71,10 +72,13 @@ export function readPageInfo(
  * narrowing on a single key must restate every key it still wants applied.
  */
 export function buildFilter(
-  filters: Record<string, string | number | boolean | undefined>,
+  filters: Record<string, string | number | boolean | undefined>
 ): string {
   return Object.entries(filters)
-    .filter((entry): entry is [string, string | number | boolean] => entry[1] !== undefined)
+    .filter(
+      (entry): entry is [string, string | number | boolean] =>
+        entry[1] !== undefined
+    )
     .map(([key, value]) => `${key}:${value}`)
     .join(',');
 }

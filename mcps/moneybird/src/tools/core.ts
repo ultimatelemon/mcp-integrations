@@ -8,8 +8,8 @@ import {
   listResult,
   paginationFields,
   textResult,
-  type ToolDefinition,
-} from './common.js';
+  type ToolDefinition
+} from './common.ts';
 
 const CONTACT_FILTER_KEYS =
   'created_after, updated_after, first_name, last_name, contact_type (all|company|private_individual), ' +
@@ -32,13 +32,23 @@ const contactAttributes = z
     address2: z.string().optional(),
     zipcode: z.string().optional(),
     city: z.string().optional(),
-    country: z.string().length(2).optional().describe('ISO 3166-1 alpha-2 country code.'),
+    country: z
+      .string()
+      .length(2)
+      .optional()
+      .describe('ISO 3166-1 alpha-2 country code.'),
     phone: z.string().optional(),
-    email: z.string().optional().describe('Comma-separated for multiple recipients.'),
+    email: z
+      .string()
+      .optional()
+      .describe('Comma-separated for multiple recipients.'),
     tax_number: z.string().optional(),
     chamber_of_commerce: z.string().optional(),
     bank_account: z.string().optional(),
-    customer_id: z.string().optional().describe('Your own reference for this contact.'),
+    customer_id: z
+      .string()
+      .optional()
+      .describe('Your own reference for this contact.'),
     send_invoices_to_email: z.string().optional(),
     send_invoices_to_attention: z.string().optional(),
     send_estimates_to_email: z.string().optional(),
@@ -50,11 +60,16 @@ const contactAttributes = z
     sepa_mandate_date: z.string().optional(),
     invoice_workflow_id: z.union([z.string(), z.number()]).optional(),
     estimate_workflow_id: z.union([z.string(), z.number()]).optional(),
-    delivery_method: z.enum(['Email', 'Simplerinvoicing', 'Post', 'Manual', 'Peppol']).optional(),
+    delivery_method: z
+      .enum(['Email', 'Simplerinvoicing', 'Post', 'Manual', 'Peppol'])
+      .optional(),
     custom_fields_attributes: z
-      .record(z.string(), z.object({ id: z.union([z.string(), z.number()]), value: z.string() }))
+      .record(
+        z.string(),
+        z.object({ id: z.union([z.string(), z.number()]), value: z.string() })
+      )
       .optional()
-      .describe('Keyed by index, e.g. `{"0": {"id": "123", "value": "abc"}}`.'),
+      .describe('Keyed by index, e.g. `{"0": {"id": "123", "value": "abc"}}`.')
   })
   .loose();
 
@@ -64,7 +79,7 @@ const contactPersonAttributes = z
     lastname: z.string().optional(),
     phone: z.string().optional(),
     email: z.string().optional(),
-    department: z.string().optional(),
+    department: z.string().optional()
   })
   .loose();
 
@@ -73,13 +88,17 @@ const productAttributes = z
     description: z.string().optional(),
     title: z.string().optional(),
     price: z.string().optional().describe('Decimal string, e.g. "150.0".'),
-    currency: z.string().length(3).optional().describe('ISO 4217 currency code.'),
+    currency: z
+      .string()
+      .length(3)
+      .optional()
+      .describe('ISO 4217 currency code.'),
     frequency: z.union([z.string(), z.number()]).optional(),
     frequency_type: z.string().optional(),
     tax_rate_id: z.union([z.string(), z.number()]).optional(),
     ledger_account_id: z.union([z.string(), z.number()]).optional(),
     identifier: z.string().optional(),
-    sku: z.string().optional(),
+    sku: z.string().optional()
   })
   .loose();
 
@@ -89,7 +108,7 @@ const ledgerAccountAttributes = z
     account_id: z.string().optional(),
     account_type: z.string().optional(),
     parent_id: z.union([z.string(), z.number()]).optional(),
-    allowed_document_types: z.array(z.string()).optional(),
+    allowed_document_types: z.array(z.string()).optional()
   })
   .loose();
 
@@ -107,7 +126,7 @@ const identityAttributes = z
     chamber_of_commerce: z.string().optional(),
     bank_account_name: z.string().optional(),
     bank_account_iban: z.string().optional(),
-    bank_account_bic: z.string().optional(),
+    bank_account_bic: z.string().optional()
   })
   .loose();
 
@@ -123,9 +142,11 @@ export const coreTools: readonly ToolDefinition[] = [
     access: 'read',
     inputSchema: z.object({}),
     handler: async (_args, { client }) => {
-      const response = await client.get('administrations', { administrationScoped: false });
+      const response = await client.get('administrations', {
+        administrationScoped: false
+      });
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -140,12 +161,14 @@ export const coreTools: readonly ToolDefinition[] = [
     inputSchema: z.object({
       administration_id: administrationIdField,
       query: z.string().optional().describe('Free-text search term.'),
-      filter: filterField('contact_type:company,updated_after:2026-01-01T00:00:00Z').describe(
+      filter: filterField(
+        'contact_type:company,updated_after:2026-01-01T00:00:00Z'
+      ).describe(
         `Comma-separated \`key:value\` filter. Keys: ${CONTACT_FILTER_KEYS}. ` +
-          "A filter replaces Moneybird's defaults entirely.",
+          "A filter replaces Moneybird's defaults entirely."
       ),
       include_archived: z.boolean().optional(),
-      ...paginationFields,
+      ...paginationFields
     }),
     handler: async (args, { client }) => {
       // `/contacts/filter` is a superset of `/contacts`, but only it accepts `filter`.
@@ -157,11 +180,11 @@ export const coreTools: readonly ToolDefinition[] = [
           ...(args.query ? { query: args.query } : {}),
           ...(args.include_archived !== undefined
             ? { include_archived: args.include_archived }
-            : {}),
-        },
+            : {})
+        }
       });
       return listResult(response);
-    },
+    }
   }),
 
   defineTool({
@@ -175,7 +198,10 @@ export const coreTools: readonly ToolDefinition[] = [
     inputSchema: z.object({
       administration_id: administrationIdField,
       contact_id: z.string().optional().describe('Moneybird contact id.'),
-      customer_id: z.string().optional().describe('Your own customer reference.'),
+      customer_id: z
+        .string()
+        .optional()
+        .describe('Your own customer reference.')
     }),
     handler: async (args, { client }) => {
       if (!args.contact_id && !args.customer_id) {
@@ -184,9 +210,11 @@ export const coreTools: readonly ToolDefinition[] = [
       const path = args.contact_id
         ? `contacts/${encodeURIComponent(args.contact_id)}`
         : `contacts/customer_id/${encodeURIComponent(args.customer_id as string)}`;
-      const response = await client.get(path, { administrationId: args.administration_id });
+      const response = await client.get(path, {
+        administrationId: args.administration_id
+      });
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -199,38 +227,39 @@ export const coreTools: readonly ToolDefinition[] = [
     access: 'write',
     inputSchema: z.object({
       administration_id: administrationIdField,
-      contact: contactAttributes,
+      contact: contactAttributes
     }),
     handler: async (args, { client }) => {
       const response = await client.post(
         'contacts',
         { contact: args.contact },
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
     name: 'update_contact',
     essential: true,
     title: 'Update contact',
-    description: 'Update a contact. Only the attributes you supply are changed.',
+    description:
+      'Update a contact. Only the attributes you supply are changed.',
     toolset: 'core',
     access: 'write',
     inputSchema: z.object({
       administration_id: administrationIdField,
       contact_id: z.string(),
-      contact: contactAttributes,
+      contact: contactAttributes
     }),
     handler: async (args, { client }) => {
       const response = await client.patch(
         `contacts/${encodeURIComponent(args.contact_id)}`,
         { contact: args.contact },
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -242,16 +271,18 @@ export const coreTools: readonly ToolDefinition[] = [
     access: 'write',
     inputSchema: z.object({
       administration_id: administrationIdField,
-      contact_id: z.string(),
+      contact_id: z.string()
     }),
     handler: async (args, { client }) => {
       const response = await client.patch(
         `contacts/${encodeURIComponent(args.contact_id)}/archive`,
         undefined,
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
-      return textResult(response.data ?? `Contact ${args.contact_id} archived.`);
-    },
+      return textResult(
+        response.data ?? `Contact ${args.contact_id} archived.`
+      );
+    }
   }),
 
   defineTool({
@@ -265,14 +296,14 @@ export const coreTools: readonly ToolDefinition[] = [
     irreversible: true,
     inputSchema: z.object({
       administration_id: administrationIdField,
-      contact_id: z.string(),
+      contact_id: z.string()
     }),
     handler: async (args, { client }) => {
       await client.delete(`contacts/${encodeURIComponent(args.contact_id)}`, {
-        administrationId: args.administration_id,
+        administrationId: args.administration_id
       });
       return emptyResult(`Contact ${args.contact_id} deleted.`);
-    },
+    }
   }),
 
   defineTool({
@@ -284,16 +315,16 @@ export const coreTools: readonly ToolDefinition[] = [
     inputSchema: z.object({
       administration_id: administrationIdField,
       contact_id: z.string(),
-      contact_person: contactPersonAttributes,
+      contact_person: contactPersonAttributes
     }),
     handler: async (args, { client }) => {
       const response = await client.post(
         `contacts/${encodeURIComponent(args.contact_id)}/contact_people`,
         { contact_person: args.contact_person },
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -306,16 +337,16 @@ export const coreTools: readonly ToolDefinition[] = [
       administration_id: administrationIdField,
       contact_id: z.string(),
       contact_person_id: z.string(),
-      contact_person: contactPersonAttributes,
+      contact_person: contactPersonAttributes
     }),
     handler: async (args, { client }) => {
       const response = await client.patch(
         `contacts/${encodeURIComponent(args.contact_id)}/contact_people/${encodeURIComponent(args.contact_person_id)}`,
         { contact_person: args.contact_person },
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -328,15 +359,15 @@ export const coreTools: readonly ToolDefinition[] = [
     inputSchema: z.object({
       administration_id: administrationIdField,
       contact_id: z.string(),
-      contact_person_id: z.string(),
+      contact_person_id: z.string()
     }),
     handler: async (args, { client }) => {
       await client.delete(
         `contacts/${encodeURIComponent(args.contact_id)}/contact_people/${encodeURIComponent(args.contact_person_id)}`,
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return emptyResult(`Contact person ${args.contact_person_id} deleted.`);
-    },
+    }
   }),
 
   defineTool({
@@ -352,7 +383,7 @@ export const coreTools: readonly ToolDefinition[] = [
       note: z.string(),
       todo: z.boolean().optional().describe('Mark the note as a to-do.'),
       assignee_id: z.union([z.string(), z.number()]).optional(),
-      todo_date: z.string().optional().describe('Due date, ISO 8601.'),
+      todo_date: z.string().optional().describe('Due date, ISO 8601.')
     }),
     handler: async (args, { client }) => {
       const response = await client.post(
@@ -361,21 +392,24 @@ export const coreTools: readonly ToolDefinition[] = [
           note: {
             note: args.note,
             ...(args.todo !== undefined ? { todo: args.todo } : {}),
-            ...(args.assignee_id !== undefined ? { assignee_id: args.assignee_id } : {}),
-            ...(args.todo_date ? { todo_date: args.todo_date } : {}),
-          },
+            ...(args.assignee_id !== undefined
+              ? { assignee_id: args.assignee_id }
+              : {}),
+            ...(args.todo_date ? { todo_date: args.todo_date } : {})
+          }
         },
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
     name: 'list_products',
     essential: true,
     title: 'List products',
-    description: 'List the product catalogue, optionally narrowed by free-text query or currency.',
+    description:
+      'List the product catalogue, optionally narrowed by free-text query or currency.',
     toolset: 'core',
     access: 'read',
     inputSchema: z.object({
@@ -383,7 +417,7 @@ export const coreTools: readonly ToolDefinition[] = [
       query: z.string().optional(),
       currency: z.string().length(3).optional(),
       active: z.boolean().optional(),
-      ...paginationFields,
+      ...paginationFields
     }),
     handler: async (args, { client }) => {
       const response = await client.get('products', {
@@ -392,11 +426,11 @@ export const coreTools: readonly ToolDefinition[] = [
           ...listQuery(args),
           ...(args.query ? { query: args.query } : {}),
           ...(args.currency ? { currency: args.currency } : {}),
-          ...(args.active !== undefined ? { active: args.active } : {}),
-        },
+          ...(args.active !== undefined ? { active: args.active } : {})
+        }
       });
       return listResult(response);
-    },
+    }
   }),
 
   defineTool({
@@ -408,7 +442,7 @@ export const coreTools: readonly ToolDefinition[] = [
     inputSchema: z.object({
       administration_id: administrationIdField,
       product_id: z.string().optional(),
-      identifier: z.string().optional(),
+      identifier: z.string().optional()
     }),
     handler: async (args, { client }) => {
       if (!args.product_id && !args.identifier) {
@@ -417,9 +451,11 @@ export const coreTools: readonly ToolDefinition[] = [
       const path = args.product_id
         ? `products/${encodeURIComponent(args.product_id)}`
         : `products/identifier/${encodeURIComponent(args.identifier as string)}`;
-      const response = await client.get(path, { administrationId: args.administration_id });
+      const response = await client.get(path, {
+        administrationId: args.administration_id
+      });
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -430,16 +466,16 @@ export const coreTools: readonly ToolDefinition[] = [
     access: 'write',
     inputSchema: z.object({
       administration_id: administrationIdField,
-      product: productAttributes,
+      product: productAttributes
     }),
     handler: async (args, { client }) => {
       const response = await client.post(
         'products',
         { product: args.product },
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -451,16 +487,16 @@ export const coreTools: readonly ToolDefinition[] = [
     inputSchema: z.object({
       administration_id: administrationIdField,
       product_id: z.string(),
-      product: productAttributes,
+      product: productAttributes
     }),
     handler: async (args, { client }) => {
       const response = await client.patch(
         `products/${encodeURIComponent(args.product_id)}`,
         { product: args.product },
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -472,14 +508,14 @@ export const coreTools: readonly ToolDefinition[] = [
     irreversible: true,
     inputSchema: z.object({
       administration_id: administrationIdField,
-      product_id: z.string(),
+      product_id: z.string()
     }),
     handler: async (args, { client }) => {
       await client.delete(`products/${encodeURIComponent(args.product_id)}`, {
-        administrationId: args.administration_id,
+        administrationId: args.administration_id
       });
       return emptyResult(`Product ${args.product_id} deleted.`);
-    },
+    }
   }),
 
   defineTool({
@@ -493,15 +529,15 @@ export const coreTools: readonly ToolDefinition[] = [
     inputSchema: z.object({
       administration_id: administrationIdField,
       filter: filterField('percentage:21,tax_rate_type:sales_invoice'),
-      ...paginationFields,
+      ...paginationFields
     }),
     handler: async (args, { client }) => {
       const response = await client.get('tax_rates', {
         administrationId: args.administration_id,
-        query: listQuery(args),
+        query: listQuery(args)
       });
       return listResult(response);
-    },
+    }
   }),
 
   defineTool({
@@ -515,10 +551,10 @@ export const coreTools: readonly ToolDefinition[] = [
     inputSchema: z.object({ administration_id: administrationIdField }),
     handler: async (args, { client }) => {
       const response = await client.get('ledger_accounts', {
-        administrationId: args.administration_id,
+        administrationId: args.administration_id
       });
       return listResult(response);
-    },
+    }
   }),
 
   defineTool({
@@ -529,15 +565,15 @@ export const coreTools: readonly ToolDefinition[] = [
     access: 'read',
     inputSchema: z.object({
       administration_id: administrationIdField,
-      ledger_account_id: z.string(),
+      ledger_account_id: z.string()
     }),
     handler: async (args, { client }) => {
       const response = await client.get(
         `ledger_accounts/${encodeURIComponent(args.ledger_account_id)}`,
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -548,16 +584,16 @@ export const coreTools: readonly ToolDefinition[] = [
     access: 'write',
     inputSchema: z.object({
       administration_id: administrationIdField,
-      ledger_account: ledgerAccountAttributes,
+      ledger_account: ledgerAccountAttributes
     }),
     handler: async (args, { client }) => {
       const response = await client.post(
         'ledger_accounts',
         { ledger_account: args.ledger_account },
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -569,16 +605,16 @@ export const coreTools: readonly ToolDefinition[] = [
     inputSchema: z.object({
       administration_id: administrationIdField,
       ledger_account_id: z.string(),
-      ledger_account: ledgerAccountAttributes,
+      ledger_account: ledgerAccountAttributes
     }),
     handler: async (args, { client }) => {
       const response = await client.patch(
         `ledger_accounts/${encodeURIComponent(args.ledger_account_id)}`,
         { ledger_account: args.ledger_account },
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -590,14 +626,17 @@ export const coreTools: readonly ToolDefinition[] = [
     irreversible: true,
     inputSchema: z.object({
       administration_id: administrationIdField,
-      ledger_account_id: z.string(),
+      ledger_account_id: z.string()
     }),
     handler: async (args, { client }) => {
-      await client.delete(`ledger_accounts/${encodeURIComponent(args.ledger_account_id)}`, {
-        administrationId: args.administration_id,
-      });
+      await client.delete(
+        `ledger_accounts/${encodeURIComponent(args.ledger_account_id)}`,
+        {
+          administrationId: args.administration_id
+        }
+      );
       return emptyResult(`Ledger account ${args.ledger_account_id} deleted.`);
-    },
+    }
   }),
 
   defineTool({
@@ -610,29 +649,35 @@ export const coreTools: readonly ToolDefinition[] = [
     inputSchema: z.object({ administration_id: administrationIdField }),
     handler: async (args, { client }) => {
       const response = await client.get('identities', {
-        administrationId: args.administration_id,
+        administrationId: args.administration_id
       });
       return listResult(response);
-    },
+    }
   }),
 
   defineTool({
     name: 'get_identity',
     title: 'Get identity',
-    description: 'Retrieve one identity, or the administration default when no id is given.',
+    description:
+      'Retrieve one identity, or the administration default when no id is given.',
     toolset: 'core',
     access: 'read',
     inputSchema: z.object({
       administration_id: administrationIdField,
-      identity_id: z.string().optional().describe('Omit to fetch the default identity.'),
+      identity_id: z
+        .string()
+        .optional()
+        .describe('Omit to fetch the default identity.')
     }),
     handler: async (args, { client }) => {
       const path = args.identity_id
         ? `identities/${encodeURIComponent(args.identity_id)}`
         : 'identities/default';
-      const response = await client.get(path, { administrationId: args.administration_id });
+      const response = await client.get(path, {
+        administrationId: args.administration_id
+      });
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -643,28 +688,32 @@ export const coreTools: readonly ToolDefinition[] = [
     access: 'write',
     inputSchema: z.object({
       administration_id: administrationIdField,
-      identity: identityAttributes,
+      identity: identityAttributes
     }),
     handler: async (args, { client }) => {
       const response = await client.post(
         'identities',
         { identity: args.identity },
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
     name: 'update_identity',
     title: 'Update identity',
-    description: 'Update a sender identity, or the default one when no id is given.',
+    description:
+      'Update a sender identity, or the default one when no id is given.',
     toolset: 'core',
     access: 'write',
     inputSchema: z.object({
       administration_id: administrationIdField,
-      identity_id: z.string().optional().describe('Omit to update the default identity.'),
-      identity: identityAttributes,
+      identity_id: z
+        .string()
+        .optional()
+        .describe('Omit to update the default identity.'),
+      identity: identityAttributes
     }),
     handler: async (args, { client }) => {
       const path = args.identity_id
@@ -673,10 +722,10 @@ export const coreTools: readonly ToolDefinition[] = [
       const response = await client.patch(
         path,
         { identity: args.identity },
-        { administrationId: args.administration_id },
+        { administrationId: args.administration_id }
       );
       return textResult(response.data);
-    },
+    }
   }),
 
   defineTool({
@@ -688,14 +737,17 @@ export const coreTools: readonly ToolDefinition[] = [
     irreversible: true,
     inputSchema: z.object({
       administration_id: administrationIdField,
-      identity_id: z.string(),
+      identity_id: z.string()
     }),
     handler: async (args, { client }) => {
-      await client.delete(`identities/${encodeURIComponent(args.identity_id)}`, {
-        administrationId: args.administration_id,
-      });
+      await client.delete(
+        `identities/${encodeURIComponent(args.identity_id)}`,
+        {
+          administrationId: args.administration_id
+        }
+      );
       return emptyResult(`Identity ${args.identity_id} deleted.`);
-    },
+    }
   }),
 
   defineTool({
@@ -708,25 +760,26 @@ export const coreTools: readonly ToolDefinition[] = [
     inputSchema: z.object({ administration_id: administrationIdField }),
     handler: async (args, { client }) => {
       const response = await client.get('custom_fields', {
-        administrationId: args.administration_id,
+        administrationId: args.administration_id
       });
       return listResult(response);
-    },
+    }
   }),
 
   defineTool({
     name: 'list_document_styles',
     title: 'List document styles',
-    description: 'List the document styles (invoice and estimate layouts) of the administration.',
+    description:
+      'List the document styles (invoice and estimate layouts) of the administration.',
     toolset: 'core',
     access: 'read',
     inputSchema: z.object({ administration_id: administrationIdField }),
     handler: async (args, { client }) => {
       const response = await client.get('document_styles', {
-        administrationId: args.administration_id,
+        administrationId: args.administration_id
       });
       return listResult(response);
-    },
+    }
   }),
 
   defineTool({
@@ -738,8 +791,10 @@ export const coreTools: readonly ToolDefinition[] = [
     access: 'read',
     inputSchema: z.object({ administration_id: administrationIdField }),
     handler: async (args, { client }) => {
-      const response = await client.get('users', { administrationId: args.administration_id });
+      const response = await client.get('users', {
+        administrationId: args.administration_id
+      });
       return listResult(response);
-    },
-  }),
+    }
+  })
 ] as const;

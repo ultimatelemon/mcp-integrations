@@ -1,13 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { z } from 'zod';
-import { allTools } from '../../src/tools/index.js';
-import { TOOLSETS } from '../../src/config/schema.js';
+import { allTools } from '../../src/tools/index.ts';
+import { TOOLSETS } from '../../src/config/schema.ts';
 
 const NAME_PATTERN = /^[a-z][a-z0-9_]*$/;
 const ACCESS_TIERS = new Set(['read', 'write', 'destroy']);
 
 function inputKeys(tool: (typeof allTools)[number]): string[] {
-  const shape = (tool.inputSchema as z.ZodObject).shape as Record<string, unknown>;
+  const shape = tool.inputSchema.shape as Record<string, unknown>;
   return Object.keys(shape);
 }
 
@@ -49,7 +48,11 @@ describe('allTools invariants', () => {
 
   it('accepts administration_id, except tools that never act on one', () => {
     for (const tool of allTools) {
-      if (tool.name === 'list_administrations' || tool.name === 'find_moneybird_endpoint') continue;
+      if (
+        tool.name === 'list_administrations' ||
+        tool.name === 'find_moneybird_endpoint'
+      )
+        continue;
       expect(inputKeys(tool)).toContain('administration_id');
     }
   });

@@ -1,13 +1,13 @@
 import type { McpServer, ServerContext } from '@modelcontextprotocol/server';
-import type { ServerConfig, Toolset } from '../config/schema.js';
-import { permissionsFor } from '../config/schema.js';
+import type { ServerConfig, Toolset } from '../config/schema.ts';
+import { permissionsFor } from '../config/schema.ts';
 import {
   MoneybirdAuthError,
   MoneybirdError,
   MoneybirdRateLimitError,
-  MoneybirdValidationError,
-} from '../moneybird/errors.js';
-import type { ToolContext, ToolDefinition, ToolResult } from './common.js';
+  MoneybirdValidationError
+} from '../moneybird/errors.ts';
+import type { ToolContext, ToolDefinition, ToolResult } from './common.ts';
 
 export interface RegistrationSummary {
   registered: string[];
@@ -17,7 +17,7 @@ export interface RegistrationSummary {
 
 function isAllowed(
   definition: ToolDefinition,
-  permissions: { write: boolean; destroy: boolean },
+  permissions: { write: boolean; destroy: boolean }
 ): boolean {
   if (definition.access === 'read') return true;
   if (definition.access === 'write') return permissions.write;
@@ -41,10 +41,10 @@ export function toToolError(error: unknown): ToolResult {
       content: [
         {
           type: 'text',
-          text: `Moneybird rejected the request (422).\n${fields ?? error.message}`,
-        },
+          text: `Moneybird rejected the request (422).\n${fields ?? error.message}`
+        }
       ],
-      isError: true,
+      isError: true
     };
   }
 
@@ -55,40 +55,50 @@ export function toToolError(error: unknown): ToolResult {
           type: 'text',
           text:
             `Moneybird refused the credentials (${error.status}): ${error.message}\n` +
-            'The token may be revoked, or it may lack the scope this endpoint requires. ' +
-            'Run `moneybird-mcp login` to authenticate again with the needed scopes.',
-        },
+            'The token in X-Api-Key may be revoked, or it may lack the scope this endpoint ' +
+            'requires. Create a new one in Moneybird with the needed scopes.'
+        }
       ],
-      isError: true,
+      isError: true
     };
   }
 
   if (error instanceof MoneybirdRateLimitError) {
     const wait =
-      error.retryAfterSeconds !== undefined ? ` Retry in ${error.retryAfterSeconds}s.` : '';
+      error.retryAfterSeconds !== undefined
+        ? ` Retry in ${error.retryAfterSeconds}s.`
+        : '';
     return {
       content: [
         {
           type: 'text',
-          text: `Moneybird rate limit reached (150 requests per 5 minutes per IP).${wait}`,
-        },
+          text: `Moneybird rate limit reached (150 requests per 5 minutes per IP).${wait}`
+        }
       ],
-      isError: true,
+      isError: true
     };
   }
 
   if (error instanceof MoneybirdError) {
     return {
       content: [
-        { type: 'text', text: `Moneybird request failed (${error.status}): ${error.message}` },
+        {
+          type: 'text',
+          text: `Moneybird request failed (${error.status}): ${error.message}`
+        }
       ],
-      isError: true,
+      isError: true
     };
   }
 
   return {
-    content: [{ type: 'text', text: error instanceof Error ? error.message : String(error) }],
-    isError: true,
+    content: [
+      {
+        type: 'text',
+        text: error instanceof Error ? error.message : String(error)
+      }
+    ],
+    isError: true
   };
 }
 
@@ -97,8 +107,6 @@ export interface RegisterOptions {
   definitions: readonly ToolDefinition[];
   config: ServerConfig;
   context: ToolContext;
-  /** Tools registered regardless of the configured toolsets and permissions. */
-  always?: ReadonlySet<string>;
 }
 
 /** Registers every definition the configured toolsets and permissions allow. */
@@ -110,17 +118,15 @@ export function registerTools(options: RegisterOptions): RegistrationSummary {
   const summary: RegistrationSummary = {
     registered: [],
     skippedByToolset: [],
-    skippedByPermission: [],
+    skippedByPermission: []
   };
 
   for (const definition of definitions) {
-    const unconditional = options.always?.has(definition.name) ?? false;
-
-    if (!unconditional && !definition.essential && !enabled.has(definition.toolset)) {
+    if (!definition.essential && !enabled.has(definition.toolset)) {
       summary.skippedByToolset.push(definition.name);
       continue;
     }
-    if (!unconditional && !isAllowed(definition, permissions)) {
+    if (!isAllowed(definition, permissions)) {
       summary.skippedByPermission.push(definition.name);
       continue;
     }
@@ -135,18 +141,19 @@ export function registerTools(options: RegisterOptions): RegistrationSummary {
         annotations: {
           title: definition.title,
           readOnlyHint: definition.access === 'read' && !mutable,
-          destructiveHint: definition.access === 'destroy' || (mutable && permissions.destroy),
+          destructiveHint:
+            definition.access === 'destroy' || (mutable && permissions.destroy),
           idempotentHint: definition.access === 'read' && !mutable,
-          openWorldHint: true,
-        },
+          openWorldHint: true
+        }
       },
       async (args: Record<string, unknown>, mcp: ServerContext) => {
         try {
-          return await definition.handler(args as never, context, mcp);
+          return await definition.handler(args, context, mcp);
         } catch (error) {
           return toToolError(error);
         }
-      },
+      }
     );
 
     summary.registered.push(definition.name);

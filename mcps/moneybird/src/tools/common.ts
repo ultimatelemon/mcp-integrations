@@ -1,12 +1,14 @@
 import type {
   CallToolResult,
-  InputRequiredResult,
-  ServerContext,
+  ServerContext
 } from '@modelcontextprotocol/server';
 import { z } from 'zod';
-import type { MoneybirdClient, MoneybirdResponse } from '../moneybird/client.js';
-import type { ServerConfig, Toolset } from '../config/schema.js';
-import { MAX_PER_PAGE } from '../moneybird/pagination.js';
+import type {
+  MoneybirdClient,
+  MoneybirdResponse
+} from '../moneybird/client.ts';
+import type { ServerConfig, Toolset } from '../config/schema.ts';
+import { MAX_PER_PAGE } from '../moneybird/pagination.ts';
 
 export interface ToolContext {
   client: MoneybirdClient;
@@ -24,13 +26,7 @@ export type ToolAccess = 'read' | 'write' | 'destroy';
 /** Aliased from the SDK so tool results never drift from the protocol's own shape. */
 export type ToolResult = CallToolResult;
 
-/**
- * What a handler may return.
- *
- * `InputRequiredResult` lets a tool pause and ask the client for something — used by the connect
- * flow to open Moneybird in the browser and collect the token without leaving the conversation.
- */
-export type ToolHandlerResult = CallToolResult | InputRequiredResult;
+export type ToolHandlerResult = CallToolResult;
 
 export interface ToolDefinition<Schema extends z.ZodObject = z.ZodObject> {
   name: string;
@@ -51,13 +47,13 @@ export interface ToolDefinition<Schema extends z.ZodObject = z.ZodObject> {
   handler: (
     args: z.infer<Schema>,
     context: ToolContext,
-    mcp: ServerContext,
+    mcp: ServerContext
   ) => Promise<ToolHandlerResult>;
 }
 
 /** Preserves the literal schema type through registration so handler args stay inferred. */
 export function defineTool<Schema extends z.ZodObject>(
-  definition: ToolDefinition<Schema>,
+  definition: ToolDefinition<Schema>
 ): ToolDefinition<Schema> {
   return definition;
 }
@@ -66,8 +62,8 @@ export const administrationIdField = z
   .string()
   .optional()
   .describe(
-    'Administration to act on. Defaults to the administration this server was configured with; ' +
-      'call list_administrations to discover the available ids.',
+    'Administration to act on. Defaults to the one in the X-Moneybird-Administration header; ' +
+      'call list_administrations to discover the available ids.'
   );
 
 export const paginationFields = {
@@ -78,7 +74,9 @@ export const paginationFields = {
     .min(1)
     .max(MAX_PER_PAGE)
     .optional()
-    .describe(`Records per page (max ${MAX_PER_PAGE}, Moneybird defaults to 50).`),
+    .describe(
+      `Records per page (max ${MAX_PER_PAGE}, Moneybird defaults to 50).`
+    )
 };
 
 export function filterField(examples: string): z.ZodOptional<z.ZodString> {
@@ -87,7 +85,7 @@ export function filterField(examples: string): z.ZodOptional<z.ZodString> {
     .optional()
     .describe(
       `Comma-separated \`key:value\` filter, e.g. \`${examples}\`. ` +
-        "Supplying a filter replaces Moneybird's defaults entirely, so restate every key you still want applied.",
+        "Supplying a filter replaces Moneybird's defaults entirely, so restate every key you still want applied."
     );
 }
 
@@ -98,11 +96,13 @@ export interface QueryInput {
 }
 
 /** Maps the shared list arguments onto Moneybird query parameters, dropping absent ones. */
-export function listQuery(args: QueryInput): Record<string, string | number | undefined> {
+export function listQuery(
+  args: QueryInput
+): Record<string, string | number | undefined> {
   return {
     ...(args.page !== undefined ? { page: args.page } : {}),
     ...(args.per_page !== undefined ? { per_page: args.per_page } : {}),
-    ...(args.filter ? { filter: args.filter } : {}),
+    ...(args.filter ? { filter: args.filter } : {})
   };
 }
 
@@ -127,17 +127,24 @@ export function listResult(response: MoneybirdResponse<unknown>): ToolResult {
   const count = Array.isArray(response.data) ? response.data.length : undefined;
 
   const notes: string[] = [];
-  if (count !== undefined) notes.push(`${count} record${count === 1 ? '' : 's'} returned`);
-  if (pageInfo.totalCount !== undefined) notes.push(`${pageInfo.totalCount} total`);
+  if (count !== undefined)
+    notes.push(`${count} record${count === 1 ? '' : 's'} returned`);
+  if (pageInfo.totalCount !== undefined)
+    notes.push(`${pageInfo.totalCount} total`);
   if (pageInfo.hasNextPage) {
-    notes.push(`more available — request page ${pageInfo.nextPage ?? (pageInfo.page ?? 1) + 1}`);
+    notes.push(
+      `more available — request page ${pageInfo.nextPage ?? (pageInfo.page ?? 1) + 1}`
+    );
   }
 
   const body = stringify(response.data);
   return {
     content: [
-      { type: 'text', text: notes.length > 0 ? `${body}\n\n// ${notes.join(' · ')}` : body },
-    ],
+      {
+        type: 'text',
+        text: notes.length > 0 ? `${body}\n\n// ${notes.join(' · ')}` : body
+      }
+    ]
   };
 }
 
@@ -154,7 +161,9 @@ export interface ResourceRequest {
 /** Resolves `administration_id` from the tool arguments, falling back to the client's default. */
 export function scope(
   client: MoneybirdClient,
-  administrationId: string | undefined,
+  administrationId: string | undefined
 ): { administrationId: string | undefined } {
-  return { administrationId: administrationId ?? client.defaultAdministrationId };
+  return {
+    administrationId: administrationId ?? client.defaultAdministrationId
+  };
 }

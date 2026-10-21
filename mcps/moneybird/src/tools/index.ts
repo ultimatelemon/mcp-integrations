@@ -1,14 +1,14 @@
-import type { ToolDefinition } from './common.js';
-import { apiTools } from './api.js';
-import { assetsTools } from './assets.js';
-import { bankingTools } from './banking.js';
-import { coreTools } from './core.js';
-import { invoicingTools } from './invoicing.js';
-import { purchasesTools } from './purchases.js';
-import { reportsTools } from './reports.js';
-import { tasksTools } from './tasks.js';
-import { timeTools } from './time.js';
-import { webhooksTools } from './webhooks.js';
+import type { ToolDefinition } from './common.ts';
+import { apiTools } from './api.ts';
+import { assetsTools } from './assets.ts';
+import { bankingTools } from './banking.ts';
+import { coreTools } from './core.ts';
+import { invoicingTools } from './invoicing.ts';
+import { purchasesTools } from './purchases.ts';
+import { reportsTools } from './reports.ts';
+import { tasksTools } from './tasks.ts';
+import { timeTools } from './time.ts';
+import { webhooksTools } from './webhooks.ts';
 
 /** Every tool this server knows about; the registry filters by toolset and permission. */
 export const allTools: readonly ToolDefinition[] = [
@@ -21,8 +21,8 @@ export const allTools: readonly ToolDefinition[] = [
   ...reportsTools,
   ...assetsTools,
   ...tasksTools,
-  ...webhooksTools,
+  ...webhooksTools
 ];
 
-export * from './common.js';
-export * from './registry.js';
+export * from './common.ts';
+export * from './registry.ts';

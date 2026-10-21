@@ -2,14 +2,14 @@ import { readFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { z } from 'zod';
-import { permissionsFor } from '../config/schema.js';
+import { permissionsFor } from '../config/schema.ts';
 import {
   defineTool,
   listResult,
   textResult,
   type ToolAccess,
-  type ToolDefinition,
-} from './common.js';
+  type ToolDefinition
+} from './common.ts';
 
 export interface Operation {
   method: 'GET' | 'POST' | 'PATCH' | 'DELETE';
@@ -47,7 +47,7 @@ const IRREVERSIBLE_SEGMENTS = new Set([
   'mark_as_dubious',
   'mark_as_uncollectible',
   'bill_estimate',
-  'duplicate_creditinvoice',
+  'duplicate_creditinvoice'
 ]);
 
 const SPEC_FILE = join(
@@ -55,7 +55,7 @@ const SPEC_FILE = join(
   '..',
   '..',
   'spec',
-  'endpoints.json',
+  'endpoints.json'
 );
 
 let operations: Promise<Operation[]> | undefined;
@@ -74,14 +74,17 @@ export function loadOperations(file: string = SPEC_FILE): Promise<Operation[]> {
         tag: operation.tag,
         scoped,
         paginated: operation.paginated,
-        filterable: operation.filterable,
+        filterable: operation.filterable
       };
-    }),
+    })
   );
   return operations;
 }
 
-export function accessFor(method: Operation['method'], path: string): ToolAccess {
+export function accessFor(
+  method: Operation['method'],
+  path: string
+): ToolAccess {
   if (method === 'GET') return 'read';
   if (method === 'DELETE') return 'destroy';
   return path.split('/').some((segment) => IRREVERSIBLE_SEGMENTS.has(segment))
@@ -96,7 +99,9 @@ function matches(template: string, path: string): boolean {
     expected.length === actual.length &&
     expected.every((segment, index) => {
       const value = actual[index] ?? '';
-      return segment.startsWith('{') ? /^[A-Za-z0-9_-]+$/.test(value) : segment === value;
+      return segment.startsWith('{')
+        ? /^[A-Za-z0-9_-]+$/.test(value)
+        : segment === value;
     })
   );
 }
@@ -104,12 +109,17 @@ function matches(template: string, path: string): boolean {
 export function findOperation(
   all: readonly Operation[],
   method: string,
-  path: string,
+  path: string
 ): Operation | undefined {
-  return all.find((operation) => operation.method === method && matches(operation.path, path));
+  return all.find(
+    (operation) => operation.method === method && matches(operation.path, path)
+  );
 }
 
-export function searchOperations(all: readonly Operation[], query: string): Operation[] {
+export function searchOperations(
+  all: readonly Operation[],
+  query: string
+): Operation[] {
   const words = query
     .toLowerCase()
     .split(/[^a-z0-9_]+/)
@@ -118,8 +128,11 @@ export function searchOperations(all: readonly Operation[], query: string): Oper
 
   return all
     .map((operation) => {
-      const haystack = `${operation.summary} ${operation.tag} ${operation.path}`.toLowerCase();
-      const score = words.filter((word) => haystack.includes(word.replace(/s$/, ''))).length;
+      const haystack =
+        `${operation.summary} ${operation.tag} ${operation.path}`.toLowerCase();
+      const score = words.filter((word) =>
+        haystack.includes(word.replace(/s$/, ''))
+      ).length;
       return { operation, score };
     })
     .filter((entry) => entry.score > 0)
@@ -132,7 +145,9 @@ function describeOperation(operation: Operation): string {
   const flags = [
     operation.paginated ? 'paginated' : '',
     operation.filterable ? 'filterable' : '',
-    accessFor(operation.method, operation.path) === 'destroy' ? 'irreversible' : '',
+    accessFor(operation.method, operation.path) === 'destroy'
+      ? 'irreversible'
+      : ''
   ].filter(Boolean);
   return `${operation.method} ${operation.path} — ${operation.summary}${flags.length ? ` [${flags.join(', ')}]` : ''}`;
 }
@@ -149,19 +164,23 @@ export const apiTools: readonly ToolDefinition[] = [
     access: 'read',
     essential: true,
     inputSchema: z.object({
-      query: z.string().min(2).describe('What you are looking for, e.g. "profit loss report".'),
+      query: z
+        .string()
+        .min(2)
+        .describe('What you are looking for, e.g. "profit loss report".')
     }),
     handler: async (args) => {
       const found = searchOperations(await loadOperations(), args.query);
-      if (found.length === 0) return textResult(`No endpoint matches "${args.query}".`);
+      if (found.length === 0)
+        return textResult(`No endpoint matches "${args.query}".`);
       return textResult(
         [
           ...found.map(describeOperation),
           '',
-          'Docs per resource: https://developer.moneybird.com/api/',
-        ].join('\n'),
+          'Docs per resource: https://developer.moneybird.com/api/'
+        ].join('\n')
       );
-    },
+    }
   }),
 
   defineTool({
@@ -181,31 +200,45 @@ export const apiTools: readonly ToolDefinition[] = [
       path: z
         .string()
         .min(1)
-        .describe('Path below the administration, with ids filled in, e.g. "reports/profit_loss".'),
+        .describe(
+          'Path below the administration, with ids filled in, e.g. "reports/profit_loss".'
+        ),
       query: z
         .record(z.string(), z.union([z.string(), z.number(), z.boolean()]))
         .optional()
         .describe('Query parameters, e.g. {"period": "this_year"}.'),
-      body: z.record(z.string(), z.unknown()).optional().describe('JSON body for POST and PATCH.'),
-      administration_id: z.string().optional().describe('Administration to act on.'),
+      body: z
+        .record(z.string(), z.unknown())
+        .optional()
+        .describe('JSON body for POST and PATCH.'),
+      administration_id: z
+        .string()
+        .optional()
+        .describe('Administration to act on.')
     }),
     handler: async (args, context) => {
       const path = args.path.replace(/^\/+|\/+$/g, '').replace(/\.json$/, '');
-      const operation = findOperation(await loadOperations(), args.method, path);
+      const operation = findOperation(
+        await loadOperations(),
+        args.method,
+        path
+      );
       if (!operation) {
         throw new Error(
-          `${args.method} ${path} is not a Moneybird API endpoint. Use find_moneybird_endpoint.`,
+          `${args.method} ${path} is not a Moneybird API endpoint. Use find_moneybird_endpoint.`
         );
       }
 
       const access = accessFor(operation.method, operation.path);
       const permissions = permissionsFor(context.config);
       if (access === 'write' && !permissions.write) {
-        throw new Error('Writing is disabled on this server (MONEYBIRD_ALLOW_WRITE).');
+        throw new Error(
+          'Writing is disabled; set the X-Moneybird-Access header to write.'
+        );
       }
       if (access === 'destroy' && !permissions.destroy) {
         throw new Error(
-          'This action is irreversible and disabled on this server (MONEYBIRD_ALLOW_DELETE).',
+          'This action is irreversible and disabled; set the X-Moneybird-Access header to delete.'
         );
       }
 
@@ -213,14 +246,16 @@ export const apiTools: readonly ToolDefinition[] = [
         method: args.method,
         path,
         administrationScoped: operation.scoped,
-        ...(args.administration_id ? { administrationId: args.administration_id } : {}),
+        ...(args.administration_id
+          ? { administrationId: args.administration_id }
+          : {}),
         ...(args.query ? { query: args.query } : {}),
-        ...(args.body ? { body: args.body } : {}),
+        ...(args.body ? { body: args.body } : {})
       });
       if (response.data === undefined || response.data === null) {
         return textResult(`Done (${response.status}).`);
       }
       return listResult(response);
-    },
-  }),
+    }
+  })
 ];
