@@ -6,7 +6,7 @@ its own path on `https://mcp.ultimatelemon.eu`: `/perron`, `/moneybird`.
 ## Layout
 
 ```
-servers/<name>/   one MCP server: own package.json, Dockerfile, tests, README
+mcps/<name>/   one MCP server: own package.json, Dockerfile, tests, README
 ```
 
 - Every server is an npm workspace and its own deployable image. Servers do
@@ -14,7 +14,7 @@ servers/<name>/   one MCP server: own package.json, Dockerfile, tests, README
 - Code shared between servers goes to `ultimatelemon/packages`
   (`@ultimatelemon-eu/*`), not into this repo. Perron already uses
   `@ultimatelemon-eu/mcp-http`.
-- `servers/perron` and `servers/moneybird` were imported with `git subtree`
+- `mcps/perron` and `mcps/moneybird` were imported with `git subtree`
   from `ultimatelemon/perron` and `HalloSouf/moneybird-mcp`, history included.
   The old repos stay as they are; changes happen here.
 
@@ -25,7 +25,7 @@ servers/<name>/   one MCP server: own package.json, Dockerfile, tests, README
 | `perron`    | `/perron`    | MCP SDK v1, `@ultimatelemon-eu/mcp-http`, Redis (optional), SQLite in `DATA_DIR` | NS + GVB travel info, no auth |
 | `moneybird` | `/moneybird` | MCP SDK v2, Postgres (`oauth`/`airlock` modes) | Moneybird API, OAuth          |
 
-Env vars per server are in `servers/<name>/.env.example` and the server's
+Env vars per server are in `mcps/<name>/.env.example` and the server's
 README.
 
 ## Deployment
@@ -52,7 +52,7 @@ and its Traefik router must also match those paths.
 
 ## Adding a server
 
-1. `servers/<name>/` with `lint`, `typecheck`, `build`, `test`, `format`
+1. `mcps/<name>/` with `lint`, `typecheck`, `build`, `test`, `format`
    scripts, `.prettierrc` → `"@ultimatelemon-eu/prettier-config"`.
 2. Dockerfile with a pinned Node image (`node:24.x-alpine3.x`) and a
    `/healthz` check under the base path.
