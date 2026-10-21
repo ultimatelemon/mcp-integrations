@@ -1,0 +1,16 @@
+name: Code Quality
+
+# Pushes to main run the same checks inside each deploy workflow, gating the image.
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: code-quality-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    uses: ultimatelemon/shared-actions/.github/workflows/node-quality.yml@v2

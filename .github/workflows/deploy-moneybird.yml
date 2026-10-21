@@ -1,0 +1,46 @@
+name: deploy moneybird
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "mcps/moneybird/**"
+      - "package.json"
+      - "package-lock.json"
+      - "tsconfig.base.json"
+      - ".github/workflows/deploy-moneybird.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-moneybird
+  cancel-in-progress: true
+
+jobs:
+  # Runs here rather than in a separate workflow so the image is built from
+  # exactly the commit that passed.
+  quality:
+    uses: ultimatelemon/shared-actions/.github/workflows/node-quality.yml@v2
+
+  publish:
+    needs: [quality]
+    uses: ultimatelemon/shared-actions/.github/workflows/docker-publish.yml@v2
+    permissions:
+      contents: read
+      packages: write
+    with:
+      image: ghcr.io/${{ github.repository }}/moneybird
+      dockerfile: mcps/moneybird/Dockerfile
+
+  deploy:
+    needs: [publish]
+    uses: ultimatelemon/shared-actions/.github/workflows/dokploy-deploy.yml@v2
+    with:
+      environment: moneybird
+      url: https://mcp.ultimatelemon.eu/moneybird
+    secrets:
+      # A repository secret, not an environment secret: the calling job has no
+      # environment, so an environment secret would resolve to an empty string.
+      webhook-url: ${{ secrets.DOKPLOY_DEPLOY_URL_MONEYBIRD }}

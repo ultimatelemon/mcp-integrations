@@ -26,10 +26,10 @@ mcps/<name>/   one MCP server: own package.json, Dockerfile, tests, README
 
 ## Servers
 
-| Server      | Path         | Upstream                          | Extra state                    |
-| ----------- | ------------ | --------------------------------- | ------------------------------ |
+| Server      | Path         | Upstream                           | Extra state                          |
+| ----------- | ------------ | ---------------------------------- | ------------------------------------ |
 | `perron`    | `/perron`    | NS API, OVapi GTFS, deelmobiliteit | Redis (optional), `/app/data` volume |
-| `moneybird` | `/moneybird` | Moneybird API                     | none                           |
+| `moneybird` | `/moneybird` | Moneybird API                      | none                                 |
 
 Env vars per server are in `mcps/<name>/.env.example` and the server's
 README.
