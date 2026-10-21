@@ -18,19 +18,27 @@ concurrency:
   group: deploy-moneybird
   cancel-in-progress: true
 
+# A public repository: GitHub-hosted runners, as the cluster runners admit
+# private repositories only.
 jobs:
   # Runs here rather than in a separate workflow so the image is built from
   # exactly the commit that passed.
   quality:
     uses: ultimatelemon/shared-actions/.github/workflows/node-quality.yml@v2
+    with:
+      runs-on: ubuntu-latest
+      container-image: ""
 
   publish:
     needs: [quality]
-    uses: ultimatelemon/shared-actions/.github/workflows/docker-publish.yml@v2
+    uses: ultimatelemon/shared-actions/.github/workflows/docker-publish.yml@19145242a7f9e5ea7952ba60603e10dd740795ec
     permissions:
       contents: read
       packages: write
     with:
+      runs-on: ubuntu-latest
+      container-image: ""
+      buildkit-endpoint: ""
       image: ghcr.io/${{ github.repository }}/moneybird
       dockerfile: mcps/moneybird/Dockerfile
 
@@ -38,6 +46,8 @@ jobs:
     needs: [publish]
     uses: ultimatelemon/shared-actions/.github/workflows/dokploy-deploy.yml@v2
     with:
+      runs-on: ubuntu-latest
+      container-image: ""
       environment: moneybird
       url: https://mcp.ultimatelemon.eu/moneybird
     secrets:
