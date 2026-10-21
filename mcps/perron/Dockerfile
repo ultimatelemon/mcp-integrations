@@ -1,7 +1,7 @@
 # Build context is the repository root: docker build -f mcps/perron/Dockerfile .
 FROM node:24.21.0-alpine3.24 AS build
 WORKDIR /build
-COPY package.json package-lock.json ./
+COPY package.json package-lock.json tsconfig.base.json ./
 COPY mcps/perron/package.json mcps/perron/
 RUN npm ci --workspace mcps/perron --include-workspace-root=false
 COPY mcps/perron/tsconfig.json mcps/perron/tsconfig.build.json mcps/perron/
