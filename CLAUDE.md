@@ -11,6 +11,10 @@ mcps/<name>/   one MCP server: own package.json, Dockerfile, tests, README
 
 - Every server is an npm workspace and its own deployable image. Servers do
   not import from each other.
+- One `package-lock.json` at the root. Root scripts (`lint`, `typecheck`,
+  `build`, `test`, `format`, `format:check`) run in every workspace.
+- Docker builds from the repository root:
+  `docker build -f mcps/<name>/Dockerfile .`
 - Code shared between servers goes to `ultimatelemon/packages`
   (`@ultimatelemon-eu/*`), not into this repo. Perron already uses
   `@ultimatelemon-eu/mcp-http`.
