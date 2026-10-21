@@ -1,14 +1,25 @@
 /**
  * Checks scooters_nearby, nearest_zone and ov_departures against a running
  * server with live data, using places measured by hand on 6 October 2026.
- * Usage: node scripts/check-last-mile.ts [url]   (default http://localhost:3000/mcp)
+ * Usage: NS_API_KEY=... node scripts/check-last-mile.ts [url]   (default http://localhost:3000/mcp)
  */
-import { Client } from '@modelcontextprotocol/sdk/client/index.js';
-import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
+import {
+  Client,
+  StreamableHTTPClientTransport
+} from '@modelcontextprotocol/client';
 
+const key = process.env['NS_API_KEY'];
+if (!key) {
+  console.error('NS_API_KEY is not set');
+  process.exit(1);
+}
 const url = new URL(process.argv[2] ?? 'http://localhost:3000/mcp');
 const client = new Client({ name: 'perron-last-mile', version: '0.0.0' });
-await client.connect(new StreamableHTTPClientTransport(url));
+await client.connect(
+  new StreamableHTTPClientTransport(url, {
+    requestInit: { headers: { 'x-api-key': key } }
+  })
+);
 
 let failures = 0;
 function check(label: string, pass: boolean, detail: string) {

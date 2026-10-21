@@ -69,29 +69,27 @@ second). Geocodes are kept for good in SQLite under `DATA_DIR`.
   seconds; the ferries have none there, so their departures say
   `realtime: false`.
 
-## No authentication: put it behind something
+## Bring your own NS API key
 
-perron has **no auth of its own**. Anyone who can reach `/mcp` can spend your NS
-API key's rate limit. Run it on localhost, or behind a reverse proxy or gateway
-that authenticates (an OAuth gateway, Cloudflare Access, Tailscale, a VPN, …).
-Do not expose it to the internet as is.
-
-## Getting an NS API key
+perron holds no NS key of its own. Every request to `/mcp` carries the caller's
+key in `X-Api-Key` (or `Authorization: Bearer <key>`) and perron calls NS with
+it; without one it answers 401. Keys are never logged or stored.
 
 1. Create an account at [apiportal.ns.nl](https://apiportal.ns.nl).
 2. Under **Products**, subscribe to **Ns-App**. That one product covers every
    API perron uses.
-3. Your profile then shows a primary and a secondary key. Use either one as
-   `NS_API_KEY`; keep the other for rotating without downtime.
+3. Your profile then shows a primary and a secondary key. Use either one; keep
+   the other for rotating without downtime.
 
-The key allows 300 requests per 5 minutes. perron stays under that with a
-token bucket, respects `Retry-After` on a 429, and caches responses (see below).
+A key allows 300 requests per 5 minutes. perron keeps one rate limiter per key,
+stays under that with a token bucket, and respects `Retry-After` on a 429.
+Cached responses (see below) are shared between callers, so a cache hit costs
+no request on anyone's key.
 
 ## Configuration
 
 | Variable                 | Default   | Purpose                                                                                   |
 | ------------------------ | --------- | ----------------------------------------------------------------------------------------- |
-| `NS_API_KEY`             | —         | Required. Subscription key for the Ns-App product.                                        |
 | `PORT`                   | `3000`    | HTTP port.                                                                                |
 | `HOST`                   | `0.0.0.0` | Interface to listen on. Use `127.0.0.1` to keep it local.                                 |
 | `BASE_PATH`              | _(empty)_ | Prefix when a proxy forwards a sub-path unchanged, e.g. `/ns`.                            |
@@ -106,15 +104,16 @@ token bucket, respects `Retry-After` on a 429, and caches responses (see below).
 | `LOG_LEVEL`              | `info`    | `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`.                           |
 
 Endpoints: `POST /mcp` (Streamable HTTP, stateless) and `GET /healthz`. With a
-`BASE_PATH` both are also served under that prefix.
+`BASE_PATH` such as `/perron`, MCP also answers on `/perron` and `/perron/mcp`,
+and health on `/perron/healthz`.
 
 ## Running
 
 ### Docker
 
 ```bash
-docker run --rm -p 127.0.0.1:3000:3000 -e NS_API_KEY=your-key \
-  -v perron-data:/app/data ghcr.io/ultimatelemon/perron:latest
+docker run --rm -p 127.0.0.1:3000:3000 \
+  -v perron-data:/app/data ghcr.io/ultimatelemon/mcp-integrations/perron:latest
 ```
 
 The image runs as a non-root user and has a health check on `/healthz`. The
@@ -122,18 +121,20 @@ volume keeps the timetable and geocodes across restarts; without it the
 timetable is downloaded again on every start. The daily import needs about
 300 MB of free disk while it runs.
 
-`npm run check:last-mile -- <url>` checks the last-mile tools against a running
+`npm run check:last-mile -- <url>` (with `NS_API_KEY` in `.env`) checks the last-mile tools against a running
 server with live data, using places measured by hand.
 
 ### From source
 
-Needs Node 24.
+Needs Node 24. perron lives in the
+[mcp-integrations](https://github.com/ultimatelemon/mcp-integrations) monorepo.
 
 ```bash
-git clone https://github.com/ultimatelemon/perron.git
-cd perron
+git clone https://github.com/ultimatelemon/mcp-integrations.git
+cd mcp-integrations
 npm ci
-cp .env.example .env   # and fill in NS_API_KEY
+cd mcps/perron
+cp .env.example .env   # NS_API_KEY there is only for the probe and smoke scripts
 npm run dev            # http://localhost:3000/mcp
 ```
 
@@ -144,14 +145,14 @@ npm run dev            # http://localhost:3000/mcp
 ### Claude Code
 
 ```bash
-claude mcp add --transport http perron http://localhost:3000/mcp
+claude mcp add --transport http perron https://mcp.ultimatelemon.eu/perron \
+  --header "X-Api-Key: your-ns-key"
 ```
 
 ### Claude Desktop and claude.ai
 
-Add a custom connector with the public URL of your deployment. These clients
-reach the server from the internet, so this only works behind an authenticating
-gateway that speaks MCP's OAuth flow.
+Add a custom connector with URL `https://mcp.ultimatelemon.eu/perron`,
+choose **No sign-in**, and add a request header `X-Api-Key` with your NS key.
 
 ### MCP Inspector
 
@@ -159,7 +160,8 @@ gateway that speaks MCP's OAuth flow.
 npx @modelcontextprotocol/inspector
 ```
 
-Choose transport "Streamable HTTP" and URL `http://localhost:3000/mcp`.
+Choose transport "Streamable HTTP", URL `http://localhost:3000/mcp`, and add the
+header `X-Api-Key`.
 
 ## Caching
 
@@ -179,7 +181,7 @@ npm run lint
 npm run typecheck
 npm run format:check
 npm run probe         # calls every NS endpoint once and saves raw responses to fixtures/
-node scripts/smoke.ts http://localhost:3000/mcp   # calls every tool on a running server
+NS_API_KEY=... node scripts/smoke.ts http://localhost:3000/mcp   # calls every tool on a running server
 ```
 
 The NS OpenAPI specs are not in this repository. Download them from the API

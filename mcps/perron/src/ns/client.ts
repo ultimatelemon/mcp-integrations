@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import {
   createFetchClient,
   HttpError,
@@ -68,5 +69,29 @@ export function createNsClient(options: NsClientOptions): NsClient {
         throw error;
       }
     }
+  };
+}
+
+/** One client per key, so each caller's key keeps its own NS rate limit. */
+export function createNsClientPool(
+  options: Omit<NsClientOptions, 'apiKey'>,
+  maxClients = 500
+): (apiKey: string) => NsClient {
+  const clients = new Map<string, NsClient>();
+  return (apiKey) => {
+    const id = createHash('sha256').update(apiKey).digest('hex');
+    let client = clients.get(id);
+    if (client) {
+      // Reinsert so the Map's order tracks recent use and the oldest is evicted.
+      clients.delete(id);
+    } else {
+      client = createNsClient({ ...options, apiKey });
+      if (clients.size >= maxClients) {
+        const oldest = clients.keys().next().value;
+        if (oldest !== undefined) clients.delete(oldest);
+      }
+    }
+    clients.set(id, client);
+    return client;
   };
 }

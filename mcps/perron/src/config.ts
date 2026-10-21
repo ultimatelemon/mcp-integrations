@@ -1,7 +1,6 @@
 import { z } from 'zod';
 
 const schema = z.object({
-  NS_API_KEY: z.string().min(1, 'NS_API_KEY is required'),
   PORT: z.coerce.number().int().positive().default(3000),
   HOST: z.string().default('0.0.0.0'),
   BASE_PATH: z.string().default(''),

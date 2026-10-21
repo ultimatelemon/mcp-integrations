@@ -7,7 +7,8 @@
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ultimatelemon/perron.git"
+    "url": "git+https://github.com/ultimatelemon/mcp-integrations.git",
+    "directory": "mcps/perron"
   },
   "engines": {
     "node": ">=24"
@@ -22,11 +23,10 @@
     "test": "vitest run",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "check:last-mile": "node scripts/check-last-mile.ts"
+    "check:last-mile": "node --env-file-if-exists=.env scripts/check-last-mile.ts"
   },
   "prettier": "@ultimatelemon-eu/prettier-config",
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.32.1",
     "@turf/bearing": "^7.4.0",
     "@turf/boolean-point-in-polygon": "^7.4.0",
     "@turf/destination": "^7.4.0",
@@ -36,7 +36,7 @@
     "@turf/polygon-to-line": "^7.4.0",
     "@ultimatelemon-eu/datetime": "^1.0.0",
     "@ultimatelemon-eu/fetch-client": "^1.0.0",
-    "@ultimatelemon-eu/mcp-http": "^1.0.0",
+    "@ultimatelemon-eu/mcp-http": "^2.1.0",
     "gtfs-realtime-bindings": "^2.2.0",
     "pino": "^10.4.0",
     "redis": "^6.3.0",
@@ -44,6 +44,7 @@
     "zod": "^4.6.5"
   },
   "devDependencies": {
+    "@modelcontextprotocol/client": "^2.3.1",
     "@types/geojson": "^7946.0.16",
     "@types/node": "^24.19.1",
     "@types/yauzl": "^3.4.0",

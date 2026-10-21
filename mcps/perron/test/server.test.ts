@@ -1,7 +1,9 @@
-import { Client } from '@modelcontextprotocol/sdk/client/index.js';
-import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
+import {
+  Client,
+  StreamableHTTPClientTransport
+} from '@modelcontextprotocol/client';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { createStationProvider, type Deps } from '../src/context.ts';
+import { createStationProvider } from '../src/context.ts';
 import { createCache } from '../src/lib/cache.ts';
 import { silentLogger } from '../src/lib/logger.ts';
 import {
@@ -16,13 +18,12 @@ import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createServiceAreaClient } from '../src/deelmobiliteit/serviceAreas.ts';
-import { Geocoder } from '../src/geo/geocode.ts';
 import { createNominatim } from '../src/geo/nominatim.ts';
 import { createPdok } from '../src/geo/pdok.ts';
 import { memoryDurableStore } from '../src/lib/store.ts';
-import { createNsClient } from '../src/ns/client.ts';
+import { createNsClientPool } from '../src/ns/client.ts';
 import { OvService } from '../src/ov/service.ts';
-import { createPerronServer } from '../src/server.ts';
+import { createPerronServer, depsFor, type SharedDeps } from '../src/server.ts';
 import { gvbFeed, gvbRealtime, zipOf } from './gtfs.ts';
 import { FIXTURE_NOW, fixture } from './helpers.ts';
 
@@ -151,9 +152,7 @@ const dataDir = mkdtempSync(join(tmpdir(), 'perron-server-'));
 
 beforeAll(async () => {
   gtfsZip = await zipOf(gvbFeed());
-  const ns = createNsClient({ apiKey: 'test-key', fetch: fakeFetch });
   const cache = createCache();
-  const stations = createStationProvider(ns, cache);
   ov = new OvService({
     dataDir,
     gtfsUrl: 'https://gtfs.test/gtfs-nl.zip',
@@ -165,21 +164,20 @@ beforeAll(async () => {
     now: () => FIXTURE_NOW
   });
   await ov.ensureFresh();
-  const deps: Deps = {
-    ns,
+  const shared: SharedDeps = {
+    nsFor: createNsClientPool({ fetch: fakeFetch }),
     cache,
-    stations,
-    geocoder: new Geocoder({
+    stations: createStationProvider(cache),
+    geocoder: {
       pdok: createPdok({ fetch: fakeFetch, baseUrl: 'https://pdok.test' }),
       nominatim: createNominatim({
         userAgent: 'perron-test',
         fetch: fakeFetch,
         baseUrl: 'https://nominatim.test'
       }),
-      stations,
       store: memoryDurableStore(),
       logger: silentLogger
-    }),
+    },
     serviceAreas: createServiceAreaClient({
       fetch: fakeFetch,
       baseUrl: 'https://mds.test'
@@ -195,13 +193,19 @@ beforeAll(async () => {
     logger: silentLogger
   };
   http = await startMcpHttpServer({
-    createMcpServer: () => createPerronServer(deps),
+    createMcpServer: ({ apiKey = '' }) =>
+      createPerronServer(depsFor(shared, apiKey)),
     port: 0,
     host: '127.0.0.1',
-    basePath: '/ns'
+    basePath: '/ns',
+    apiKey: {}
   });
   client = new Client({ name: 'test', version: '0.0.0' });
-  await client.connect(new StreamableHTTPClientTransport(new URL(http.url)));
+  await client.connect(
+    new StreamableHTTPClientTransport(new URL(http.url), {
+      requestInit: { headers: { 'x-api-key': 'test-key' } }
+    })
+  );
 });
 
 afterAll(async () => {
@@ -228,6 +232,18 @@ describe('perron over Streamable HTTP', () => {
   it('answers /healthz', async () => {
     const res = await fetch(http.url.replace(/\/mcp$/, '/healthz'));
     expect(res.status).toBe(200);
+  });
+
+  it("rejects a call without the caller's NS key", async () => {
+    const res = await fetch(http.url, {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        accept: 'application/json, text/event-stream'
+      },
+      body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/list' })
+    });
+    expect(res.status).toBe(401);
   });
 
   it('rejects GET on /mcp in stateless mode', async () => {

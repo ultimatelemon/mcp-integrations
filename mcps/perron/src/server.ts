@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { McpServer } from '@modelcontextprotocol/server';
 import { loadConfig } from './config.ts';
 import { createStationProvider, type Deps } from './context.ts';
 import { createCache } from './lib/cache.ts';
@@ -10,13 +10,14 @@ import {
   createVehiclesClient
 } from './deelmobiliteit/client.ts';
 import { createServiceAreaClient } from './deelmobiliteit/serviceAreas.ts';
-import { Geocoder } from './geo/geocode.ts';
+import { Geocoder, type GeocoderDeps } from './geo/geocode.ts';
 import { createNominatim } from './geo/nominatim.ts';
 import { createPdok } from './geo/pdok.ts';
 import { sqliteStore } from './lib/store.ts';
 import { createLogger } from './log.ts';
 import { OvService } from './ov/service.ts';
-import { createNsClient } from './ns/client.ts';
+import { createNsClientPool, type NsClient } from './ns/client.ts';
+import type { StationIndex } from './resolve.ts';
 import { registerTools } from './tools/index.ts';
 
 // src/ and dist/ both sit one level below package.json.
@@ -39,7 +40,7 @@ export function createPerronServer(deps: Deps, iconUrl?: string): McpServer {
       title: 'Perron',
       version,
       description: 'Dutch Railways (NS) travel information',
-      websiteUrl: 'https://github.com/ultimatelemon/perron',
+      websiteUrl: 'https://github.com/ultimatelemon/mcp-integrations',
       icons: [
         iconUrl
           ? { src: iconUrl }
@@ -52,31 +53,51 @@ export function createPerronServer(deps: Deps, iconUrl?: string): McpServer {
   return server;
 }
 
+/** Deps shared by every request; the NS client comes from the caller's key. */
+export interface SharedDeps extends Omit<Deps, 'ns' | 'stations' | 'geocoder'> {
+  nsFor: (apiKey: string) => NsClient;
+  stations: (ns: NsClient) => Promise<StationIndex>;
+  geocoder: Omit<GeocoderDeps, 'stations'>;
+}
+
+export function depsFor(shared: SharedDeps, apiKey: string): Deps {
+  const { nsFor, stations: stationsFor, geocoder, ...rest } = shared;
+  const ns = nsFor(apiKey);
+  const stations = () => stationsFor(ns);
+  return {
+    ...rest,
+    ns,
+    stations,
+    geocoder: new Geocoder({ ...geocoder, stations })
+  };
+}
+
+const API_KEY_HINT =
+  'Use your own NS API key: subscribe to the "Ns-App" product at https://apiportal.ns.nl.';
+
 async function main() {
   const config = loadConfig();
   const logger = createLogger(config.LOG_LEVEL);
-  const ns = createNsClient({ apiKey: config.NS_API_KEY, logger });
   const cache = createCache({
     redisUrl: config.REDIS_URL,
     prefix: 'perron:',
     logger
   });
-  const stations = createStationProvider(ns, cache);
+  const stations = createStationProvider(cache);
   const vehicles = createVehicleProvider(createVehiclesClient({ logger }), {
     minTtlMs: config.VEHICLES_CACHE_SECONDS * 1000,
     logger
   });
   const store = sqliteStore(join(config.DATA_DIR, 'geocode.sqlite'));
-  const geocoder = new Geocoder({
+  const geocoder = {
     pdok: createPdok({ logger }),
     nominatim: createNominatim({
-      userAgent: `perron/${version} (+https://github.com/ultimatelemon/perron)`,
+      userAgent: `perron/${version} (+https://github.com/ultimatelemon/mcp-integrations)`,
       logger
     }),
-    stations,
     store,
     logger
-  });
+  };
   const ov = new OvService({
     dataDir: config.DATA_DIR,
     gtfsUrl: config.GTFS_URL,
@@ -86,8 +107,8 @@ async function main() {
     logger
   });
   const stopOv = ov.start();
-  const deps: Deps = {
-    ns,
+  const shared: SharedDeps = {
+    nsFor: createNsClientPool({ logger }),
     cache,
     stations,
     vehicles,
@@ -98,17 +119,11 @@ async function main() {
     logger
   };
 
-  // Warm the station list; a failure is retried on the first tool call.
-  stations()
-    .then((index) => {
-      logger.info({ stations: index.size }, 'station list loaded');
-    })
-    .catch((error: unknown) => {
-      logger.warn({ err: String(error) }, 'station list not loaded yet');
-    });
-
   const http = await startMcpHttpServer({
-    createMcpServer: () => createPerronServer(deps, config.ICON_URL),
+    // mcp-http answers 401 before this runs when the caller sent no key.
+    createMcpServer: ({ apiKey = '' }) =>
+      createPerronServer(depsFor(shared, apiKey), config.ICON_URL),
+    apiKey: { hint: API_KEY_HINT },
     port: config.PORT,
     host: config.HOST,
     basePath: config.BASE_PATH,

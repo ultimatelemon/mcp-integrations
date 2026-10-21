@@ -36,16 +36,19 @@ export interface Deps {
   logger: Logger;
 }
 
-/** Keeps one StationIndex in memory and rebuilds it once the cached list expires. */
+/**
+ * Keeps one StationIndex in memory and rebuilds it once the cached list
+ * expires. The list is the same for every key, so it is fetched with whichever
+ * caller's client needs it first.
+ */
 export function createStationProvider(
-  ns: NsClient,
   cache: Cache,
   now: () => number = Date.now
-): () => Promise<StationIndex> {
+): (ns: NsClient) => Promise<StationIndex> {
   let current: { index: StationIndex; builtAt: number } | undefined;
   let pending: Promise<StationIndex> | undefined;
 
-  const build = async () => {
+  const build = async (ns: NsClient) => {
     const raw = await cache.wrap('stations:v3', TTL.stations, () =>
       fetchStations(ns)
     );
@@ -54,11 +57,11 @@ export function createStationProvider(
     return index;
   };
 
-  return () => {
+  return (ns) => {
     if (current && now() - current.builtAt < TTL.stations) {
       return Promise.resolve(current.index);
     }
-    pending ??= build().finally(() => {
+    pending ??= build(ns).finally(() => {
       pending = undefined;
     });
     // A stale index beats an error while NS is unreachable.

@@ -1,13 +1,24 @@
 /**
  * Calls every tool once against a running server, as an MCP client would.
- * Usage: node scripts/smoke.ts [url]   (default http://localhost:3000/mcp)
+ * Usage: NS_API_KEY=... node scripts/smoke.ts [url]   (default http://localhost:3000/mcp)
  */
-import { Client } from '@modelcontextprotocol/sdk/client/index.js';
-import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
+import {
+  Client,
+  StreamableHTTPClientTransport
+} from '@modelcontextprotocol/client';
 
+const key = process.env['NS_API_KEY'];
+if (!key) {
+  console.error('NS_API_KEY is not set');
+  process.exit(1);
+}
 const url = new URL(process.argv[2] ?? 'http://localhost:3000/mcp');
 const client = new Client({ name: 'perron-smoke', version: '0.0.0' });
-await client.connect(new StreamableHTTPClientTransport(url));
+await client.connect(
+  new StreamableHTTPClientTransport(url, {
+    requestInit: { headers: { 'x-api-key': key } }
+  })
+);
 
 const { tools } = await client.listTools();
 console.info(`tools: ${tools.map((t) => t.name).join(', ')}`);

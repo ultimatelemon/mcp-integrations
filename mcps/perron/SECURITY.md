@@ -3,7 +3,7 @@
 ## Reporting a vulnerability
 
 Please report security issues privately through
-[GitHub's private vulnerability reporting](https://github.com/ultimatelemon/perron/security/advisories/new),
+[GitHub's private vulnerability reporting](https://github.com/ultimatelemon/mcp-integrations/security/advisories/new),
 not in a public issue. You can expect a first reply within a week.
 
 ## Scope
