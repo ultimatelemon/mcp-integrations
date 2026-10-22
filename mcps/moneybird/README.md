@@ -4,10 +4,23 @@ An MCP server for the [Moneybird](https://moneybird.com) accounting API. An
 assistant such as Claude can look up contacts, read invoices, check bank
 mutations, log time and pull reports from your administration.
 
-Hosted at `https://mcp.ultimatelemon.eu/moneybird`. Every caller brings their
-own Moneybird API token; the server stores nothing.
+Hosted at `https://mcp.ultimatelemon.eu/moneybird`. Sign in with Moneybird, or
+bring your own API token; either way the server stores nothing.
 
 ## Connecting
+
+### Sign in with Moneybird
+
+In claude.ai or Claude Desktop, add a custom connector with URL
+`https://mcp.ultimatelemon.eu/moneybird` and leave authentication on OAuth.
+Connecting sends you to Moneybird to approve access, then asks for this
+connection's default administration, access level and extra toolsets.
+
+The server keeps no copy of your Moneybird token: it travels, encrypted, inside
+the token your client holds. To disconnect, remove the connector and revoke
+the app under your Moneybird account's authorized applications.
+
+### Personal API token
 
 1. Create a personal API token at
    <https://moneybird.com/user/applications/new> ("personal API token"), with
@@ -15,7 +28,7 @@ own Moneybird API token; the server stores nothing.
 2. Add the server to your client with the token in `X-Api-Key` and any of the
    optional headers below.
 
-### claude.ai and Claude Desktop
+#### claude.ai and Claude Desktop
 
 Add a custom connector with URL `https://mcp.ultimatelemon.eu/moneybird`,
 choose **No sign-in**, and add the request headers:
@@ -29,8 +42,9 @@ choose **No sign-in**, and add the request headers:
 
 `Authorization: Bearer <token>` works instead of `X-Api-Key`. A header value
 the server does not understand is ignored, and the server tells the model so.
+The `X-Moneybird-*` headers also override the settings chosen at sign-in.
 
-### Claude Code
+#### Claude Code
 
 ```bash
 claude mcp add --transport http moneybird https://mcp.ultimatelemon.eu/moneybird \
@@ -111,6 +125,16 @@ docker run --rm -p 127.0.0.1:3000:3000 ghcr.io/ultimatelemon/mcp-integrations/mo
 | `MONEYBIRD_REQUEST_TIMEOUT_MS` | `30000`   | Per-request timeout.                                                |
 | `MONEYBIRD_MAX_RETRIES`        | `3`       | Retries for 429 and 5xx responses.                                  |
 | `MONEYBIRD_BASE_URL`           | Moneybird | API base URL, for testing against a stub.                           |
+| `MONEYBIRD_CLIENT_ID`          | _(empty)_ | OAuth application; with the secret, turns on the sign-in.           |
+| `MONEYBIRD_CLIENT_SECRET`      | _(empty)_ | OAuth application secret.                                           |
+| `PUBLIC_URL`                   | _(empty)_ | Public origin, e.g. `https://mcp.example.com`. Required for OAuth.  |
+| `ENCRYPTION_KEY`               | _(empty)_ | 32 bytes, base64. Seals issued tokens. Required for OAuth.          |
+
+For the sign-in, register an OAuth application at
+<https://moneybird.com/user/applications/new> with redirect URI
+`<PUBLIC_URL><BASE_PATH>/oauth/callback`. Behind a path-routing proxy, also
+route `/.well-known/oauth-authorization-server<BASE_PATH>` and
+`/.well-known/oauth-protected-resource<BASE_PATH>` to the server.
 
 Endpoints: `POST /mcp` and `GET /healthz`, also under `BASE_PATH`, where MCP
 answers on the bare prefix too.

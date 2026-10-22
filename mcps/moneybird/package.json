@@ -29,7 +29,7 @@
   "dependencies": {
     "@modelcontextprotocol/node": "^2.1.1",
     "@modelcontextprotocol/server": "^2.3.1",
-    "@ultimatelemon-eu/mcp-http": "^2.2.0",
+    "@ultimatelemon-eu/mcp-http": "^2.3.0",
     "pino": "^10.4.0",
     "zod": "^4.4.3"
   },

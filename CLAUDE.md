@@ -41,8 +41,16 @@ caller sends their own upstream key in `X-Api-Key` (or
 `Authorization: Bearer`); the server answers 401 without one and never logs or
 stores it. Other per-caller settings are headers too (moneybird:
 `X-Moneybird-Access`, `X-Moneybird-Toolsets`, `X-Moneybird-Administration`).
-No OAuth, no sessions, no database. claude.ai connectors use "No sign-in" plus
-request headers.
+No sessions, no database. claude.ai connectors use "No sign-in" plus request
+headers.
+
+A server whose upstream has OAuth can also offer a sign-in (moneybird does):
+mcp-http's `oauth` option is a stateless authorization server that seals
+clients, codes and tokens with `ENCRYPTION_KEY`, with the upstream token inside
+the access token. Settings picked after sign-in arrive as `oauth.settings`; the
+moneybird server maps them onto its `X-Moneybird-*` headers, and real headers
+win. Traefik must also route `/.well-known/oauth-authorization-server/<name>`
+and `/.well-known/oauth-protected-resource/<name>` to the app.
 
 Upstream rate limits: keep one limiter per key when the upstream counts per
 key (perron), and one shared limiter when it counts per IP (moneybird).
