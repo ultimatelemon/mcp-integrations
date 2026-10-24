@@ -1,13 +1,15 @@
 # mcp-integrations
 
 [MCP](https://modelcontextprotocol.io) servers by UltimateLemon, hosted at
-`https://mcp.ultimatelemon.eu/<name>`. Each server is stateless and keeps no
-credentials: you bring your own API key in a request header.
+`https://mcp.ultimatelemon.eu/<name>`. Perron and moneybird are stateless and
+keep no credentials: you bring your own API key in a request header. Postbus
+stores linked mailboxes and hands out a token per user.
 
 | Server                      | URL                                      | What it does                                                     |
 | --------------------------- | ---------------------------------------- | ---------------------------------------------------------------- |
 | [perron](mcps/perron)       | `https://mcp.ultimatelemon.eu/perron`    | Dutch Railways (NS): journeys, departures, disruptions, fares    |
 | [moneybird](mcps/moneybird) | `https://mcp.ultimatelemon.eu/moneybird` | Moneybird accounting: contacts, invoices, banking, time, reports |
+| [postbus](mcps/postbus)     | `https://mcp.ultimatelemon.eu/postbus`   | Several mailboxes over IMAP/SMTP or the Gmail API                |
 
 ## Connecting
 

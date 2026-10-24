@@ -6,7 +6,9 @@
 
 services:
   postbus:
-    build: .
+    build:
+      context: ../..
+      dockerfile: mcps/postbus/Dockerfile
     image: postbus-mcp:latest
     container_name: postbus-mcp
     restart: unless-stopped
@@ -14,12 +16,12 @@ services:
     environment:
       MASTER_KEY: ${MASTER_KEY:?set MASTER_KEY in .env (openssl rand -hex 32)}
       DATABASE_PATH: /data/postbus.db
-      PORT: "3000"
+      PORT: '3000'
       HOST: 0.0.0.0
-      TRUST_PROXY: "true"
-      MAIL_TIMEOUT_MS: "30000"
-      MAX_MESSAGE_BYTES: "2097152"
-      RATE_LIMIT_PER_MINUTE: "60"
+      TRUST_PROXY: 'true'
+      MAIL_TIMEOUT_MS: '30000'
+      MAX_MESSAGE_BYTES: '2097152'
+      RATE_LIMIT_PER_MINUTE: '60'
 
       # Optional: Gmail API provider (OAuth).
       # GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
@@ -37,13 +39,13 @@ services:
       - proxy
 
     labels:
-      traefik.enable: "true"
+      traefik.enable: 'true'
       traefik.docker.network: proxy
       traefik.http.routers.postbus.rule: Host(`${PUBLIC_HOST:-mcp.example.com}`)
       traefik.http.routers.postbus.entrypoints: websecure
-      traefik.http.routers.postbus.tls: "true"
+      traefik.http.routers.postbus.tls: 'true'
       traefik.http.routers.postbus.tls.certresolver: letsencrypt
-      traefik.http.services.postbus.loadbalancer.server.port: "3000"
+      traefik.http.services.postbus.loadbalancer.server.port: '3000'
       # Without this Traefik keeps routing to a container Docker has already
       # marked unhealthy.
       traefik.http.services.postbus.loadbalancer.healthcheck.path: /health

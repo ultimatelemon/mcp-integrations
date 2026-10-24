@@ -12,3 +12,7 @@
 !**/.env.example
 **/*.tsbuildinfo
 **/data
+**/tests
+**/*.db
+**/*.db-wal
+**/*.db-shm

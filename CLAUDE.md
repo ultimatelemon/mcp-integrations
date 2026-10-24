@@ -1,7 +1,8 @@
 # mcp-integrations
 
 Public monorepo with UltimateLemon's MCP servers. Each server is served under
-its own path on `https://mcp.ultimatelemon.eu`: `/perron`, `/moneybird`.
+its own path on `https://mcp.ultimatelemon.eu`: `/perron`, `/moneybird`,
+`/postbus`.
 
 ## Layout
 
@@ -20,8 +21,9 @@ mcps/<name>/   one MCP server: own package.json, Dockerfile, tests, README
   there, push, and the Publish workflow releases it to npm.
 - Shared TypeScript settings: `tsconfig.base.json`. Relative imports use `.ts`
   specifiers, so `node src/server.ts` runs without a build.
-- `mcps/perron` and `mcps/moneybird` were imported with `git subtree`
-  from `ultimatelemon/perron` and `HalloSouf/moneybird-mcp`, history included.
+- `mcps/perron`, `mcps/moneybird` and `mcps/postbus` were imported with
+  `git subtree` from `ultimatelemon/perron`, `HalloSouf/moneybird-mcp` and
+  `HalloSouf/postbus-mcp`, history included.
   The old repos stay as they are; changes happen here.
 
 ## Servers
@@ -30,6 +32,7 @@ mcps/<name>/   one MCP server: own package.json, Dockerfile, tests, README
 | ----------- | ------------ | ---------------------------------- | ------------------------------------ |
 | `perron`    | `/perron`    | NS API, OVapi GTFS, deelmobiliteit | Redis (optional), `/app/data` volume |
 | `moneybird` | `/moneybird` | Moneybird API                      | none                                 |
+| `postbus`   | `/postbus`   | IMAP/SMTP, Gmail API               | SQLite on volume `postbus-data`      |
 
 Env vars per server are in `mcps/<name>/.env.example` and the server's
 README.
@@ -52,6 +55,14 @@ moneybird server maps them onto its `X-Moneybird-*` headers, and real headers
 win. Traefik must also route `/.well-known/oauth-authorization-server/<name>`
 and `/.well-known/oauth-protected-resource/<name>` to the app.
 
+Exception: postbus. A user links several mailboxes, which does not fit in four
+headers, so it keeps users and mailboxes in SQLite, with app passwords
+encrypted under `MASTER_KEY` (its own AES helper, not yet
+`@ultimatelemon-eu/crypto`). The operator hands out a bearer token per user
+with `node dist/cli/add-user.js` in the container. It still runs on Express and
+`@modelcontextprotocol/sdk` v1, not mcp-http, and has no `BASE_PATH`: its
+Dokploy domain strips `/postbus` and forwards to `/mcp`; health is `/health`.
+
 Upstream rate limits: keep one limiter per key when the upstream counts per
 key (perron), and one shared limiter when it counts per IP (moneybird).
 
@@ -69,7 +80,8 @@ key (perron), and one shared limiter when it counts per IP (moneybird).
   private repositories only. The deploy step needs the repository secret
   `DOKPLOY_DEPLOY_URL_<NAME>` (the app's deploy webhook in Dokploy).
 - Dokploy project "Model Context Protocols": apps `perron` (with
-  `perron-redis` and volume `perron-data` on `/app/data`) and `moneybird`.
+  `perron-redis` and volume `perron-data` on `/app/data`), `moneybird`, and
+  `postbus` (volume `postbus-data` on `/data`).
   `moneybird-postgres` is left over from the old OAuth mode and unused.
 - Push over SSH: the HTTPS credential lacks the `workflow` scope.
 

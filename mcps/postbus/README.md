@@ -1,6 +1,5 @@
 # postbus-mcp
 
-[![Code quality](https://github.com/HalloSouf/postbus-mcp/actions/workflows/code-quality.yml/badge.svg)](https://github.com/HalloSouf/postbus-mcp/actions/workflows/code-quality.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 A self-hosted [MCP](https://modelcontextprotocol.io) server that lets you and a
@@ -70,8 +69,8 @@ takes no changes to the tools — see [Adding a provider](#adding-a-provider).
 ### With Docker (recommended)
 
 ```bash
-git clone https://github.com/HalloSouf/postbus-mcp.git
-cd postbus-mcp
+git clone https://github.com/ultimatelemon/mcp-integrations.git
+cd mcp-integrations/mcps/postbus
 
 cp .env.example .env
 openssl rand -hex 32          # put the result in .env as MASTER_KEY
@@ -340,22 +339,24 @@ conversation too.
 ```yaml
 services:
   postbus:
-    build: .
+    build:
+      context: ../..
+      dockerfile: mcps/postbus/Dockerfile
     restart: unless-stopped
     environment:
       MASTER_KEY: ${MASTER_KEY:?set MASTER_KEY in .env}
       DATABASE_PATH: /data/postbus.db
-      TRUST_PROXY: "true"
+      TRUST_PROXY: 'true'
     volumes:
       - postbus-data:/data
     networks: [proxy]
     labels:
-      traefik.enable: "true"
+      traefik.enable: 'true'
       traefik.docker.network: proxy
       traefik.http.routers.postbus.rule: Host(`${PUBLIC_HOST:-mcp.example.com}`)
       traefik.http.routers.postbus.entrypoints: websecure
       traefik.http.routers.postbus.tls.certresolver: letsencrypt
-      traefik.http.services.postbus.loadbalancer.server.port: "3000"
+      traefik.http.services.postbus.loadbalancer.server.port: '3000'
 ```
 
 Things to watch:
@@ -448,7 +449,11 @@ The tool layer only ever talks to `MailProvider` from `src/types.ts`:
 interface MailProvider<A extends MailAccount = MailAccount> {
   readonly id: ProviderId;
   verify(account: A): Promise<void>;
-  search(account: A, query: string, maxResults: number): Promise<MessageSummary[]>;
+  search(
+    account: A,
+    query: string,
+    maxResults: number
+  ): Promise<MessageSummary[]>;
   getMessage(account: A, messageId: string): Promise<MessageDetail>;
   getThread(account: A, threadId: string): Promise<MessageDetail[]>;
   send(
@@ -456,7 +461,7 @@ interface MailProvider<A extends MailAccount = MailAccount> {
     to: string,
     subject: string,
     body: string,
-    options?: SendOptions,
+    options?: SendOptions
   ): Promise<string>;
 }
 ```
@@ -561,13 +566,11 @@ Then link a mailbox with `imap_host: 127.0.0.1`, `imap_port: 3143`,
 > `X-GM-RAW` and `X-GM-THRID` can only be exercised against a real Gmail
 > mailbox.
 
-GitHub Actions runs the same checks on every push and pull request: formatting,
-types, `npm audit` over the production dependencies, and the tests. CI and the
-container both run Node 24.
-
-The image is not built in CI. Deployment builds from the repository, so a broken
-Dockerfile surfaces there rather than here — check it locally with
-`docker compose up -d --build` when you touch it.
+GitHub Actions runs lint, types, build, tests and formatting on every push to
+`main` that touches this server, then builds the image
+(`ghcr.io/ultimatelemon/mcp-integrations/postbus`) and deploys it. CI and the
+container both run Node 24. The image builds from the repository root:
+`docker build -f mcps/postbus/Dockerfile .`
 
 ### Project layout
 

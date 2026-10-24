@@ -1,0 +1,56 @@
+name: deploy postbus
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "mcps/postbus/**"
+      - "package.json"
+      - "package-lock.json"
+      - "tsconfig.base.json"
+      - ".github/workflows/deploy-postbus.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-postbus
+  cancel-in-progress: true
+
+# A public repository: GitHub-hosted runners, as the cluster runners admit
+# private repositories only.
+jobs:
+  # Runs here rather than in a separate workflow so the image is built from
+  # exactly the commit that passed.
+  quality:
+    uses: ultimatelemon/shared-actions/.github/workflows/node-quality.yml@v2
+    with:
+      runs-on: ubuntu-latest
+      container-image: ""
+
+  publish:
+    needs: [quality]
+    uses: ultimatelemon/shared-actions/.github/workflows/docker-publish.yml@v2
+    permissions:
+      contents: read
+      packages: write
+    with:
+      runs-on: ubuntu-latest
+      container-image: ""
+      buildkit-endpoint: ""
+      image: ghcr.io/${{ github.repository }}/postbus
+      dockerfile: mcps/postbus/Dockerfile
+
+  deploy:
+    needs: [publish]
+    uses: ultimatelemon/shared-actions/.github/workflows/dokploy-deploy.yml@v2
+    with:
+      runs-on: ubuntu-latest
+      container-image: ""
+      environment: postbus
+      url: https://mcp.ultimatelemon.eu/postbus
+    secrets:
+      # A repository secret, not an environment secret: the calling job has no
+      # environment, so an environment secret would resolve to an empty string.
+      webhook-url: ${{ secrets.DOKPLOY_DEPLOY_URL_POSTBUS }}
