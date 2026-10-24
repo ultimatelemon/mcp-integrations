@@ -1,4 +1,4 @@
-export type ProviderId = "imap" | "gmail-api";
+export type ProviderId = 'imap' | 'gmail-api';
 
 export interface User {
   id: string;
@@ -17,7 +17,7 @@ interface MailAccountBase {
 }
 
 export interface ImapAccount extends MailAccountBase {
-  provider: "imap";
+  provider: 'imap';
   imapHost: string;
   imapPort: number;
   imapSecure: boolean;
@@ -30,7 +30,7 @@ export interface ImapAccount extends MailAccountBase {
 }
 
 export interface GmailApiAccount extends MailAccountBase {
-  provider: "gmail-api";
+  provider: 'gmail-api';
   /** Decrypted in memory; stored encrypted. */
   refreshToken: string;
 }
@@ -75,7 +75,7 @@ export interface MessageDetail extends MessageSummary {
   /** Raw References header, so a reply can extend the chain. */
   references?: string;
   body: string;
-  bodyFormat: "text" | "html";
+  bodyFormat: 'text' | 'html';
   attachments: AttachmentInfo[];
 }
 
@@ -104,7 +104,7 @@ export interface LabelColorInput {
 }
 
 /** What a mark_messages call changes. */
-export type FlagChange = "read" | "unread" | "star" | "unstar";
+export type FlagChange = 'read' | 'unread' | 'star' | 'unstar';
 
 // Batch actions are partial by nature: a message may have moved between the
 // search and the action. Report both halves instead of failing the whole call.
@@ -182,27 +182,37 @@ export interface MailProvider<A extends MailAccount = MailAccount> {
     to: string,
     subject: string,
     body: string,
-    options?: SendOptions,
+    options?: SendOptions
   ): Promise<SendResult>;
 
-  reply(account: A, messageId: string, body: string, options?: ReplyOptions): Promise<SendResult>;
+  reply(
+    account: A,
+    messageId: string,
+    body: string,
+    options?: ReplyOptions
+  ): Promise<SendResult>;
 
   createDraft(
     account: A,
     to: string,
     subject: string,
     body: string,
-    options?: SendOptions,
+    options?: SendOptions
   ): Promise<DraftResult>;
 
   createReplyDraft(
     account: A,
     messageId: string,
     body: string,
-    options?: ReplyOptions,
+    options?: ReplyOptions
   ): Promise<DraftResult>;
 
-  forward(account: A, messageId: string, to: string, options?: ForwardOptions): Promise<SendResult>;
+  forward(
+    account: A,
+    messageId: string,
+    to: string,
+    options?: ForwardOptions
+  ): Promise<SendResult>;
 
   listFolders(account: A): Promise<FolderInfo[]>;
 
@@ -212,22 +222,34 @@ export interface MailProvider<A extends MailAccount = MailAccount> {
 
   deleteFolder(account: A, path: string): Promise<void>;
 
-  moveMessages(account: A, messageIds: string[], target: string): Promise<BatchResult>;
+  moveMessages(
+    account: A,
+    messageIds: string[],
+    target: string
+  ): Promise<BatchResult>;
 
   archiveMessages(account: A, messageIds: string[]): Promise<BatchResult>;
 
   trashMessages(account: A, messageIds: string[]): Promise<BatchResult>;
 
-  markMessages(account: A, messageIds: string[], change: FlagChange): Promise<BatchResult>;
+  markMessages(
+    account: A,
+    messageIds: string[],
+    change: FlagChange
+  ): Promise<BatchResult>;
 
   labelMessages(
     account: A,
     messageIds: string[],
     add: string[],
-    remove: string[],
+    remove: string[]
   ): Promise<BatchResult>;
 
-  setLabelColor(account: A, label: string, color: LabelColorInput): Promise<string>;
+  setLabelColor(
+    account: A,
+    label: string,
+    color: LabelColorInput
+  ): Promise<string>;
 }
 
 /**
@@ -235,7 +257,13 @@ export interface MailProvider<A extends MailAccount = MailAccount> {
  * model ("retry" vs "call list_accounts" vs "tell the operator").
  */
 export type ErrorKind =
-  "not_found" | "invalid_input" | "auth" | "transient" | "upstream" | "config" | "internal";
+  | 'not_found'
+  | 'invalid_input'
+  | 'auth'
+  | 'transient'
+  | 'upstream'
+  | 'config'
+  | 'internal';
 
 export class PostbusError extends Error {
   readonly kind: ErrorKind;
@@ -243,10 +271,10 @@ export class PostbusError extends Error {
   constructor(
     message: string,
     readonly hint?: string,
-    kind: ErrorKind = "invalid_input",
+    kind: ErrorKind = 'invalid_input'
   ) {
     super(message);
-    this.name = "PostbusError";
+    this.name = 'PostbusError';
     this.kind = kind;
   }
 }

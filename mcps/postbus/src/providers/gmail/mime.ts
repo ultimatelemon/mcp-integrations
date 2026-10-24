@@ -1,6 +1,6 @@
-import { randomUUID } from "node:crypto";
-import type { Attachment } from "../../types.js";
-import MailComposer from "nodemailer/lib/mail-composer/index.js";
+import { randomUUID } from 'node:crypto';
+import type { Attachment } from '../../types.js';
+import MailComposer from 'nodemailer/lib/mail-composer/index.js';
 
 export interface MimeAddress {
   name?: string | undefined;
@@ -31,8 +31,10 @@ export interface BuiltMessage {
   messageId: string;
 }
 
-export async function buildMimeMessage(message: MimeMessage): Promise<BuiltMessage> {
-  const domain = message.from.address.split("@")[1] || "postbus-mcp.local";
+export async function buildMimeMessage(
+  message: MimeMessage
+): Promise<BuiltMessage> {
+  const domain = message.from.address.split('@')[1] || 'postbus-mcp.local';
   const messageId = `<${randomUUID()}@${domain}>`;
 
   const composer = new MailComposer({
@@ -46,12 +48,12 @@ export async function buildMimeMessage(message: MimeMessage): Promise<BuiltMessa
     replyTo: message.replyTo,
     attachments: message.attachments?.map((attachment) => ({
       ...attachment,
-      contentDisposition: "attachment" as const,
+      contentDisposition: 'attachment' as const
     })),
     inReplyTo: message.inReplyTo,
     references: message.references,
     subject: message.subject,
-    ...(message.html ? { html: message.body } : { text: message.body }),
+    ...(message.html ? { html: message.body } : { text: message.body })
   });
 
   const node = composer.compile();
@@ -63,5 +65,5 @@ export async function buildMimeMessage(message: MimeMessage): Promise<BuiltMessa
 }
 
 export function toBase64Url(value: Buffer): string {
-  return value.toString("base64url");
+  return value.toString('base64url');
 }

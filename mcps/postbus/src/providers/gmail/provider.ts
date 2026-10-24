@@ -1,4 +1,4 @@
-import { gmail, type gmail_v1 } from "@googleapis/gmail";
+import { gmail, type gmail_v1 } from '@googleapis/gmail';
 import {
   PostbusError,
   type AttachmentInfo,
@@ -15,44 +15,52 @@ import {
   type FolderInfo,
   type ForwardOptions,
   type ReplyOptions,
-  type LabelColorInput,
-} from "../../types.js";
-import { stripHtml } from "../imap/parse.js";
-import { mapLimit, normalizeDate } from "../../util.js";
-import { createClientForRefreshToken } from "./auth.js";
-import { buildMimeMessage, toBase64Url } from "./mime.js";
+  type LabelColorInput
+} from '../../types.js';
+import { stripHtml } from '../imap/parse.js';
+import { mapLimit, normalizeDate } from '../../util.js';
+import { createClientForRefreshToken } from './auth.js';
+import { buildMimeMessage, toBase64Url } from './mime.js';
 import {
   allDone,
   assertNotSystemLabel,
   labelChangeFor,
   resolveLabelIds,
   toFolderInfo,
-  type GmailLabel,
-} from "./actions.js";
-import { buildForward, buildReply } from "../imap/reply.js";
-import { resolveLabelColor } from "./colors.js";
+  type GmailLabel
+} from './actions.js';
+import { buildForward, buildReply } from '../imap/reply.js';
+import { resolveLabelColor } from './colors.js';
 
-const METADATA_HEADERS = ["From", "To", "Cc", "Subject", "Date"];
+const METADATA_HEADERS = ['From', 'To', 'Cc', 'Subject', 'Date'];
 const MAX_PARALLEL_FETCHES = 5;
 const MAX_THREAD_MESSAGES = 50;
 
 // Optional second provider. IMAP with an app password does the same job without
 // a Google Cloud project, so this is only for mailboxes where IMAP is blocked.
 export class GmailApiProvider implements MailProvider<GmailApiAccount> {
-  readonly id = "gmail-api" as const;
+  readonly id = 'gmail-api' as const;
 
   async verify(account: GmailApiAccount): Promise<void> {
-    await call(() => this.client(account).users.getProfile({ userId: "me" }));
+    await call(() => this.client(account).users.getProfile({ userId: 'me' }));
   }
 
-  async search(account: GmailApiAccount, query: string, maxResults: number): Promise<SearchResult> {
+  async search(
+    account: GmailApiAccount,
+    query: string,
+    maxResults: number
+  ): Promise<SearchResult> {
     const gmail = this.client(account);
     const limit = Math.min(Math.max(1, maxResults), 100);
 
     // Without q Gmail returns everything it has — archived, sent, drafts —
     // while the tool promises "the newest messages in the inbox".
     const list = await call(() =>
-      gmail.users.messages.list({ userId: "me", q: query || "in:inbox", maxResults: limit }),
+      gmail.users.messages.list({
+        userId: 'me',
+        q: query || 'in:inbox',
+        maxResults: limit
+      })
     );
 
     const refs = list.data.messages ?? [];
@@ -63,11 +71,11 @@ export class GmailApiProvider implements MailProvider<GmailApiAccount> {
     const messages = await mapLimit(refs, MAX_PARALLEL_FETCHES, async (ref) => {
       const detail = await call(() =>
         gmail.users.messages.get({
-          userId: "me",
+          userId: 'me',
           id: ref.id as string,
-          format: "metadata",
-          metadataHeaders: METADATA_HEADERS,
-        }),
+          format: 'metadata',
+          metadataHeaders: METADATA_HEADERS
+        })
       );
       return toSummary(detail.data);
     });
@@ -75,22 +83,36 @@ export class GmailApiProvider implements MailProvider<GmailApiAccount> {
     return { messages, notes: [] };
   }
 
-  async getMessage(account: GmailApiAccount, messageId: string): Promise<MessageDetail> {
+  async getMessage(
+    account: GmailApiAccount,
+    messageId: string
+  ): Promise<MessageDetail> {
     const response = await call(() =>
-      this.client(account).users.messages.get({ userId: "me", id: messageId, format: "full" }),
+      this.client(account).users.messages.get({
+        userId: 'me',
+        id: messageId,
+        format: 'full'
+      })
     );
 
     return toDetail(response.data);
   }
 
-  async getThread(account: GmailApiAccount, threadId: string): Promise<MessageDetail[]> {
+  async getThread(
+    account: GmailApiAccount,
+    threadId: string
+  ): Promise<MessageDetail[]> {
     const response = await call(() =>
-      this.client(account).users.threads.get({ userId: "me", id: threadId, format: "full" }),
+      this.client(account).users.threads.get({
+        userId: 'me',
+        id: threadId,
+        format: 'full'
+      })
     );
 
     const messages = response.data.messages ?? [];
     if (messages.length === 0) {
-      throw new PostbusError("No messages found in this conversation.");
+      throw new PostbusError('No messages found in this conversation.');
     }
 
     // Keep the tail, not the head: the IMAP provider keeps the newest and the
@@ -101,7 +123,7 @@ export class GmailApiProvider implements MailProvider<GmailApiAccount> {
     if (messages.length > kept.length && ordered[0]) {
       ordered[0] = {
         ...ordered[0],
-        body: `[… only the ${ordered.length} most recent messages in this conversation are shown]\n\n${ordered[0].body}`,
+        body: `[… only the ${ordered.length} most recent messages in this conversation are shown]\n\n${ordered[0].body}`
       };
     }
 
@@ -113,7 +135,7 @@ export class GmailApiProvider implements MailProvider<GmailApiAccount> {
     to: string,
     subject: string,
     body: string,
-    options: SendOptions = {},
+    options: SendOptions = {}
   ): Promise<SendResult> {
     const built = await buildMimeMessage({
       from: { name: account.displayName, address: account.email },
@@ -125,14 +147,14 @@ export class GmailApiProvider implements MailProvider<GmailApiAccount> {
       replyTo: options.replyTo,
       html: options.html,
       inReplyTo: options.inReplyTo,
-      references: options.references,
+      references: options.references
     });
 
     await call(() =>
       this.client(account).users.messages.send({
-        userId: "me",
-        requestBody: { raw: toBase64Url(built.raw) },
-      }),
+        userId: 'me',
+        requestBody: { raw: toBase64Url(built.raw) }
+      })
     );
 
     // Report the RFC 5322 Message-ID, not Gmail's own message id. The IMAP
@@ -145,20 +167,28 @@ export class GmailApiProvider implements MailProvider<GmailApiAccount> {
     account: GmailApiAccount,
     messageId: string,
     body: string,
-    options: ReplyOptions = {},
+    options: ReplyOptions = {}
   ): Promise<SendResult> {
     const original = await this.getMessage(account, messageId);
     const composed = buildReply(original, body, account.email, options);
 
-    const result = await this.send(account, composed.to, composed.subject, composed.body, {
-      cc: composed.cc,
-      bcc: options.bcc,
-      html: options.html,
-      inReplyTo: composed.inReplyTo,
-      references: composed.references,
-    });
+    const result = await this.send(
+      account,
+      composed.to,
+      composed.subject,
+      composed.body,
+      {
+        cc: composed.cc,
+        bcc: options.bcc,
+        html: options.html,
+        inReplyTo: composed.inReplyTo,
+        references: composed.references
+      }
+    );
 
-    await this.modify(account, [messageId], [], ["UNREAD"]).catch(() => undefined);
+    await this.modify(account, [messageId], [], ['UNREAD']).catch(
+      () => undefined
+    );
     return result;
   }
 
@@ -167,7 +197,7 @@ export class GmailApiProvider implements MailProvider<GmailApiAccount> {
     to: string,
     subject: string,
     body: string,
-    options: SendOptions = {},
+    options: SendOptions = {}
   ): Promise<DraftResult> {
     const built = await buildMimeMessage({
       from: { name: account.displayName, address: account.email },
@@ -179,7 +209,7 @@ export class GmailApiProvider implements MailProvider<GmailApiAccount> {
       replyTo: options.replyTo,
       html: options.html,
       inReplyTo: options.inReplyTo,
-      references: options.references,
+      references: options.references
     });
 
     return this.storeDraft(account, built);
@@ -189,7 +219,7 @@ export class GmailApiProvider implements MailProvider<GmailApiAccount> {
     account: GmailApiAccount,
     messageId: string,
     body: string,
-    options: ReplyOptions = {},
+    options: ReplyOptions = {}
   ): Promise<DraftResult> {
     const original = await this.getMessage(account, messageId);
     const composed = buildReply(original, body, account.email, options);
@@ -203,7 +233,7 @@ export class GmailApiProvider implements MailProvider<GmailApiAccount> {
       bcc: options.bcc,
       html: options.html,
       inReplyTo: composed.inReplyTo,
-      references: composed.references,
+      references: composed.references
     });
 
     // Without the threadId Gmail files the draft as a new conversation, so the
@@ -215,7 +245,7 @@ export class GmailApiProvider implements MailProvider<GmailApiAccount> {
     account: GmailApiAccount,
     messageId: string,
     to: string,
-    options: ForwardOptions = {},
+    options: ForwardOptions = {}
   ): Promise<SendResult> {
     const original = await this.getMessage(account, messageId);
     const composed = buildForward(original, to, options);
@@ -231,19 +261,19 @@ export class GmailApiProvider implements MailProvider<GmailApiAccount> {
       attachments: raw
         ? [
             {
-              filename: `${original.subject.slice(0, 60) || "message"}.eml`,
+              filename: `${original.subject.slice(0, 60) || 'message'}.eml`,
               content: raw,
-              contentType: "message/rfc822",
-            },
+              contentType: 'message/rfc822'
+            }
           ]
-        : undefined,
+        : undefined
     });
 
     await call(() =>
       this.client(account).users.messages.send({
-        userId: "me",
-        requestBody: { raw: toBase64Url(built.raw) },
-      }),
+        userId: 'me',
+        requestBody: { raw: toBase64Url(built.raw) }
+      })
     );
 
     return { messageId: built.messageId, notes: [] };
@@ -251,27 +281,36 @@ export class GmailApiProvider implements MailProvider<GmailApiAccount> {
 
   async listFolders(account: GmailApiAccount): Promise<FolderInfo[]> {
     const labels = await this.labels(account);
-    return labels.map(toFolderInfo).sort((a, b) => a.path.localeCompare(b.path));
+    return labels
+      .map(toFolderInfo)
+      .sort((a, b) => a.path.localeCompare(b.path));
   }
 
   async createFolder(account: GmailApiAccount, path: string): Promise<string> {
     const response = await call(() =>
-      this.client(account).users.labels.create({ userId: "me", requestBody: { name: path } }),
+      this.client(account).users.labels.create({
+        userId: 'me',
+        requestBody: { name: path }
+      })
     );
 
     return response.data.name ?? path;
   }
 
-  async renameFolder(account: GmailApiAccount, path: string, newPath: string): Promise<string> {
+  async renameFolder(
+    account: GmailApiAccount,
+    path: string,
+    newPath: string
+  ): Promise<string> {
     const label = await this.requireLabel(account, path);
     assertNotSystemLabel(label);
 
     const response = await call(() =>
       this.client(account).users.labels.patch({
-        userId: "me",
+        userId: 'me',
         id: label.id as string,
-        requestBody: { name: newPath },
-      }),
+        requestBody: { name: newPath }
+      })
     );
 
     return response.data.name ?? newPath;
@@ -282,7 +321,10 @@ export class GmailApiProvider implements MailProvider<GmailApiAccount> {
     assertNotSystemLabel(label);
 
     await call(() =>
-      this.client(account).users.labels.delete({ userId: "me", id: label.id as string }),
+      this.client(account).users.labels.delete({
+        userId: 'me',
+        id: label.id as string
+      })
     );
   }
 
@@ -290,31 +332,39 @@ export class GmailApiProvider implements MailProvider<GmailApiAccount> {
   async moveMessages(
     account: GmailApiAccount,
     messageIds: string[],
-    target: string,
+    target: string
   ): Promise<BatchResult> {
     const [labelId] = resolveLabelIds([target], await this.labels(account));
-    await this.modify(account, messageIds, [labelId as string], ["INBOX"]);
+    await this.modify(account, messageIds, [labelId as string], ['INBOX']);
 
     return allDone(messageIds, [`Moved to "${target}".`]);
   }
 
-  async archiveMessages(account: GmailApiAccount, messageIds: string[]): Promise<BatchResult> {
-    await this.modify(account, messageIds, [], ["INBOX"]);
-    return allDone(messageIds, ["Removed from the inbox."]);
+  async archiveMessages(
+    account: GmailApiAccount,
+    messageIds: string[]
+  ): Promise<BatchResult> {
+    await this.modify(account, messageIds, [], ['INBOX']);
+    return allDone(messageIds, ['Removed from the inbox.']);
   }
 
-  async trashMessages(account: GmailApiAccount, messageIds: string[]): Promise<BatchResult> {
+  async trashMessages(
+    account: GmailApiAccount,
+    messageIds: string[]
+  ): Promise<BatchResult> {
     await mapLimit(messageIds, MAX_PARALLEL_FETCHES, (id) =>
-      call(() => this.client(account).users.messages.trash({ userId: "me", id })),
+      call(() =>
+        this.client(account).users.messages.trash({ userId: 'me', id })
+      )
     );
 
-    return allDone(messageIds, ["Moved to the trash."]);
+    return allDone(messageIds, ['Moved to the trash.']);
   }
 
   async markMessages(
     account: GmailApiAccount,
     messageIds: string[],
-    change: FlagChange,
+    change: FlagChange
   ): Promise<BatchResult> {
     const { add, remove } = labelChangeFor(change);
     await this.modify(account, messageIds, add, remove);
@@ -326,10 +376,13 @@ export class GmailApiProvider implements MailProvider<GmailApiAccount> {
     account: GmailApiAccount,
     messageIds: string[],
     add: string[],
-    remove: string[],
+    remove: string[]
   ): Promise<BatchResult> {
     if (add.length === 0 && remove.length === 0) {
-      throw new PostbusError("Nothing to add or remove.", "Pass at least one label.");
+      throw new PostbusError(
+        'Nothing to add or remove.',
+        'Pass at least one label.'
+      );
     }
 
     const labels = await this.labels(account);
@@ -337,29 +390,29 @@ export class GmailApiProvider implements MailProvider<GmailApiAccount> {
       account,
       messageIds,
       resolveLabelIds(add, labels),
-      resolveLabelIds(remove, labels),
+      resolveLabelIds(remove, labels)
     );
 
     const notes: string[] = [];
-    if (add.length > 0) notes.push(`Added: ${add.join(", ")}.`);
-    if (remove.length > 0) notes.push(`Removed: ${remove.join(", ")}.`);
+    if (add.length > 0) notes.push(`Added: ${add.join(', ')}.`);
+    if (remove.length > 0) notes.push(`Removed: ${remove.join(', ')}.`);
     return allDone(messageIds, notes);
   }
 
   async setLabelColor(
     account: GmailApiAccount,
     label: string,
-    color: LabelColorInput,
+    color: LabelColorInput
   ): Promise<string> {
     const resolved = await this.requireLabel(account, label);
     assertNotSystemLabel(resolved);
 
     const response = await call(() =>
       this.client(account).users.labels.patch({
-        userId: "me",
+        userId: 'me',
         id: resolved.id as string,
-        requestBody: { color: resolveLabelColor(color) },
-      }),
+        requestBody: { color: resolveLabelColor(color) }
+      })
     );
 
     return response.data.name ?? label;
@@ -369,23 +422,26 @@ export class GmailApiProvider implements MailProvider<GmailApiAccount> {
   private async storeDraft(
     account: GmailApiAccount,
     built: { raw: Buffer; messageId: string },
-    threadId?: string,
+    threadId?: string
   ): Promise<DraftResult> {
     const response = await call(() =>
       this.client(account).users.drafts.create({
-        userId: "me",
+        userId: 'me',
         requestBody: {
-          message: { raw: toBase64Url(built.raw), ...(threadId ? { threadId } : {}) },
-        },
-      }),
+          message: {
+            raw: toBase64Url(built.raw),
+            ...(threadId ? { threadId } : {})
+          }
+        }
+      })
     );
 
     // The message id, not the draft id: that is the one get_message accepts.
     return {
       id: response.data.message?.id ?? undefined,
       messageId: built.messageId,
-      folder: "DRAFTS",
-      notes: [],
+      folder: 'DRAFTS',
+      notes: []
     };
   }
 
@@ -393,26 +449,34 @@ export class GmailApiProvider implements MailProvider<GmailApiAccount> {
     account: GmailApiAccount,
     messageIds: string[],
     addLabelIds: string[],
-    removeLabelIds: string[],
+    removeLabelIds: string[]
   ): Promise<void> {
     if (messageIds.length === 0) {
-      throw new PostbusError("No message ids given.", "Pass at least one id from search_emails.");
+      throw new PostbusError(
+        'No message ids given.',
+        'Pass at least one id from search_emails.'
+      );
     }
 
     await call(() =>
       this.client(account).users.messages.batchModify({
-        userId: "me",
-        requestBody: { ids: messageIds, addLabelIds, removeLabelIds },
-      }),
+        userId: 'me',
+        requestBody: { ids: messageIds, addLabelIds, removeLabelIds }
+      })
     );
   }
 
   private async labels(account: GmailApiAccount): Promise<GmailLabel[]> {
-    const response = await call(() => this.client(account).users.labels.list({ userId: "me" }));
+    const response = await call(() =>
+      this.client(account).users.labels.list({ userId: 'me' })
+    );
     return response.data.labels ?? [];
   }
 
-  private async requireLabel(account: GmailApiAccount, path: string): Promise<GmailLabel> {
+  private async requireLabel(
+    account: GmailApiAccount,
+    path: string
+  ): Promise<GmailLabel> {
     const labels = await this.labels(account);
     const [id] = resolveLabelIds([path], labels);
 
@@ -421,22 +485,29 @@ export class GmailApiProvider implements MailProvider<GmailApiAccount> {
 
   private async rawMessage(
     account: GmailApiAccount,
-    messageId: string,
+    messageId: string
   ): Promise<Buffer | undefined> {
     try {
       const response = await call(() =>
-        this.client(account).users.messages.get({ userId: "me", id: messageId, format: "raw" }),
+        this.client(account).users.messages.get({
+          userId: 'me',
+          id: messageId,
+          format: 'raw'
+        })
       );
 
       const raw = response.data.raw;
-      return raw ? Buffer.from(raw, "base64url") : undefined;
+      return raw ? Buffer.from(raw, 'base64url') : undefined;
     } catch {
       return undefined;
     }
   }
 
   private client(account: GmailApiAccount): gmail_v1.Gmail {
-    return gmail({ version: "v1", auth: createClientForRefreshToken(account.refreshToken) });
+    return gmail({
+      version: 'v1',
+      auth: createClientForRefreshToken(account.refreshToken)
+    });
   }
 }
 
@@ -454,28 +525,31 @@ function translateGoogleError(error: unknown): Error {
 
   if (/invalid_grant/i.test(message)) {
     return new PostbusError(
-      "The refresh token is no longer valid (invalid_grant).",
+      'The refresh token is no longer valid (invalid_grant).',
       'Link this mailbox again. While the OAuth consent screen is on "Testing", refresh tokens ' +
-        "expire after 7 days — an IMAP mailbox with an app password does not have that problem.",
+        'expire after 7 days — an IMAP mailbox with an app password does not have that problem.'
     );
   }
 
   if (/insufficient|ACCESS_TOKEN_SCOPE/i.test(message)) {
     return new PostbusError(
-      "Insufficient OAuth scopes for this action.",
-      "Link the mailbox again so the new scopes are granted.",
+      'Insufficient OAuth scopes for this action.',
+      'Link the mailbox again so the new scopes are granted.'
     );
   }
 
-  if (String(err?.code) === "404") return new PostbusError("Message not found in this mailbox.");
+  if (String(err?.code) === '404')
+    return new PostbusError('Message not found in this mailbox.');
   return new PostbusError(`Gmail API error: ${message}`);
 }
 
 function header(
   payload: gmail_v1.Schema$MessagePart | undefined,
-  name: string,
+  name: string
 ): string | undefined {
-  const found = payload?.headers?.find((h) => h.name?.toLowerCase() === name.toLowerCase());
+  const found = payload?.headers?.find(
+    (h) => h.name?.toLowerCase() === name.toLowerCase()
+  );
   return found?.value ?? undefined;
 }
 
@@ -483,17 +557,17 @@ export function toSummary(message: gmail_v1.Schema$Message): MessageSummary {
   const labels = message.labelIds ?? [];
 
   return {
-    id: message.id ?? "",
-    threadId: message.threadId ?? message.id ?? "",
-    from: header(message.payload, "From") ?? "",
-    to: header(message.payload, "To") ?? "",
-    subject: header(message.payload, "Subject") ?? "(no subject)",
-    date: normalizeDate(header(message.payload, "Date"), message.internalDate),
-    snippet: decodeEntities(message.snippet ?? ""),
-    unread: labels.includes("UNREAD"),
+    id: message.id ?? '',
+    threadId: message.threadId ?? message.id ?? '',
+    from: header(message.payload, 'From') ?? '',
+    to: header(message.payload, 'To') ?? '',
+    subject: header(message.payload, 'Subject') ?? '(no subject)',
+    date: normalizeDate(header(message.payload, 'Date'), message.internalDate),
+    snippet: decodeEntities(message.snippet ?? ''),
+    unread: labels.includes('UNREAD'),
     hasAttachments: collectAttachments(message.payload).length > 0,
     mailbox: gmailFolder(labels),
-    labels,
+    labels
   };
 }
 
@@ -501,16 +575,16 @@ export function toSummary(message: gmail_v1.Schema$Message): MessageSummary {
 // "INBOX" told the model that archived mail was sitting in the inbox.
 export function gmailFolder(labels: string[]): string {
   for (const [label, folder] of [
-    ["INBOX", "INBOX"],
-    ["SENT", "SENT"],
-    ["DRAFT", "DRAFTS"],
-    ["TRASH", "TRASH"],
-    ["SPAM", "SPAM"],
+    ['INBOX', 'INBOX'],
+    ['SENT', 'SENT'],
+    ['DRAFT', 'DRAFTS'],
+    ['TRASH', 'TRASH'],
+    ['SPAM', 'SPAM']
   ] as const) {
     if (labels.includes(label)) return folder;
   }
 
-  return "ARCHIVE";
+  return 'ARCHIVE';
 }
 
 export function toDetail(message: gmail_v1.Schema$Message): MessageDetail {
@@ -519,49 +593,51 @@ export function toDetail(message: gmail_v1.Schema$Message): MessageDetail {
 
   return {
     ...summary,
-    cc: header(message.payload, "Cc"),
-    bcc: header(message.payload, "Bcc"),
-    replyTo: header(message.payload, "Reply-To"),
-    messageId: header(message.payload, "Message-ID"),
+    cc: header(message.payload, 'Cc'),
+    bcc: header(message.payload, 'Bcc'),
+    replyTo: header(message.payload, 'Reply-To'),
+    messageId: header(message.payload, 'Message-ID'),
     body,
     bodyFormat,
-    attachments: collectAttachments(message.payload),
+    attachments: collectAttachments(message.payload)
   };
 }
 
 export function extractBody(payload: gmail_v1.Schema$MessagePart | undefined): {
   body: string;
-  bodyFormat: "text" | "html";
+  bodyFormat: 'text' | 'html';
 } {
-  const plain = findPart(payload, "text/plain");
-  if (plain) return { body: decodePartData(plain), bodyFormat: "text" };
+  const plain = findPart(payload, 'text/plain');
+  if (plain) return { body: decodePartData(plain), bodyFormat: 'text' };
 
   // The IMAP provider runs everything through mailparser, which turns a
   // 200 KB newsletter into a few readable lines. Handing back raw markup here
   // meant max_body_chars was spent on <table style=...> instead of the text.
-  const html = findPart(payload, "text/html");
-  if (html) return { body: stripHtml(decodePartData(html)).trim(), bodyFormat: "text" };
+  const html = findPart(payload, 'text/html');
+  if (html)
+    return { body: stripHtml(decodePartData(html)).trim(), bodyFormat: 'text' };
 
   if (payload?.body?.data) {
-    const isHtml = (payload.mimeType ?? "").includes("html");
+    const isHtml = (payload.mimeType ?? '').includes('html');
     const decoded = decodePartData(payload);
 
     return {
       body: isHtml ? stripHtml(decoded).trim() : decoded,
-      bodyFormat: "text",
+      bodyFormat: 'text'
     };
   }
 
-  return { body: "", bodyFormat: "text" };
+  return { body: '', bodyFormat: 'text' };
 }
 
 function findPart(
   part: gmail_v1.Schema$MessagePart | undefined,
-  mimeType: string,
+  mimeType: string
 ): gmail_v1.Schema$MessagePart | undefined {
   if (!part) return undefined;
 
-  if (!part.filename && part.mimeType === mimeType && part.body?.data) return part;
+  if (!part.filename && part.mimeType === mimeType && part.body?.data)
+    return part;
 
   for (const child of part.parts ?? []) {
     const found = findPart(child, mimeType);
@@ -574,20 +650,25 @@ function findPart(
 // everything as UTF-8 turned "café" in an ISO-8859-1 message into "caf\uFFFD".
 function decodePartData(part: gmail_v1.Schema$MessagePart): string {
   const data = part.body?.data;
-  if (!data) return "";
+  if (!data) return '';
 
-  const buffer = Buffer.from(data, "base64url");
+  const buffer = Buffer.from(data, 'base64url');
   const charset = part.headers
-    ?.find((header) => header.name?.toLowerCase() === "content-type")
+    ?.find((header) => header.name?.toLowerCase() === 'content-type')
     ?.value?.match(/charset\s*=\s*"?([\w-]+)"?/i)?.[1];
 
   return decodeBuffer(buffer, charset);
 }
 
 function decodeBuffer(buffer: Buffer, charset: string | undefined): string {
-  const encoding = (charset ?? "utf-8").toLowerCase();
-  if (!encoding || encoding === "utf-8" || encoding === "utf8" || encoding === "us-ascii") {
-    return buffer.toString("utf8");
+  const encoding = (charset ?? 'utf-8').toLowerCase();
+  if (
+    !encoding ||
+    encoding === 'utf-8' ||
+    encoding === 'utf8' ||
+    encoding === 'us-ascii'
+  ) {
+    return buffer.toString('utf8');
   }
 
   try {
@@ -595,32 +676,35 @@ function decodeBuffer(buffer: Buffer, charset: string | undefined): string {
   } catch {
     // An encoding Node does not know is better read as Latin-1 than as
     // replacement characters: every byte still maps to something.
-    return buffer.toString("latin1");
+    return buffer.toString('latin1');
   }
 }
 
-function collectAttachments(part: gmail_v1.Schema$MessagePart | undefined): AttachmentInfo[] {
+function collectAttachments(
+  part: gmail_v1.Schema$MessagePart | undefined
+): AttachmentInfo[] {
   if (!part) return [];
 
   const found: AttachmentInfo[] = [];
   if (part.filename) {
     found.push({
       filename: part.filename,
-      mimeType: part.mimeType ?? "application/octet-stream",
-      size: part.body?.size ?? undefined,
+      mimeType: part.mimeType ?? 'application/octet-stream',
+      size: part.body?.size ?? undefined
     });
   }
 
-  for (const child of part.parts ?? []) found.push(...collectAttachments(child));
+  for (const child of part.parts ?? [])
+    found.push(...collectAttachments(child));
   return found;
 }
 
 function decodeEntities(value: string): string {
   return value
-    .replace(/&amp;/g, "&")
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
     .replace(/&quot;/g, '"')
     .replace(/&#39;/g, "'")
-    .replace(/&nbsp;/g, " ");
+    .replace(/&nbsp;/g, ' ');
 }

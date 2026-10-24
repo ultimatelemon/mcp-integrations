@@ -1,15 +1,15 @@
-import { existsSync } from "node:fs";
-import { dirname, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
-import dotenv from "dotenv";
-import { z } from "zod";
-import { PostbusError } from "./types.js";
+import { existsSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import dotenv from 'dotenv';
+import { z } from 'zod';
+import { PostbusError } from './types.js';
 
 // Walk up to package.json so this resolves from both src/ and dist/.
 function findProjectRoot(): string {
   let dir = dirname(fileURLToPath(import.meta.url));
   for (let i = 0; i < 6; i++) {
-    if (existsSync(resolve(dir, "package.json"))) return dir;
+    if (existsSync(resolve(dir, 'package.json'))) return dir;
     const parent = dirname(dir);
     if (parent === dir) break;
     dir = parent;
@@ -22,7 +22,7 @@ export const PROJECT_ROOT = findProjectRoot();
 // The MCP client starts us from an arbitrary cwd, so be explicit about .env.
 // quiet because dotenv 17 otherwise announces itself on stdout, which is where
 // the JSON log lines go — one banner and the stream stops being parseable.
-dotenv.config({ path: resolve(PROJECT_ROOT, ".env"), quiet: true });
+dotenv.config({ path: resolve(PROJECT_ROOT, '.env'), quiet: true });
 
 const port = z.coerce.number().int().min(1).max(65535);
 const bytes = z.coerce.number().int().positive();
@@ -31,22 +31,22 @@ const bytes = z.coerce.number().int().positive();
 // than a NaN that only shows up as a listen() failure much later.
 const schema = z.object({
   PORT: port.default(3000),
-  HOST: z.string().trim().min(1).default("0.0.0.0"),
+  HOST: z.string().trim().min(1).default('0.0.0.0'),
 
   // Off unless asked for. Trusting X-Forwarded-* by default makes req.ip
   // spoofable by any client when there is no reverse proxy in front, and the
   // safe direction is the one you have to opt out of.
   TRUST_PROXY: z
-    .enum(["true", "false", "1", "0"])
-    .default("false")
-    .transform((value) => value === "true" || value === "1"),
+    .enum(['true', 'false', '1', '0'])
+    .default('false')
+    .transform((value) => value === 'true' || value === '1'),
 
   DATABASE_PATH: z
     .string()
     .trim()
     .min(1)
-    .default(resolve(PROJECT_ROOT, "data", "postbus.db")),
-  MAX_BODY_SIZE: z.string().trim().min(1).default("4mb"),
+    .default(resolve(PROJECT_ROOT, 'data', 'postbus.db')),
+  MAX_BODY_SIZE: z.string().trim().min(1).default('4mb'),
   MAIL_TIMEOUT_MS: bytes.default(30_000),
 
   // How much of a single message we are willing to pull over and hand to the
@@ -61,23 +61,27 @@ const schema = z.object({
 
   OAUTH_CALLBACK_PORT: port.default(53682),
   GOOGLE_CLIENT_ID: z.string().trim().min(1).optional(),
-  GOOGLE_CLIENT_SECRET: z.string().trim().min(1).optional(),
+  GOOGLE_CLIENT_SECRET: z.string().trim().min(1).optional()
 });
 
 function load(): z.infer<typeof schema> {
   // Empty strings are how a .env says "not set", not how it says "".
   const present = Object.fromEntries(
-    Object.entries(process.env).filter(([, value]) => value?.trim()),
+    Object.entries(process.env).filter(([, value]) => value?.trim())
   );
 
   const parsed = schema.safeParse(present);
   if (parsed.success) return parsed.data;
 
   const problems = parsed.error.issues
-    .map((issue) => `${issue.path.join(".")}: ${issue.message}`)
-    .join("; ");
+    .map((issue) => `${issue.path.join('.')}: ${issue.message}`)
+    .join('; ');
 
-  throw new PostbusError(`The environment is not valid: ${problems}.`, undefined, "config");
+  throw new PostbusError(
+    `The environment is not valid: ${problems}.`,
+    undefined,
+    'config'
+  );
 }
 
 const config = load();
@@ -103,13 +107,13 @@ export function getGoogleOAuthConfig(): {
   return {
     clientId: config.GOOGLE_CLIENT_ID,
     clientSecret: config.GOOGLE_CLIENT_SECRET,
-    redirectUri: `http://localhost:${config.OAUTH_CALLBACK_PORT}/oauth2callback`,
+    redirectUri: `http://localhost:${config.OAUTH_CALLBACK_PORT}/oauth2callback`
   };
 }
 
 export const GOOGLE_SCOPES = [
-  "https://www.googleapis.com/auth/gmail.readonly",
-  "https://www.googleapis.com/auth/gmail.send",
-  "https://www.googleapis.com/auth/gmail.compose",
-  "https://www.googleapis.com/auth/gmail.labels",
+  'https://www.googleapis.com/auth/gmail.readonly',
+  'https://www.googleapis.com/auth/gmail.send',
+  'https://www.googleapis.com/auth/gmail.compose',
+  'https://www.googleapis.com/auth/gmail.labels'
 ];

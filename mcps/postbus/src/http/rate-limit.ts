@@ -1,6 +1,6 @@
-import type { NextFunction, Request, Response } from "express";
-import { RATE_LIMIT_PER_MINUTE } from "../config.js";
-import { logEvent } from "../log.js";
+import type { NextFunction, Request, Response } from 'express';
+import { RATE_LIMIT_PER_MINUTE } from '../config.js';
+import { logEvent } from '../log.js';
 
 /**
  * A fixed window per token. Deliberately in-process and dependency-free: this
@@ -16,7 +16,11 @@ interface Window {
 
 const windows = new Map<string, Window>();
 
-export function rateLimit(req: Request, res: Response, next: NextFunction): void {
+export function rateLimit(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void {
   const userId = req.postbusUser?.id;
   if (!userId) return next();
 
@@ -31,18 +35,18 @@ export function rateLimit(req: Request, res: Response, next: NextFunction): void
 
   if (window.count >= RATE_LIMIT_PER_MINUTE) {
     const retryAfter = Math.ceil((window.resetAt - now) / 1000);
-    logEvent({ event: "rate_limited", userId, retryAfter });
+    logEvent({ event: 'rate_limited', userId, retryAfter });
 
     res
       .status(429)
-      .set("Retry-After", String(retryAfter))
+      .set('Retry-After', String(retryAfter))
       .json({
-        jsonrpc: "2.0",
+        jsonrpc: '2.0',
         error: {
           code: -32000,
-          message: `Too many requests. Try again in ${retryAfter}s.`,
+          message: `Too many requests. Try again in ${retryAfter}s.`
         },
-        id: null,
+        id: null
       });
     return;
   }

@@ -1,8 +1,8 @@
-import { decryptSecret, encryptSecret } from "../crypto.js";
-import { parseProviderId } from "../providers/registry.js";
-import { PostbusError, type AccountInfo, type MailAccount } from "../types.js";
-import { getDb } from "./index.js";
-import { newId } from "./users.js";
+import { decryptSecret, encryptSecret } from '../crypto.js';
+import { parseProviderId } from '../providers/registry.js';
+import { PostbusError, type AccountInfo, type MailAccount } from '../types.js';
+import { getDb } from './index.js';
+import { newId } from './users.js';
 
 interface AccountRow {
   id: string;
@@ -30,11 +30,11 @@ const SELECT = `SELECT id, user_id, alias, email, provider, display_name,
 // Anything that is not IMAP used to be labelled "Gmail API", so a third
 // provider would have introduced itself as Gmail in list_accounts.
 function describeServer(row: AccountRow): string {
-  if (row.provider === "imap") {
-    return row.imap_host ? `${row.imap_host}:${row.imap_port ?? 993}` : "IMAP";
+  if (row.provider === 'imap') {
+    return row.imap_host ? `${row.imap_host}:${row.imap_port ?? 993}` : 'IMAP';
   }
 
-  return row.provider === "gmail-api" ? "Gmail API" : row.provider;
+  return row.provider === 'gmail-api' ? 'Gmail API' : row.provider;
 }
 
 function toInfo(row: AccountRow): AccountInfo {
@@ -44,7 +44,7 @@ function toInfo(row: AccountRow): AccountInfo {
     provider: parseProviderId(row.provider),
     displayName: row.display_name ?? undefined,
     createdAt: row.created_at,
-    server: describeServer(row),
+    server: describeServer(row)
   };
 }
 
@@ -66,28 +66,31 @@ function toAccount(row: AccountRow): MailAccount {
     alias: row.alias,
     email: row.email,
     displayName: row.display_name ?? undefined,
-    createdAt: row.created_at,
+    createdAt: row.created_at
   };
 
-  if (provider === "gmail-api") {
+  if (provider === 'gmail-api') {
     return {
       ...base,
-      provider: "gmail-api",
-      refreshToken: decryptSecret(row.encrypted_password, secretContext(row.user_id, row.id)),
+      provider: 'gmail-api',
+      refreshToken: decryptSecret(
+        row.encrypted_password,
+        secretContext(row.user_id, row.id)
+      )
     };
   }
 
   if (!row.imap_host || !row.smtp_host) {
     throw new PostbusError(
       `Mailbox "${row.alias}" is missing IMAP/SMTP details in the database.`,
-      "Remove it with remove_mail_account and add it again.",
-      "config",
+      'Remove it with remove_mail_account and add it again.',
+      'config'
     );
   }
 
   return {
     ...base,
-    provider: "imap",
+    provider: 'imap',
     imapHost: row.imap_host,
     imapPort: row.imap_port ?? 993,
     imapSecure: row.imap_secure === 1,
@@ -95,7 +98,10 @@ function toAccount(row: AccountRow): MailAccount {
     smtpPort: row.smtp_port ?? 465,
     smtpSecure: row.smtp_secure === 1,
     username: row.username ?? row.email,
-    password: decryptSecret(row.encrypted_password, secretContext(row.user_id, row.id)),
+    password: decryptSecret(
+      row.encrypted_password,
+      secretContext(row.user_id, row.id)
+    )
   };
 }
 
@@ -109,7 +115,9 @@ export function listAccounts(userId: string): AccountInfo[] {
 // user_id is part of the query: someone else's alias simply does not exist here.
 export function getAccount(userId: string, alias: string): MailAccount {
   const row = getDb()
-    .prepare<[string, string], AccountRow>(`${SELECT} WHERE user_id = ? AND alias = ?`)
+    .prepare<[string, string], AccountRow>(
+      `${SELECT} WHERE user_id = ? AND alias = ?`
+    )
     .get(userId, alias.trim());
 
   if (!row) {
@@ -117,9 +125,9 @@ export function getAccount(userId: string, alias: string): MailAccount {
     throw new PostbusError(
       `Unknown mailbox "${alias}".`,
       known.length
-        ? `Available aliases: ${known.join(", ")}.`
-        : "No mailbox linked yet. Use add_mail_account.",
-      "not_found",
+        ? `Available aliases: ${known.join(', ')}.`
+        : 'No mailbox linked yet. Use add_mail_account.',
+      'not_found'
     );
   }
 
@@ -130,7 +138,7 @@ export function accountExists(userId: string, alias: string): boolean {
   return (
     (getDb()
       .prepare<[string, string], { count: number }>(
-        `SELECT COUNT(*) AS count FROM mail_accounts WHERE user_id = ? AND alias = ?`,
+        `SELECT COUNT(*) AS count FROM mail_accounts WHERE user_id = ? AND alias = ?`
       )
       .get(userId, alias.trim())?.count ?? 0) > 0
   );
@@ -170,7 +178,7 @@ export function saveImapAccount(input: NewImapAccount): SavedAccount {
     user_id: input.userId,
     alias: input.alias.trim(),
     email: input.email.trim(),
-    provider: "imap",
+    provider: 'imap',
     display_name: input.displayName?.trim() || null,
     imap_host: input.imapHost,
     imap_port: input.imapPort,
@@ -179,8 +187,11 @@ export function saveImapAccount(input: NewImapAccount): SavedAccount {
     smtp_port: input.smtpPort,
     smtp_secure: input.smtpSecure ? 1 : 0,
     username: input.username,
-    encrypted_password: encryptSecret(input.password, secretContext(input.userId, id)),
-    created_at: new Date().toISOString(),
+    encrypted_password: encryptSecret(
+      input.password,
+      secretContext(input.userId, id)
+    ),
+    created_at: new Date().toISOString()
   };
 
   upsert(row);
@@ -201,7 +212,7 @@ export function saveGmailApiAccount(input: NewGmailApiAccount): SavedAccount {
     user_id: input.userId,
     alias: input.alias.trim(),
     email: input.email.trim(),
-    provider: "gmail-api",
+    provider: 'gmail-api',
     display_name: null,
     imap_host: null,
     imap_port: null,
@@ -210,8 +221,11 @@ export function saveGmailApiAccount(input: NewGmailApiAccount): SavedAccount {
     smtp_port: null,
     smtp_secure: 1,
     username: null,
-    encrypted_password: encryptSecret(input.refreshToken, secretContext(input.userId, id)),
-    created_at: new Date().toISOString(),
+    encrypted_password: encryptSecret(
+      input.refreshToken,
+      secretContext(input.userId, id)
+    ),
+    created_at: new Date().toISOString()
   };
 
   upsert(row);
@@ -221,7 +235,10 @@ export function saveGmailApiAccount(input: NewGmailApiAccount): SavedAccount {
 // Delete by primary key. A DELETE ... RETURNING read with .get() removes every
 // matching row but reports only the first, so the caller could not clean up
 // after the ones it never heard about.
-export function removeAccount(userId: string, alias: string): string | undefined {
+export function removeAccount(
+  userId: string,
+  alias: string
+): string | undefined {
   const id = findAccountId(userId, alias);
   if (!id) return undefined;
 
@@ -229,10 +246,13 @@ export function removeAccount(userId: string, alias: string): string | undefined
   return id;
 }
 
-export function findAccountId(userId: string, alias: string): string | undefined {
+export function findAccountId(
+  userId: string,
+  alias: string
+): string | undefined {
   return getDb()
     .prepare<[string, string], { id: string }>(
-      `SELECT id FROM mail_accounts WHERE user_id = ? AND alias = ?`,
+      `SELECT id FROM mail_accounts WHERE user_id = ? AND alias = ?`
     )
     .get(userId, alias.trim())?.id;
 }
@@ -259,7 +279,7 @@ function upsert(row: AccountRow): void {
          smtp_port          = excluded.smtp_port,
          smtp_secure        = excluded.smtp_secure,
          username           = excluded.username,
-         encrypted_password = excluded.encrypted_password`,
+         encrypted_password = excluded.encrypted_password`
     )
     .run(row);
 }

@@ -1,6 +1,11 @@
-import { PostbusError, type MailAccount, type MailProvider, type ProviderId } from "../types.js";
-import { GmailApiProvider } from "./gmail/provider.js";
-import { ImapSmtpProvider } from "./imap/provider.js";
+import {
+  PostbusError,
+  type MailAccount,
+  type MailProvider,
+  type ProviderId
+} from '../types.js';
+import { GmailApiProvider } from './gmail/provider.js';
+import { ImapSmtpProvider } from './imap/provider.js';
 
 /**
  * Ties each provider id to the account shape that provider actually accepts.
@@ -15,7 +20,7 @@ type ProviderMap = {
 // Adding a provider is a line here, and the compiler insists on it.
 const providers: ProviderMap = {
   imap: new ImapSmtpProvider(),
-  "gmail-api": new GmailApiProvider(),
+  'gmail-api': new GmailApiProvider()
 };
 
 export function providerFor(account: MailAccount): MailProvider<MailAccount> {
@@ -25,11 +30,11 @@ export function providerFor(account: MailAccount): MailProvider<MailAccount> {
     throw new PostbusError(
       `Mailbox "${account.alias}" uses provider "${account.provider}", which this server does not know.`,
       undefined,
-      "config",
+      'config'
     );
   }
 
-  return provider as MailProvider<MailAccount>;
+  return provider;
 }
 
 export function registeredProviderIds(): ProviderId[] {
@@ -46,7 +51,7 @@ export function parseProviderId(raw: string): ProviderId {
 
   throw new PostbusError(
     `This database holds a mailbox for provider "${raw}", which this server does not know.`,
-    `Known providers: ${registeredProviderIds().join(", ")}. Deploy the version that wrote it, or unlink the mailbox.`,
-    "config",
+    `Known providers: ${registeredProviderIds().join(', ')}. Deploy the version that wrote it, or unlink the mailbox.`,
+    'config'
   );
 }

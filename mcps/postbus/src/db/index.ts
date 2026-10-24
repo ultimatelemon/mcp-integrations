@@ -1,8 +1,8 @@
-import { mkdirSync } from "node:fs";
-import { dirname } from "node:path";
-import Database from "better-sqlite3";
-import { DATABASE_PATH } from "../config.js";
-import { PostbusError } from "../types.js";
+import { mkdirSync } from 'node:fs';
+import { dirname } from 'node:path';
+import Database from 'better-sqlite3';
+import { DATABASE_PATH } from '../config.js';
+import { PostbusError } from '../types.js';
 
 let db: Database.Database | null = null;
 
@@ -12,8 +12,8 @@ export function getDb(): Database.Database {
   mkdirSync(dirname(DATABASE_PATH), { recursive: true });
 
   db = new Database(DATABASE_PATH);
-  db.pragma("journal_mode = WAL");
-  db.pragma("foreign_keys = ON");
+  db.pragma('journal_mode = WAL');
+  db.pragma('foreign_keys = ON');
   migrate(db);
 
   return db;
@@ -110,18 +110,18 @@ function migrate(database: Database.Database): void {
 
         CREATE INDEX idx_mail_accounts_user ON mail_accounts (user_id);
       `);
-    },
+    }
   ];
 
-  const current = database.pragma("user_version", { simple: true }) as number;
+  const current = database.pragma('user_version', { simple: true }) as number;
 
   // A rollback to an older image would otherwise run old code against a newer
   // schema and corrupt quietly instead of refusing loudly.
   if (current > migrations.length) {
     throw new PostbusError(
       `The database is newer than this version of postbus-mcp (schema ${current}, expected at most ${migrations.length}).`,
-      "Deploy the version it was migrated with, or restore a backup from before the upgrade.",
-      "config",
+      'Deploy the version it was migrated with, or restore a backup from before the upgrade.',
+      'config'
     );
   }
 

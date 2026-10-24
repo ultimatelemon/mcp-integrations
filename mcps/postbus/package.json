@@ -1,48 +1,30 @@
 {
-  "name": "postbus-mcp",
+  "name": "@ultimatelemon-eu/postbus",
   "version": "0.2.0",
-  "description": "Self-hosted, multi-tenant MCP server voor het beheren van meerdere mailboxen (IMAP/SMTP, optioneel Gmail API) vanuit Claude en andere MCP-clients.",
+  "description": "MCP server for managing multiple mailboxes (IMAP/SMTP, optionally the Gmail API).",
   "license": "MIT",
   "author": "HalloSouf",
   "type": "module",
-  "main": "dist/index.js",
-  "bin": {
-    "postbus-mcp": "dist/index.js"
-  },
-  "files": [
-    "dist",
-    "README.md",
-    "LICENSE"
-  ],
   "engines": {
     "node": ">=24"
   },
   "scripts": {
-    "build": "npm run clean && tsc",
+    "build": "npm run clean && tsc -p tsconfig.build.json",
     "clean": "node --eval \"require('fs').rmSync('dist',{recursive:true,force:true})\"",
     "start": "node dist/index.js",
     "dev": "tsx watch src/index.ts",
     "test": "vitest run",
     "test:watch": "vitest",
-    "typecheck": "tsc -p tsconfig.test.json",
-    "format": "prettier --write \"**/*.{ts,json,yml,md}\"",
-    "format:check": "prettier --check \"**/*.{ts,json,yml,md}\"",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "add-user": "tsx src/cli/add-user.ts",
     "list-users": "tsx src/cli/list-users.ts",
     "rotate-token": "tsx src/cli/rotate-token.ts",
     "remove-user": "tsx src/cli/remove-user.ts",
-    "link-gmail": "tsx src/cli/link-gmail.ts"
+    "link-gmail": "tsx src/cli/link-gmail.ts",
+    "lint": "eslint ."
   },
-  "keywords": [
-    "mcp",
-    "model-context-protocol",
-    "imap",
-    "smtp",
-    "email",
-    "gmail",
-    "claude",
-    "self-hosted"
-  ],
   "dependencies": {
     "@googleapis/gmail": "^18.0.0",
     "@modelcontextprotocol/sdk": "^1.0.0",
@@ -64,6 +46,13 @@
     "prettier": "^3.9.6",
     "tsx": "^4.19.0",
     "typescript": "^5.6.0",
-    "vitest": "^4.1.11"
-  }
+    "vitest": "^4.1.11",
+    "@ultimatelemon-eu/eslint-config": "^1.1.1",
+    "@ultimatelemon-eu/prettier-config": "^1.0.1",
+    "eslint": "^10.13.0",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^17.13.0",
+    "typescript-eslint": "^8.72.0"
+  },
+  "private": true
 }

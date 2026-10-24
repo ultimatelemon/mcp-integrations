@@ -1,8 +1,8 @@
-import { ImapFlow, type ListResponse } from "imapflow";
-import { MAIL_TIMEOUT_MS } from "../../config.js";
-import { isLoopbackHost } from "../../net.js";
-import { PostbusError, type ImapAccount } from "../../types.js";
-import type { MailboxHint } from "./query.js";
+import { ImapFlow, type ListResponse } from 'imapflow';
+import { MAIL_TIMEOUT_MS } from '../../config.js';
+import { isLoopbackHost } from '../../net.js';
+import { PostbusError, type ImapAccount } from '../../types.js';
+import type { MailboxHint } from './query.js';
 
 // IMAP is stateful (one selected mailbox at a time), so every account gets at
 // most one connection and one operation at a time. Sessions usually do several
@@ -41,14 +41,14 @@ const depths = new Map<string, number>();
 
 export async function withImap<T>(
   account: ImapAccount,
-  fn: (context: ImapContext) => Promise<T>,
+  fn: (context: ImapContext) => Promise<T>
 ): Promise<T> {
   const depth = depths.get(account.id) ?? 0;
   if (depth >= MAX_QUEUE_DEPTH) {
     throw new PostbusError(
-      "Too many requests are already queued for this mailbox.",
-      "IMAP allows one operation at a time per mailbox. Wait for the running calls to finish.",
-      "transient",
+      'Too many requests are already queued for this mailbox.',
+      'IMAP allows one operation at a time per mailbox. Wait for the running calls to finish.',
+      'transient'
     );
   }
 
@@ -64,13 +64,13 @@ export async function withImap<T>(
 
 async function enqueue<T>(
   account: ImapAccount,
-  fn: (context: ImapContext) => Promise<T>,
+  fn: (context: ImapContext) => Promise<T>
 ): Promise<T> {
   const previous = queues.get(account.id) ?? Promise.resolve();
 
   const run = previous.then(
     () => execute(account, fn),
-    () => execute(account, fn),
+    () => execute(account, fn)
   );
 
   const tail = run.catch(() => undefined);
@@ -84,7 +84,7 @@ async function enqueue<T>(
 
 async function execute<T>(
   account: ImapAccount,
-  fn: (context: ImapContext) => Promise<T>,
+  fn: (context: ImapContext) => Promise<T>
 ): Promise<T> {
   const connection = await acquire(account);
 
@@ -92,7 +92,7 @@ async function execute<T>(
     return await fn(connection.context);
   } catch (error) {
     // Drop a broken connection so the next call reconnects.
-    if (!connection.context.client.usable) release(account.id);
+    if (!connection.context.client.usable) void release(account.id);
     throw translateImapError(error);
   } finally {
     touch(account.id);
@@ -102,7 +102,7 @@ async function execute<T>(
 async function acquire(account: ImapAccount): Promise<PooledConnection> {
   const existing = pool.get(account.id);
   if (existing?.context.client.usable) return existing;
-  if (existing) release(account.id);
+  if (existing) void release(account.id);
 
   const client = new ImapFlow({
     host: account.imapHost,
@@ -115,14 +115,15 @@ async function acquire(account: ImapAccount): Promise<PooledConnection> {
     socketTimeout: MAIL_TIMEOUT_MS,
     greetingTimeout: MAIL_TIMEOUT_MS,
     connectionTimeout: MAIL_TIMEOUT_MS,
-    clientInfo: { name: "postbus-mcp" },
+    clientInfo: { name: 'postbus-mcp' }
   });
 
   // The pool is keyed on the account, not the socket. A late error event from
   // a connection that was already dropped used to log out whatever had taken
   // its place — killing the next request's fetch on a connection that was fine.
-  client.on("error", () => {
-    if (pool.get(account.id)?.context.client === client) release(account.id);
+  client.on('error', () => {
+    if (pool.get(account.id)?.context.client === client)
+      void release(account.id);
   });
 
   try {
@@ -134,12 +135,14 @@ async function acquire(account: ImapAccount): Promise<PooledConnection> {
   const connection: PooledConnection = {
     context: {
       client,
-      gmail: client.capabilities.has("X-GM-EXT-1"),
-      objectId: client.capabilities.has("OBJECTID"),
-      serverThreads: client.capabilities.has("X-GM-EXT-1") || client.capabilities.has("OBJECTID"),
+      gmail: client.capabilities.has('X-GM-EXT-1'),
+      objectId: client.capabilities.has('OBJECTID'),
+      serverThreads:
+        client.capabilities.has('X-GM-EXT-1') ||
+        client.capabilities.has('OBJECTID')
     },
-    timer: setTimeout(() => release(account.id), IDLE_TTL_MS),
-    lastUsed: Date.now(),
+    timer: setTimeout(() => void release(account.id), IDLE_TTL_MS),
+    lastUsed: Date.now()
   };
   connection.timer.unref?.();
 
@@ -172,7 +175,7 @@ function touch(accountId: string): void {
   if (!connection) return;
 
   clearTimeout(connection.timer);
-  connection.timer = setTimeout(() => release(accountId), IDLE_TTL_MS);
+  connection.timer = setTimeout(() => void release(accountId), IDLE_TTL_MS);
   connection.timer.unref?.();
   connection.lastUsed = Date.now();
 }
@@ -195,7 +198,9 @@ export function release(accountId: string): Promise<void> {
   pool.delete(accountId);
   clearTimeout(connection.timer);
 
-  return connection.context.client.logout().catch(() => connection.context.client.close());
+  return connection.context.client
+    .logout()
+    .catch(() => connection.context.client.close());
 }
 
 // Awaited on shutdown: releasing without waiting meant process.exit() ran
@@ -205,7 +210,9 @@ export function pooledConnectionCount(): number {
 }
 
 export async function closeAllConnections(): Promise<void> {
-  await Promise.allSettled([...pool.keys()].map((accountId) => release(accountId)));
+  await Promise.allSettled(
+    [...pool.keys()].map((accountId) => release(accountId))
+  );
 }
 
 /** Drops the cached folder list, after creating or removing a folder. */
@@ -217,7 +224,7 @@ export function forgetMailboxes(accountId: string): void {
 export async function listMailboxes(
   accountId: string,
   context: ImapContext,
-  refresh = false,
+  refresh = false
 ): Promise<ListResponse[]> {
   const connection = pool.get(accountId);
   if (!refresh && connection?.mailboxes) return connection.mailboxes;
@@ -229,12 +236,12 @@ export async function listMailboxes(
 
 const SPECIAL_USE: Record<MailboxHint, string | undefined> = {
   inbox: undefined,
-  sent: "\\Sent",
-  drafts: "\\Drafts",
-  archive: "\\Archive",
-  all: "\\All",
-  trash: "\\Trash",
-  junk: "\\Junk",
+  sent: '\\Sent',
+  drafts: '\\Drafts',
+  archive: '\\Archive',
+  all: '\\All',
+  trash: '\\Trash',
+  junk: '\\Junk'
 };
 
 // Servers name these folders anything they like ("[Gmail]/Sent Mail", "Sent
@@ -242,10 +249,10 @@ const SPECIAL_USE: Record<MailboxHint, string | undefined> = {
 export async function resolveMailbox(
   accountId: string,
   context: ImapContext,
-  hint: MailboxHint | string,
+  hint: string
 ): Promise<string | undefined> {
   const lower = hint.toLowerCase();
-  if (lower === "inbox") return "INBOX";
+  if (lower === 'inbox') return 'INBOX';
 
   const found = await lookupMailbox(accountId, context, lower, false);
   if (found) return found;
@@ -260,7 +267,7 @@ async function lookupMailbox(
   accountId: string,
   context: ImapContext,
   lower: string,
-  refresh: boolean,
+  refresh: boolean
 ): Promise<string | undefined> {
   const mailboxes = await listMailboxes(accountId, context, refresh);
   const special = SPECIAL_USE[lower as MailboxHint];
@@ -271,7 +278,8 @@ async function lookupMailbox(
   }
 
   const byName = mailboxes.find(
-    (box) => box.path.toLowerCase() === lower || box.name.toLowerCase() === lower,
+    (box) =>
+      box.path.toLowerCase() === lower || box.name.toLowerCase() === lower
   );
 
   return byName?.path;
@@ -279,15 +287,22 @@ async function lookupMailbox(
 
 // Gmail's "all mail" folder covers a whole thread; elsewhere a conversation is
 // spread over Inbox, Sent and Archive.
-export async function threadMailboxes(accountId: string, context: ImapContext): Promise<string[]> {
-  const all = await resolveMailbox(accountId, context, "all");
+export async function threadMailboxes(
+  accountId: string,
+  context: ImapContext
+): Promise<string[]> {
+  const all = await resolveMailbox(accountId, context, 'all');
   if (all) return [all];
 
   const candidates = await Promise.all(
-    (["inbox", "sent", "archive"] as const).map((hint) => resolveMailbox(accountId, context, hint)),
+    (['inbox', 'sent', 'archive'] as const).map((hint) =>
+      resolveMailbox(accountId, context, hint)
+    )
   );
 
-  return [...new Set(candidates.filter((path): path is string => Boolean(path)))];
+  return [
+    ...new Set(candidates.filter((path): path is string => Boolean(path)))
+  ];
 }
 
 export function translateImapError(error: unknown): Error {
@@ -296,43 +311,50 @@ export function translateImapError(error: unknown): Error {
   // failure, losing the message that was actually raised.
   if (error instanceof PostbusError) return error;
 
-  const err = error as { message?: string; authenticationFailed?: boolean; code?: string };
+  const err = error as {
+    message?: string;
+    authenticationFailed?: boolean;
+    code?: string;
+  };
   const message = err?.message ?? String(error);
 
-  if (err?.authenticationFailed || /AUTHENTICATIONFAILED|Invalid credentials/i.test(message)) {
+  if (
+    err?.authenticationFailed ||
+    /AUTHENTICATIONFAILED|Invalid credentials/i.test(message)
+  ) {
     return new PostbusError(
-      "The IMAP server rejected these credentials.",
-      "Use an app password, not your normal password. For Gmail: turn on 2FA and create one at " +
-        "https://myaccount.google.com/apppasswords. Still failing? Remove the mailbox and add it " +
-        "again with add_mail_account.",
-      "auth",
+      'The IMAP server rejected these credentials.',
+      'Use an app password, not your normal password. For Gmail: turn on 2FA and create one at ' +
+        'https://myaccount.google.com/apppasswords. Still failing? Remove the mailbox and add it ' +
+        'again with add_mail_account.',
+      'auth'
     );
   }
 
   if (/ENOTFOUND|EAI_AGAIN/i.test(message)) {
     return new PostbusError(
-      "The IMAP server cannot be found (DNS error).",
-      "Check the hostname you passed to add_mail_account.",
-      "upstream",
+      'The IMAP server cannot be found (DNS error).',
+      'Check the hostname you passed to add_mail_account.',
+      'upstream'
     );
   }
 
   if (/wrong version number|SSL routines|ssl3_get_record/i.test(message)) {
     return new PostbusError(
-      "TLS mismatch on the IMAP port.",
-      "Port 993 is TLS from the first byte, port 143 starts plain and upgrades with STARTTLS. " +
-        "If the port is right, pass imap_secure explicitly to add_mail_account.",
-      "upstream",
+      'TLS mismatch on the IMAP port.',
+      'Port 993 is TLS from the first byte, port 143 starts plain and upgrades with STARTTLS. ' +
+        'If the port is right, pass imap_secure explicitly to add_mail_account.',
+      'upstream'
     );
   }
 
   if (/ECONNREFUSED|ETIMEDOUT|Socket timeout/i.test(message)) {
     return new PostbusError(
-      "Could not connect to the IMAP server.",
-      "Check host and port (usually 993 with TLS).",
-      "transient",
+      'Could not connect to the IMAP server.',
+      'Check host and port (usually 993 with TLS).',
+      'transient'
     );
   }
 
-  return new PostbusError(`IMAP error: ${message}`, undefined, "upstream");
+  return new PostbusError(`IMAP error: ${message}`, undefined, 'upstream');
 }

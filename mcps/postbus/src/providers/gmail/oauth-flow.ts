@@ -1,10 +1,14 @@
-import { randomBytes } from "node:crypto";
-import { createServer, type Server, type ServerResponse } from "node:http";
-import { gmail } from "@googleapis/gmail";
-import { GOOGLE_SCOPES, OAUTH_CALLBACK_PORT, getGoogleOAuthConfig } from "../../config.js";
-import { accountExists, saveGmailApiAccount } from "../../db/accounts.js";
-import { PostbusError } from "../../types.js";
-import { createOAuthClient, type GmailOAuthClient } from "./auth.js";
+import { randomBytes } from 'node:crypto';
+import { createServer, type Server, type ServerResponse } from 'node:http';
+import { gmail } from '@googleapis/gmail';
+import {
+  GOOGLE_SCOPES,
+  OAUTH_CALLBACK_PORT,
+  getGoogleOAuthConfig
+} from '../../config.js';
+import { accountExists, saveGmailApiAccount } from '../../db/accounts.js';
+import { PostbusError } from '../../types.js';
+import { createOAuthClient, type GmailOAuthClient } from './auth.js';
 
 const OAUTH_REDIRECT_URI = `http://localhost:${OAUTH_CALLBACK_PORT}/oauth2callback`;
 
@@ -37,7 +41,10 @@ interface PendingFlow extends PendingAuthInfo {
   server: Server;
   timer: NodeJS.Timeout;
   code?: string;
-  waiters: Array<{ resolve: (code: string) => void; reject: (error: Error) => void }>;
+  waiters: Array<{
+    resolve: (code: string) => void;
+    reject: (error: Error) => void;
+  }>;
 }
 
 let pending: PendingFlow | null = null;
@@ -46,50 +53,56 @@ export function pendingAlias(): string | undefined {
   return pending?.alias;
 }
 
-export async function beginGmailAuth(userId: string, alias: string): Promise<PendingAuthInfo> {
+export async function beginGmailAuth(
+  userId: string,
+  alias: string
+): Promise<PendingAuthInfo> {
   const cleaned = alias.trim();
 
   if (!ALIAS_PATTERN.test(cleaned)) {
     throw new PostbusError(
       `Invalid alias "${alias}".`,
-      'Use letters, digits, dot, dash or underscore (32 characters max), e.g. "personal" or "work".',
+      'Use letters, digits, dot, dash or underscore (32 characters max), e.g. "personal" or "work".'
     );
   }
 
   if (!getGoogleOAuthConfig()) {
     throw new PostbusError(
-      "The Gmail API provider is disabled.",
-      "Set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET, or use IMAP/SMTP with an app password.",
+      'The Gmail API provider is disabled.',
+      'Set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET, or use IMAP/SMTP with an app password.'
     );
   }
 
   cancelGmailAuth();
 
   const client = createOAuthClient(OAUTH_REDIRECT_URI);
-  const state = randomBytes(16).toString("hex");
+  const state = randomBytes(16).toString('hex');
 
   // The code comes back over plain http on loopback, where any other local
   // process that can observe the URL could redeem it. PKCE ties it to this
   // flow, as OAuth 2.1 and Google's native-app guidance both require.
-  const { codeVerifier, codeChallenge } = await client.generateCodeVerifierAsync();
+  const { codeVerifier, codeChallenge } =
+    await client.generateCodeVerifierAsync();
 
   const authUrl = client.generateAuthUrl({
-    access_type: "offline",
-    prompt: "consent", // forces a refresh token, also when relinking
+    access_type: 'offline',
+    prompt: 'consent', // forces a refresh token, also when relinking
     scope: GOOGLE_SCOPES,
     include_granted_scopes: true,
     state,
     // "S256" rather than the enum: the enum lives in google-auth-library and
     // importing it separately drags in a second copy of that package.
-    code_challenge_method: "S256" as never,
-    code_challenge: codeChallenge,
+    code_challenge_method: 'S256' as never,
+    code_challenge: codeChallenge
   });
 
   const server = await startCallbackServer(state);
   const expiresAt = new Date(Date.now() + FLOW_TTL_MS).toISOString();
 
   const timer = setTimeout(() => {
-    failPending(new PostbusError("The authorization expired (10 minutes passed)."));
+    failPending(
+      new PostbusError('The authorization expired (10 minutes passed).')
+    );
   }, FLOW_TTL_MS);
   timer.unref?.();
 
@@ -104,40 +117,49 @@ export async function beginGmailAuth(userId: string, alias: string): Promise<Pen
     client,
     server,
     timer,
-    waiters: [],
+    waiters: []
   };
 
-  return { userId, alias: cleaned, authUrl, redirectUri: OAUTH_REDIRECT_URI, expiresAt };
+  return {
+    userId,
+    alias: cleaned,
+    authUrl,
+    redirectUri: OAUTH_REDIRECT_URI,
+    expiresAt
+  };
 }
 
 export async function finishGmailAuth(
   alias: string,
-  waitMs = DEFAULT_WAIT_MS,
+  waitMs = DEFAULT_WAIT_MS
 ): Promise<LinkedAccountResult> {
   const flow = pending;
 
   if (!flow) {
     throw new PostbusError(
-      "No authorization is pending.",
-      "Start one first with `npm run link-gmail -- <user-id> <alias>`.",
+      'No authorization is pending.',
+      'Start one first with `npm run link-gmail -- <user-id> <alias>`.'
     );
   }
 
   if (flow.alias.toLowerCase() !== alias.trim().toLowerCase()) {
     throw new PostbusError(
       `The pending authorization is for "${flow.alias}", not for "${alias}".`,
-      `Finish "${flow.alias}" first, or start over.`,
+      `Finish "${flow.alias}" first, or start over.`
     );
   }
 
   const code = await waitForCode(flow, waitMs);
-  const { tokens } = await flow.client.getToken({ code, codeVerifier: flow.codeVerifier });
+  const { tokens } = await flow.client.getToken({
+    code,
+    codeVerifier: flow.codeVerifier
+  });
 
   if (!tokens.refresh_token) {
     cancelGmailAuth();
     throw new PostbusError(
-      "Google returned no refresh token.",
-      "Revoke access at https://myaccount.google.com/permissions and link again.",
+      'Google returned no refresh token.',
+      'Revoke access at https://myaccount.google.com/permissions and link again.'
     );
   }
 
@@ -150,7 +172,7 @@ export async function finishGmailAuth(
     userId: flow.userId,
     alias: flow.alias,
     email,
-    refreshToken: tokens.refresh_token,
+    refreshToken: tokens.refresh_token
   });
 
   cancelGmailAuth();
@@ -165,7 +187,7 @@ export function cancelGmailAuth(): boolean {
   clearTimeout(flow.timer);
 
   for (const waiter of flow.waiters) {
-    waiter.reject(new PostbusError("The authorization was cancelled."));
+    waiter.reject(new PostbusError('The authorization was cancelled.'));
   }
   flow.waiters.length = 0;
 
@@ -189,11 +211,11 @@ function waitForCode(flow: PendingFlow, waitMs: number): Promise<string> {
         reject(
           new PostbusError(
             `No consent received yet for "${flow.alias}".`,
-            `Open the URL, approve it, and try again. This authorization stays valid until ${flow.expiresAt}.`,
-          ),
+            `Open the URL, approve it, and try again. This authorization stays valid until ${flow.expiresAt}.`
+          )
         );
       },
-      Math.max(1000, waitMs),
+      Math.max(1000, waitMs)
     );
 
     deadline.unref?.();
@@ -203,7 +225,7 @@ function waitForCode(flow: PendingFlow, waitMs: number): Promise<string> {
     };
     waiter.reject = (error) => {
       clearTimeout(deadline);
-      reject(error);
+      reject(error instanceof Error ? error : new Error(String(error)));
     };
   });
 }
@@ -235,82 +257,104 @@ function failPending(error: Error): void {
 function startCallbackServer(expectedState: string): Promise<Server> {
   return new Promise<Server>((resolve, reject) => {
     const server = createServer((req, res) => {
-      const url = new URL(req.url ?? "/", OAUTH_REDIRECT_URI);
-      res.setHeader("Connection", "close");
+      const url = new URL(req.url ?? '/', OAUTH_REDIRECT_URI);
+      res.setHeader('Connection', 'close');
 
-      if (url.pathname !== "/oauth2callback") {
-        res.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" }).end("Not found");
+      if (url.pathname !== '/oauth2callback') {
+        res
+          .writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' })
+          .end('Not found');
         return;
       }
 
-      const error = url.searchParams.get("error");
-      const code = url.searchParams.get("code");
-      const state = url.searchParams.get("state");
+      const error = url.searchParams.get('error');
+      const code = url.searchParams.get('code');
+      const state = url.searchParams.get('state');
 
       // State first. Checking the error branch ahead of it let any page the
       // operator happened to visit cancel the pending flow with a bare
       // /oauth2callback?error=x, no state needed.
       if (state !== expectedState) {
-        respond(res, 400, "Invalid state", "The state parameter does not match. Start over.");
+        respond(
+          res,
+          400,
+          'Invalid state',
+          'The state parameter does not match. Start over.'
+        );
         return;
       }
 
       if (error) {
-        respond(res, 400, "Access denied", `Google returned: ${error}`);
-        failPending(new PostbusError(`Google refused the authorization: ${error}`));
+        respond(res, 400, 'Access denied', `Google returned: ${error}`);
+        failPending(
+          new PostbusError(`Google refused the authorization: ${error}`)
+        );
         return;
       }
 
       if (!code) {
-        respond(res, 400, "No code", "Google returned no authorization code.");
+        respond(res, 400, 'No code', 'Google returned no authorization code.');
         return;
       }
 
-      respond(res, 200, "Done", "You can close this tab and go back to your terminal.");
+      respond(
+        res,
+        200,
+        'Done',
+        'You can close this tab and go back to your terminal.'
+      );
       acceptCode(code);
     });
 
-    server.once("error", (err: NodeJS.ErrnoException) => {
-      if (err.code === "EADDRINUSE") {
+    server.once('error', (err: NodeJS.ErrnoException) => {
+      if (err.code === 'EADDRINUSE') {
         reject(
           new PostbusError(
             `Port ${OAUTH_CALLBACK_PORT} is already in use.`,
-            "Point OAUTH_CALLBACK_PORT at a free port and add the matching redirect URI in Google Cloud.",
-          ),
+            'Point OAUTH_CALLBACK_PORT at a free port and add the matching redirect URI in Google Cloud.'
+          )
         );
         return;
       }
       reject(err);
     });
 
-    server.listen(OAUTH_CALLBACK_PORT, "127.0.0.1", () => resolve(server));
+    server.listen(OAUTH_CALLBACK_PORT, '127.0.0.1', () => resolve(server));
   });
 }
 
 async function fetchEmailAddress(auth: GmailOAuthClient): Promise<string> {
-  const profile = await gmail({ version: "v1", auth }).users.getProfile({ userId: "me" });
+  const profile = await gmail({ version: 'v1', auth }).users.getProfile({
+    userId: 'me'
+  });
   const email = profile.data.emailAddress;
 
-  if (!email) throw new PostbusError("Could not read the mailbox email address.");
+  if (!email)
+    throw new PostbusError('Could not read the mailbox email address.');
   return email;
 }
 
 // `detail` can carry a query parameter, so it is not ours to trust.
 function escapeHtml(value: string): string {
   return value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
-function respond(res: ServerResponse, status: number, title: string, detail: string): void {
-  res.writeHead(status, { "Content-Type": "text/html; charset=utf-8" });
+function respond(
+  res: ServerResponse,
+  status: number,
+  title: string,
+  detail: string
+): void {
+  res.writeHead(status, { 'Content-Type': 'text/html; charset=utf-8' });
   res.end(
     `<!doctype html><meta charset="utf-8"><title>postbus-mcp</title>
 <style>body{font:16px/1.5 system-ui,sans-serif;margin:15vh auto;max-width:32rem;padding:0 1.5rem;color:#111}
 h1{font-size:1.4rem;margin:0 0 .5rem}p{color:#555;margin:0}</style>
-<h1>${escapeHtml(title)}</h1><p>${escapeHtml(detail)}</p>`,
+<h1>${escapeHtml(title)}</h1><p>${escapeHtml(detail)}</p>`
   );
 }
