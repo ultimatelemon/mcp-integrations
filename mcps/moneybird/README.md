@@ -108,7 +108,7 @@ server shares it. The server paces its requests to stay inside it, honours
 ## Self-hosting
 
 ```bash
-docker run --rm -p 127.0.0.1:3000:3000 ghcr.io/ultimatelemon/mcp-integrations/moneybird:latest
+docker run --rm -p 127.0.0.1:3000:3000 ghcr.io/ultimatelemon/mcp-moneybird:latest
 ```
 
 | Variable                       | Default   | Purpose                                                             |

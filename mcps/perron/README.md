@@ -113,7 +113,7 @@ and health on `/perron/healthz`.
 
 ```bash
 docker run --rm -p 127.0.0.1:3000:3000 \
-  -v perron-data:/app/data ghcr.io/ultimatelemon/mcp-integrations/perron:latest
+  -v perron-data:/app/data ghcr.io/ultimatelemon/mcp-perron:latest
 ```
 
 The image runs as a non-root user and has a health check on `/healthz`. The

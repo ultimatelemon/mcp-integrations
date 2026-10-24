@@ -39,7 +39,7 @@ jobs:
       runs-on: ubuntu-latest
       container-image: ""
       buildkit-endpoint: ""
-      image: ghcr.io/${{ github.repository }}/perron
+      image: ghcr.io/${{ github.repository_owner }}/mcp-perron
       dockerfile: mcps/perron/Dockerfile
 
   deploy:

@@ -72,7 +72,7 @@ key (perron), and one shared limiter when it counts per IP (moneybird).
   by Traefik with `PathPrefix(/<name>)`. The root returns 404.
 - The proxy forwards the path unchanged; the server gets `BASE_PATH=/<name>`
   and mcp-http serves MCP on `/<name>` and `/<name>/mcp`.
-- Images: `ghcr.io/ultimatelemon/mcp-integrations/<name>`, built and deployed
+- Images: `ghcr.io/ultimatelemon/mcp-<name>`, built and deployed
   per server by GitHub Actions only when that server changed.
 - CI: `.github/workflows/deploy-<name>.yml` on `ultimatelemon/shared-actions`
   `@v2`, on GitHub-hosted runners (`runs-on: ubuntu-latest`,
