@@ -82,7 +82,6 @@ key (perron), and one shared limiter when it counts per IP (moneybird).
 - Dokploy project "Model Context Protocols": apps `perron` (with
   `perron-redis` and volume `perron-data` on `/app/data`), `moneybird`, and
   `postbus` (volume `postbus-data` on `/data`).
-  `moneybird-postgres` is left over from the old OAuth mode and unused.
 - Push over SSH: the HTTPS credential lacks the `workflow` scope.
 
 ## Adding a server
