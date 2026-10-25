@@ -1,5 +1,5 @@
 import { randomBytes } from 'node:crypto';
-import { generateApiToken, hashToken } from '../crypto.js';
+import { randomToken, sha256Hex } from '@ultimatelemon-eu/crypto';
 import { PostbusError, type User } from '../types.js';
 import { getDb } from './index.js';
 
@@ -17,6 +17,15 @@ function toUser(row: UserRow): User {
     createdAt: row.created_at,
     disabled: row.disabled === 1
   };
+}
+
+// Trimmed, so a pasted token with a trailing newline still matches.
+export function hashToken(token: string): string {
+  return sha256Hex(token.trim());
+}
+
+export function generateApiToken(): string {
+  return `pb_${randomToken()}`;
 }
 
 export function newId(): string {

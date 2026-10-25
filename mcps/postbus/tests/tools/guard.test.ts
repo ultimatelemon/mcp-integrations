@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { guard } from '../../src/tools/guard.js';
+import { resetRateLimits } from '../../src/tools/rate-limit.js';
 import { PostbusError, type User } from '../../src/types.js';
 
 const USER: User = {
@@ -12,6 +13,7 @@ const USER: User = {
 let lines: string[];
 
 beforeEach(() => {
+  resetRateLimits();
   lines = [];
   vi.spyOn(console, 'log').mockImplementation(
     (line: string) => void lines.push(line)

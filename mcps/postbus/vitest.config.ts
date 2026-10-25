@@ -8,6 +8,7 @@ export default defineConfig({
     // No real mailserver, no files on disk: SQLite runs in memory and the
     // key is throwaway.
     env: {
+      ENCRYPTION_KEY: 'AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=',
       MASTER_KEY:
         '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef',
       DATABASE_PATH: ':memory:'

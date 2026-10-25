@@ -32,21 +32,13 @@ const bytes = z.coerce.number().int().positive();
 const schema = z.object({
   PORT: port.default(3000),
   HOST: z.string().trim().min(1).default('0.0.0.0'),
-
-  // Off unless asked for. Trusting X-Forwarded-* by default makes req.ip
-  // spoofable by any client when there is no reverse proxy in front, and the
-  // safe direction is the one you have to opt out of.
-  TRUST_PROXY: z
-    .enum(['true', 'false', '1', '0'])
-    .default('false')
-    .transform((value) => value === 'true' || value === '1'),
+  BASE_PATH: z.string().trim().default(''),
 
   DATABASE_PATH: z
     .string()
     .trim()
     .min(1)
     .default(resolve(PROJECT_ROOT, 'data', 'postbus.db')),
-  MAX_BODY_SIZE: z.string().trim().min(1).default('4mb'),
   MAIL_TIMEOUT_MS: bytes.default(30_000),
 
   // How much of a single message we are willing to pull over and hand to the
@@ -54,7 +46,7 @@ const schema = z.object({
   // source, attachments included, for up to fifty messages at once.
   MAX_MESSAGE_BYTES: bytes.default(2 * 1024 * 1024),
 
-  // Per token, per minute. A mailbox call is slow and hits someone else's
+  // Tool calls per user, per minute. A mailbox call is slow and hits someone else's
   // server, so this is about keeping one client from monopolising the pool.
   RATE_LIMIT_PER_MINUTE: bytes.default(60),
   MAX_ACCOUNTS_PER_USER: bytes.default(20),
@@ -88,9 +80,8 @@ const config = load();
 
 export const PORT = config.PORT;
 export const HOST = config.HOST;
-export const TRUST_PROXY = config.TRUST_PROXY;
+export const BASE_PATH = config.BASE_PATH;
 export const DATABASE_PATH = config.DATABASE_PATH;
-export const MAX_BODY_SIZE = config.MAX_BODY_SIZE;
 export const MAIL_TIMEOUT_MS = config.MAIL_TIMEOUT_MS;
 export const MAX_MESSAGE_BYTES = config.MAX_MESSAGE_BYTES;
 export const RATE_LIMIT_PER_MINUTE = config.RATE_LIMIT_PER_MINUTE;

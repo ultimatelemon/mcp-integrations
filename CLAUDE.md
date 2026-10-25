@@ -56,12 +56,16 @@ win. Traefik must also route `/.well-known/oauth-authorization-server/<name>`
 and `/.well-known/oauth-protected-resource/<name>` to the app.
 
 Exception: postbus. A user links several mailboxes, which does not fit in four
-headers, so it keeps users and mailboxes in SQLite, with app passwords
-encrypted under `MASTER_KEY` (its own AES helper, not yet
-`@ultimatelemon-eu/crypto`). The operator hands out a bearer token per user
-with `node dist/cli/add-user.js` in the container. It still runs on Express and
-`@modelcontextprotocol/sdk` v1, not mcp-http, and has no `BASE_PATH`: its
-Dokploy domain strips `/postbus` and forwards to `/mcp`; health is `/health`.
+headers, so it keeps users and mailboxes in SQLite, with app passwords sealed
+by `@ultimatelemon-eu/crypto` under `ENCRYPTION_KEY`, bound to their row. The
+operator hands out a token per user with `node dist/cli/add-user.js` in the
+container; mcp-http's `apiKey.verify` answers 401 for an unknown one. Rate
+limiting (per user) sits in the tool guard.
+
+0.3.0 moves secrets sealed under the old `MASTER_KEY` to `ENCRYPTION_KEY` at
+startup (`src/db/legacy-secrets.ts`, backup at
+`/data/postbus.db.before-encryption-key`). Once production has started on it,
+remove that file and `MASTER_KEY` from Dokploy.
 
 Upstream rate limits: keep one limiter per key when the upstream counts per
 key (perron), and one shared limiter when it counts per IP (moneybird).

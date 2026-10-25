@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { assertMasterKey } from '../crypto.js';
+import { assertEncryptionKey } from '../db/secrets.js';
 import { createUser } from '../db/users.js';
 import { databasePath } from '../db/index.js';
 import { PostbusError } from '../types.js';
@@ -13,7 +13,7 @@ function main(): void {
     process.exit(1);
   }
 
-  assertMasterKey();
+  assertEncryptionKey();
   const { user, token } = createUser(label);
 
   console.log(`\nCreated user: ${user.label} (id ${user.id})`);

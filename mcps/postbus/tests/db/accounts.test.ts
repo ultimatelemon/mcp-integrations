@@ -169,7 +169,7 @@ describe('mailbox storage', () => {
     };
 
     expect(stored.p).not.toContain('abcd');
-    expect(stored.p.startsWith('enc:v2:')).toBe(true);
+    expect(stored.p.startsWith('v1.')).toBe(true);
     expect((getAccount(user.id, 'personal') as ImapAccount).password).toBe(
       'abcd efgh ijkl mnop'
     );

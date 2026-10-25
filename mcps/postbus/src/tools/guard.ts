@@ -1,6 +1,7 @@
-import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js';
+import type { CallToolResult } from '@modelcontextprotocol/server';
 import { logEvent } from '../log.js';
 import { PostbusError, type ErrorKind, type User } from '../types.js';
+import { takeCall } from './rate-limit.js';
 
 // What the model should do about this class of failure. Without it every
 // problem arrived as the same flat "isError: true" and retrying a bad alias
@@ -25,6 +26,20 @@ export async function guard(
   fn: () => Promise<string>
 ): Promise<CallToolResult> {
   const started = Date.now();
+
+  const retryAfter = takeCall(user.id, started);
+  if (retryAfter !== undefined) {
+    logEvent({ event: 'rate_limited', tool, userId: user.id, retryAfter });
+    return {
+      isError: true,
+      content: [
+        {
+          type: 'text',
+          text: `Too many requests. Wait ${retryAfter}s before the next call; calling sooner only fails again.`
+        }
+      ]
+    };
+  }
 
   try {
     const text = await fn();

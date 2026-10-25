@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import open from 'open';
-import { assertMasterKey } from '../crypto.js';
+import { assertEncryptionKey } from '../db/secrets.js';
 import { findUserById } from '../db/users.js';
 import { gmailApiEnabled } from '../providers/gmail/auth.js';
 import {
@@ -23,7 +23,7 @@ async function main(): Promise<void> {
     process.exit(1);
   }
 
-  assertMasterKey();
+  assertEncryptionKey();
 
   if (!gmailApiEnabled()) {
     throw new PostbusError(

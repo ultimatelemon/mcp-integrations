@@ -1,7 +1,7 @@
-import { decryptSecret, encryptSecret } from '../crypto.js';
 import { parseProviderId } from '../providers/registry.js';
 import { PostbusError, type AccountInfo, type MailAccount } from '../types.js';
 import { getDb } from './index.js';
+import { openSecret, sealSecret } from './secrets.js';
 import { newId } from './users.js';
 
 interface AccountRow {
@@ -48,15 +48,6 @@ function toInfo(row: AccountRow): AccountInfo {
   };
 }
 
-/**
- * What the stored secret is bound to. The row id never changes once written,
- * not even when a mailbox is relinked, so a blob stays readable in its own row
- * and nowhere else.
- */
-function secretContext(userId: string, accountId: string): string {
-  return `${userId}:${accountId}`;
-}
-
 // The only place secrets are decrypted.
 function toAccount(row: AccountRow): MailAccount {
   const provider = parseProviderId(row.provider);
@@ -73,10 +64,7 @@ function toAccount(row: AccountRow): MailAccount {
     return {
       ...base,
       provider: 'gmail-api',
-      refreshToken: decryptSecret(
-        row.encrypted_password,
-        secretContext(row.user_id, row.id)
-      )
+      refreshToken: openSecret(row.encrypted_password, row.user_id, row.id)
     };
   }
 
@@ -98,10 +86,7 @@ function toAccount(row: AccountRow): MailAccount {
     smtpPort: row.smtp_port ?? 465,
     smtpSecure: row.smtp_secure === 1,
     username: row.username ?? row.email,
-    password: decryptSecret(
-      row.encrypted_password,
-      secretContext(row.user_id, row.id)
-    )
+    password: openSecret(row.encrypted_password, row.user_id, row.id)
   };
 }
 
@@ -187,10 +172,7 @@ export function saveImapAccount(input: NewImapAccount): SavedAccount {
     smtp_port: input.smtpPort,
     smtp_secure: input.smtpSecure ? 1 : 0,
     username: input.username,
-    encrypted_password: encryptSecret(
-      input.password,
-      secretContext(input.userId, id)
-    ),
+    encrypted_password: sealSecret(input.password, input.userId, id),
     created_at: new Date().toISOString()
   };
 
@@ -221,10 +203,7 @@ export function saveGmailApiAccount(input: NewGmailApiAccount): SavedAccount {
     smtp_port: null,
     smtp_secure: 1,
     username: null,
-    encrypted_password: encryptSecret(
-      input.refreshToken,
-      secretContext(input.userId, id)
-    ),
+    encrypted_password: sealSecret(input.refreshToken, input.userId, id),
     created_at: new Date().toISOString()
   };
 

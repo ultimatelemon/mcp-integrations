@@ -1,4 +1,4 @@
-import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import type { McpServer } from '@modelcontextprotocol/server';
 import { z } from 'zod';
 import { resolveAccount, type ToolContext } from './context.js';
 import { colorNames } from '../providers/gmail/colors.js';

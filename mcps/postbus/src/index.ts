@@ -7,7 +7,7 @@ import { PostbusError } from './types.js';
 // message below.
 try {
   const { main } = await import('./main.js');
-  main();
+  await main();
 } catch (error) {
   if (error instanceof PostbusError) {
     console.error(`postbus-mcp could not start: ${error.message}`);

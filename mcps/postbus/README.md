@@ -73,7 +73,7 @@ git clone https://github.com/ultimatelemon/mcp-integrations.git
 cd mcp-integrations/mcps/postbus
 
 cp .env.example .env
-openssl rand -hex 32          # put the result in .env as MASTER_KEY
+openssl rand -base64 32       # put the result in .env as ENCRYPTION_KEY
 
 docker compose up -d --build
 docker compose exec postbus node dist/cli/add-user.js "Soufiane"
@@ -86,15 +86,17 @@ That last command prints an API token exactly once. Save it right away.
 ```bash
 npm install
 cp .env.example .env
-openssl rand -hex 32          # put the result in .env as MASTER_KEY
+openssl rand -base64 32       # put the result in .env as ENCRYPTION_KEY
 
 npm run build
 npm run add-user -- "Soufiane"
 npm start
 ```
 
-The server listens on `http://localhost:3000/mcp`. A `GET /health` returns
-`{"status":"ok"}`, which is handy for an uptime check.
+The server listens on `http://localhost:3000/mcp`. A `GET /healthz` returns
+`{"status":"ok"}`, which is handy for an uptime check. With `BASE_PATH` set
+(`/postbus` behind a path-routing proxy) both also answer under that prefix:
+`/postbus/mcp`, `/postbus` itself and `/postbus/healthz`.
 
 ---
 
@@ -161,7 +163,8 @@ claude mcp add --transport http postbus https://mcp.example.com/mcp \
 ### Other clients
 
 Anything that speaks **Streamable HTTP** works: endpoint `POST /mcp`, token as
-`Authorization: Bearer <token>`. The server runs stateless — no session ids, no
+`Authorization: Bearer <token>` or in `X-Api-Key`. An unknown or disabled token
+gets a `401`. The server runs stateless — no session ids, no
 server-side stream — so a `GET /mcp` deliberately returns `405`.
 
 ---
@@ -344,9 +347,8 @@ services:
       dockerfile: mcps/postbus/Dockerfile
     restart: unless-stopped
     environment:
-      MASTER_KEY: ${MASTER_KEY:?set MASTER_KEY in .env}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY:?set ENCRYPTION_KEY in .env}
       DATABASE_PATH: /data/postbus.db
-      TRUST_PROXY: 'true'
     volumes:
       - postbus-data:/data
     networks: [proxy]
@@ -366,9 +368,6 @@ Things to watch:
 - The `proxy` network has to exist (`docker network create proxy`) and Traefik
   has to be on it.
 - The container publishes no port of its own: only Traefik can reach it.
-- `TRUST_PROXY=true` lets Express trust the `X-Forwarded-*` headers. It is off
-  by default: only turn it on when something like Traefik really is in front,
-  because otherwise any client can claim any address.
 - Terminate TLS at Traefik. Tokens travel as bearer credentials; without HTTPS
   they are in the clear.
 - The `postbus-data` volume holds the database with every encrypted app
@@ -386,11 +385,11 @@ docker compose exec postbus \
 docker compose cp postbus:/data/backup.db ./postbus-$(date +%F).db
 ```
 
-Keep the `MASTER_KEY` somewhere else. The backup is useless without it, and
+Keep the `ENCRYPTION_KEY` somewhere else. The backup is useless without it, and
 together they are a complete copy of everyone's mailbox credentials.
 
 To restore, stop the container, put the file back as `/data/postbus.db` (delete
-any `-wal` and `-shm` next to it), and start with the same `MASTER_KEY`.
+any `-wal` and `-shm` next to it), and start with the same `ENCRYPTION_KEY`.
 
 Note that the server refuses to open a database whose schema is newer than the
 build — rolling the image back further than the database will fail loudly
@@ -400,13 +399,19 @@ rather than corrupt anything.
 
 ## Security
 
-**MASTER_KEY.** App passwords and refresh tokens are stored with AES-256-GCM,
-each with its own IV, and sealed against the row they belong to — a ciphertext
-moved to another user's row will not decrypt. The key must be 64 hex characters
-(`openssl rand -hex 32`); a passphrase is not accepted, because stretching one
-against a salt baked into the source would be the same salt in every install.
-The server refuses to start without the key. Lose it and everyone has to link
-their mailboxes again, so keep it apart from the database backup.
+**ENCRYPTION_KEY.** App passwords and refresh tokens are sealed with
+[`@ultimatelemon-eu/crypto`](https://www.npmjs.com/package/@ultimatelemon-eu/crypto)
+(AES-256-GCM, a fresh IV each time), bound to the row they belong to: a
+ciphertext moved to another user's row will not decrypt. The key is 32 random
+bytes in base64 (`openssl rand -base64 32`). The server refuses to start
+without it. Lose it and everyone has to link their mailboxes again, so keep it
+apart from the database backup.
+
+**Moving from MASTER_KEY.** Up to 0.2.0 secrets were sealed under `MASTER_KEY`.
+On the first start with both keys set, the server copies the database to
+`<DATABASE_PATH>.before-encryption-key` and reseals every secret under
+`ENCRYPTION_KEY`. After that `MASTER_KEY` is no longer read; remove it once the
+start has succeeded. A later release drops the migration.
 
 **Tokens.** Only the SHA-256 hash is stored. Share them over a channel you
 trust and rotate when in doubt (`npm run rotate-token`).
@@ -420,7 +425,8 @@ instead of falling back to cleartext when a server does not offer it, which is
 what a downgrade attack arranges. Loopback is exempt, for local bridges such as
 Proton Mail Bridge.
 
-**Rate limiting.** 60 tool calls per token per minute
+**Rate limiting.** 60 tool calls per user per minute; the next call fails with
+how long to wait
 (`RATE_LIMIT_PER_MINUTE`), and at most 20 linked mailboxes per user
 (`MAX_ACCOUNTS_PER_USER`).
 
@@ -546,7 +552,7 @@ The tests in `tests/` run in half a second and touch nothing outside the
 process: SQLite runs in memory and no connection leaves the machine. They cover
 the logic that can go wrong quietly — search query translation, encoding message
 and thread ids, parsing and composing MIME, encrypted storage, the separation
-between users, the bearer middleware, the rate limiter, and the header
+between users, token checks over HTTP, the rate limiter, the move from `MASTER_KEY`, and the header
 injection and content-fencing defences.
 
 What they do _not_ cover is talking to a real mail server. For that, run
@@ -577,14 +583,13 @@ container both run Node 24. The image builds from the repository root:
 ```
 src/
 ├── index.ts              entry point: turns a startup failure into a message
-├── main.ts               startup: check MASTER_KEY, open the db, listen
+├── main.ts               startup: check ENCRYPTION_KEY, migrate, listen
+├── server.ts             MCP over HTTP (@ultimatelemon-eu/mcp-http), per-user server
 ├── config.ts             environment configuration, validated with zod
-├── crypto.ts             AES-256-GCM for secrets, hashing for tokens
 ├── net.ts                which mail hosts we are willing to connect to
 ├── log.ts                one JSON line per event, on stdout
 ├── types.ts              MailProvider plus every shared type
-├── db/                   SQLite: migrations, users, mail_accounts
-├── http/                 Express app, bearer auth, rate limit, MCP transport
+├── db/                   SQLite: migrations, users, mail_accounts, sealed secrets
 ├── providers/
 │   ├── registry.ts       account -> provider
 │   ├── imap/             IMAP/SMTP: connections, search, threading, sending, actions
