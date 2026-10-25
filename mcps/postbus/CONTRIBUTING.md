@@ -8,7 +8,7 @@ and focused and it stays that way.
 ```bash
 npm install
 cp .env.example .env
-openssl rand -hex 32          # put the result in .env as MASTER_KEY
+openssl rand -base64 32       # put the result in .env as ENCRYPTION_KEY
 
 npm run dev                   # server with hot reload
 npm test                      # unit tests (vitest)
@@ -25,7 +25,7 @@ rather than against your own mailbox.
 Tests live in `tests/` and mirror the layout of `src/`. They run in half a
 second and should keep doing so: **no network, no files on disk, no
 containers.** SQLite runs in memory (`DATABASE_PATH` is `:memory:` in
-`vitest.config.ts`) and `MASTER_KEY` is a throwaway key.
+`vitest.config.ts`) and `ENCRYPTION_KEY` is a throwaway key.
 
 When you add something, test the logic that can fail quietly rather than the
 plumbing around it. What is there now, as a guide:

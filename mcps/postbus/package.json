@@ -1,6 +1,6 @@
 {
   "name": "@ultimatelemon-eu/postbus",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "MCP server for managing multiple mailboxes (IMAP/SMTP, optionally the Gmail API).",
   "license": "MIT",
   "type": "module",

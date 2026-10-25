@@ -407,11 +407,9 @@ bytes in base64 (`openssl rand -base64 32`). The server refuses to start
 without it. Lose it and everyone has to link their mailboxes again, so keep it
 apart from the database backup.
 
-**Moving from MASTER_KEY.** Up to 0.2.0 secrets were sealed under `MASTER_KEY`.
-On the first start with both keys set, the server copies the database to
-`<DATABASE_PATH>.before-encryption-key` and reseals every secret under
-`ENCRYPTION_KEY`. After that `MASTER_KEY` is no longer read; remove it once the
-start has succeeded. A later release drops the migration.
+**Upgrading from 0.2.0.** Secrets sealed under the old `MASTER_KEY` are no
+longer read. Start 0.3.0 once with both keys set to move them over, then
+upgrade.
 
 **Tokens.** Only the SHA-256 hash is stored. Share them over a channel you
 trust and rotate when in doubt (`npm run rotate-token`).
@@ -552,7 +550,7 @@ The tests in `tests/` run in half a second and touch nothing outside the
 process: SQLite runs in memory and no connection leaves the machine. They cover
 the logic that can go wrong quietly — search query translation, encoding message
 and thread ids, parsing and composing MIME, encrypted storage, the separation
-between users, token checks over HTTP, the rate limiter, the move from `MASTER_KEY`, and the header
+between users, token checks over HTTP, the rate limiter, and the header
 injection and content-fencing defences.
 
 What they do _not_ cover is talking to a real mail server. For that, run

@@ -1,7 +1,6 @@
 import type { McpHttpServer } from '@ultimatelemon-eu/mcp-http';
 import { BASE_PATH, HOST, PORT } from './config.js';
-import { closeDb, databasePath, getDb } from './db/index.js';
-import { migrateLegacySecrets } from './db/legacy-secrets.js';
+import { closeDb, databasePath } from './db/index.js';
 import { assertEncryptionKey } from './db/secrets.js';
 import { logEvent } from './log.js';
 import { closeAllConnections } from './providers/imap/connection.js';
@@ -14,8 +13,6 @@ const SHUTDOWN_GRACE_MS = 8_000;
 
 export async function main(): Promise<void> {
   assertEncryptionKey();
-  const migrated = migrateLegacySecrets(getDb(), databasePath());
-  if (migrated > 0) logEvent({ event: 'secrets_migrated', count: migrated });
 
   const http = await startServer({
     port: PORT,

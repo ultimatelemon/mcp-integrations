@@ -9,7 +9,7 @@ import { logEvent } from './log.js';
 import { registerTools } from './tools/index.js';
 import { PostbusError, type User } from './types.js';
 
-export const VERSION = '0.3.0';
+export const VERSION = '0.3.1';
 
 const TOKEN_HINT = 'Postbus tokens are handed out by the server operator.';
 

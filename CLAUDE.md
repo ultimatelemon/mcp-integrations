@@ -62,11 +62,6 @@ operator hands out a token per user with `node dist/cli/add-user.js` in the
 container; mcp-http's `apiKey.verify` answers 401 for an unknown one. Rate
 limiting (per user) sits in the tool guard.
 
-0.3.0 moves secrets sealed under the old `MASTER_KEY` to `ENCRYPTION_KEY` at
-startup (`src/db/legacy-secrets.ts`, backup at
-`/data/postbus.db.before-encryption-key`). Once production has started on it,
-remove that file and `MASTER_KEY` from Dokploy.
-
 Upstream rate limits: keep one limiter per key when the upstream counts per
 key (perron), and one shared limiter when it counts per IP (moneybird).
 
