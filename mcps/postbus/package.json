@@ -3,7 +3,6 @@
   "version": "0.2.0",
   "description": "MCP server for managing multiple mailboxes (IMAP/SMTP, optionally the Gmail API).",
   "license": "MIT",
-  "author": "HalloSouf",
   "type": "module",
   "engines": {
     "node": ">=24"
