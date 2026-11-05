@@ -5,7 +5,7 @@
   "license": "MIT",
   "type": "module",
   "engines": {
-    "node": ">=24"
+    "node": ">=26"
   },
   "scripts": {
     "build": "npm run clean && tsc -p tsconfig.build.json",
@@ -28,7 +28,7 @@
     "@googleapis/gmail": "^18.0.0",
     "@modelcontextprotocol/node": "^2.1.2",
     "@modelcontextprotocol/server": "^2.4.0",
-    "@ultimatelemon-eu/crypto": "^1.1.0",
+    "@ultimatelemon-eu/crypto": "^1.2.0",
     "@ultimatelemon-eu/mcp-http": "^2.4.0",
     "better-sqlite3": "^13.0.3",
     "dotenv": "^17.4.2",
@@ -42,10 +42,10 @@
     "@modelcontextprotocol/client": "^2.4.0",
     "@types/better-sqlite3": "^9.6.0",
     "@types/mailparser": "^3.4.6",
-    "@types/node": "^24.0.0",
+    "@types/node": "^26.6.6",
     "@types/nodemailer": "^8.0.1",
     "@ultimatelemon-eu/eslint-config": "^1.1.1",
-    "@ultimatelemon-eu/prettier-config": "^1.0.1",
+    "@ultimatelemon-eu/prettier-config": "^1.0.2",
     "eslint": "^10.13.0",
     "eslint-config-prettier": "^10.1.8",
     "globals": "^17.13.0",

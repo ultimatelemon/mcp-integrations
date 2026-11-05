@@ -11,7 +11,7 @@
     "directory": "mcps/moneybird"
   },
   "engines": {
-    "node": ">=24"
+    "node": ">=26"
   },
   "scripts": {
     "dev": "node --watch --env-file-if-exists=.env src/server.ts",
@@ -25,19 +25,18 @@
     "docs:tools": "node scripts/generate-tool-docs.ts",
     "spec:refresh": "node scripts/refresh-spec.ts"
   },
-  "prettier": "@ultimatelemon-eu/prettier-config",
   "dependencies": {
     "@modelcontextprotocol/node": "^2.1.1",
     "@modelcontextprotocol/server": "^2.3.1",
-    "@ultimatelemon-eu/mcp-http": "^2.3.1",
+    "@ultimatelemon-eu/mcp-http": "^2.4.0",
     "pino": "^10.4.0",
     "zod": "^4.4.3"
   },
   "devDependencies": {
     "@modelcontextprotocol/client": "^2.3.1",
-    "@types/node": "^24.19.2",
+    "@types/node": "^26.6.6",
     "@ultimatelemon-eu/eslint-config": "^1.1.1",
-    "@ultimatelemon-eu/prettier-config": "^1.0.1",
+    "@ultimatelemon-eu/prettier-config": "^1.0.2",
     "eslint": "^10.13.0",
     "eslint-config-prettier": "^10.1.8",
     "globals": "^17.13.0",
