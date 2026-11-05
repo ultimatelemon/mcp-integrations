@@ -24,7 +24,7 @@ which optional headers it reads.
 
 ## Development
 
-Node 24 and npm workspaces. From the root:
+Node 26 and npm workspaces. From the root:
 
 ```bash
 npm ci

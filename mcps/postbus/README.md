@@ -573,7 +573,7 @@ Then link a mailbox with `imap_host: 127.0.0.1`, `imap_port: 3143`,
 GitHub Actions runs lint, types, build, tests and formatting on every push to
 `main` that touches this server, then builds the image
 (`ghcr.io/ultimatelemon/mcp-postbus`) and deploys it. CI and the
-container both run Node 24. The image builds from the repository root:
+container both run Node 26. The image builds from the repository root:
 `docker build -f mcps/postbus/Dockerfile .`
 
 ### Project layout

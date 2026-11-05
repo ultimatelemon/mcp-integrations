@@ -73,22 +73,29 @@ key (perron), and one shared limiter when it counts per IP (moneybird).
   and mcp-http serves MCP on `/<name>` and `/<name>/mcp`.
 - Images: `ghcr.io/ultimatelemon/mcp-<name>`, built and deployed
   per server by GitHub Actions only when that server changed.
-- CI: `.github/workflows/deploy-<name>.yml` on `ultimatelemon/shared-actions`
-  `@v2`, on GitHub-hosted runners (`runs-on: ubuntu-latest`,
+- CI: `code-quality.yml` on pull requests; `<name>-deployment.yml` per server
+  calls it as `quality`, then publishes and deploys. All on
+  `ultimatelemon/shared-actions` `@v2`, on GitHub-hosted runners (`runs-on: ubuntu-latest`,
   `container-image: ''`, `buildkit-endpoint: ''`): the cluster runners admit
   private repositories only. The deploy step needs the repository secret
   `DOKPLOY_DEPLOY_URL_<NAME>` (the app's deploy webhook in Dokploy).
 - Dokploy project "Model Context Protocols": apps `perron` (with
   `perron-redis` and volume `perron-data` on `/app/data`), `moneybird`, and
   `postbus` (volume `postbus-data` on `/data`).
-- Push over SSH: the HTTPS credential lacks the `workflow` scope.
+
+## Node 26 and install scripts
+
+npm on Node 26 skips dependency install scripts unless they are listed under
+`allowScripts` in the root `package.json`. Approve new ones with
+`npm install-scripts approve --no-allow-scripts-pin <pkg>`.
 
 ## Adding a server
 
 1. `mcps/<name>/` with `lint`, `typecheck`, `build`, `test`, `format`
    scripts, `.prettierrc` → `"@ultimatelemon-eu/prettier-config"`.
-2. Dockerfile with a pinned Node image (`node:24.x-alpine3.x`) and a
+2. Dockerfile on `node:26-alpine` and a
    `/healthz` check under the base path.
 3. Start it with `startMcpHttpServer` from `@ultimatelemon-eu/mcp-http`, with
    `basePath` from `BASE_PATH` and `apiKey` set.
-4. Add it to the table above, the root README and the CI matrix.
+4. Add it to the table above and the root README, and copy a
+   `<name>-deployment.yml` with its `DOKPLOY_DEPLOY_URL_<NAME>` secret.

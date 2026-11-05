@@ -126,7 +126,7 @@ server with live data, using places measured by hand.
 
 ### From source
 
-Needs Node 24. perron lives in the
+Needs Node 26. perron lives in the
 [mcp-integrations](https://github.com/ultimatelemon/mcp-integrations) monorepo.
 
 ```bash
