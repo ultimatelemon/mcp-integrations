@@ -1,5 +1,5 @@
 # Build context is the repository root: docker build -f mcps/perron/Dockerfile .
-FROM node:24.21.0-alpine3.24 AS build
+FROM node:26-alpine AS build
 WORKDIR /build
 COPY package.json package-lock.json tsconfig.base.json ./
 COPY mcps/perron/package.json mcps/perron/
@@ -9,7 +9,7 @@ COPY mcps/perron/src mcps/perron/src
 RUN npm run build --workspace mcps/perron \
   && npm prune --omit=dev --workspace mcps/perron --include-workspace-root=false
 
-FROM node:24.21.0-alpine3.24 AS runner
+FROM node:26-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production \
     PORT=3000 \

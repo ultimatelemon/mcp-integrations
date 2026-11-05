@@ -4,7 +4,7 @@
 # better-sqlite3 is native and is compiled against musl here, so the runtime
 # stage reuses the same binary. Both stages use the same pinned image so the
 # binary and the runtime musl always match.
-FROM node:24.21.0-alpine3.24 AS build
+FROM node:26-alpine AS build
 WORKDIR /build
 RUN apk add --no-cache python3 make g++
 COPY package.json package-lock.json ./
@@ -16,7 +16,7 @@ COPY mcps/postbus/src mcps/postbus/src
 RUN npm run build --workspace mcps/postbus \
   && npm prune --omit=dev --workspace mcps/postbus --include-workspace-root=false
 
-FROM node:24.21.0-alpine3.24 AS runner
+FROM node:26-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production \
     HOST=0.0.0.0 \

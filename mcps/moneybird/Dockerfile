@@ -1,5 +1,5 @@
 # Build context is the repository root: docker build -f mcps/moneybird/Dockerfile .
-FROM node:24.21.0-alpine3.24 AS build
+FROM node:26-alpine AS build
 WORKDIR /build
 COPY package.json package-lock.json tsconfig.base.json ./
 COPY mcps/moneybird/package.json mcps/moneybird/
@@ -9,7 +9,7 @@ COPY mcps/moneybird/src mcps/moneybird/src
 RUN npm run build --workspace mcps/moneybird \
   && npm prune --omit=dev --workspace mcps/moneybird --include-workspace-root=false
 
-FROM node:24.21.0-alpine3.24 AS runner
+FROM node:26-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production \
     PORT=3000
