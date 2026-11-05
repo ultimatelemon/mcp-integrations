@@ -1,33 +1,31 @@
-name: deploy moneybird
+name: Moneybird Deployment
 
 on:
   push:
     branches: [main]
     paths:
-      - "mcps/moneybird/**"
-      - "package.json"
-      - "package-lock.json"
-      - "tsconfig.base.json"
-      - ".github/workflows/deploy-moneybird.yml"
+      - 'mcps/moneybird/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'tsconfig.base.json'
+      - '.github/workflows/moneybird-deployment.yml'
+      - '.github/workflows/code-quality.yml'
   workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: deploy-moneybird
+  group: moneybird-deployment
   cancel-in-progress: true
 
 # A public repository: GitHub-hosted runners, as the cluster runners admit
 # private repositories only.
 jobs:
-  # Runs here rather than in a separate workflow so the image is built from
-  # exactly the commit that passed.
   quality:
-    uses: ultimatelemon/shared-actions/.github/workflows/node-quality.yml@v2
-    with:
-      runs-on: ubuntu-latest
-      container-image: ""
+    uses: ./.github/workflows/code-quality.yml
+    permissions:
+      contents: read
 
   publish:
     needs: [quality]
@@ -37,17 +35,18 @@ jobs:
       packages: write
     with:
       runs-on: ubuntu-latest
-      container-image: ""
-      buildkit-endpoint: ""
+      container-image: ''
+      buildkit-endpoint: ''
       image: ghcr.io/${{ github.repository_owner }}/mcp-moneybird
       dockerfile: mcps/moneybird/Dockerfile
 
   deploy:
+    if: github.ref == 'refs/heads/main'
     needs: [publish]
     uses: ultimatelemon/shared-actions/.github/workflows/dokploy-deploy.yml@v2
     with:
       runs-on: ubuntu-latest
-      container-image: ""
+      container-image: ''
       environment: moneybird
       url: https://mcp.ultimatelemon.eu/moneybird
     secrets:

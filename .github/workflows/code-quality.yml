@@ -1,19 +1,23 @@
 name: Code Quality
 
-# Pushes to main run the same checks inside each deploy workflow, gating the image.
 on:
   pull_request:
+  workflow_call:
 
 permissions:
   contents: read
 
 concurrency:
-  group: code-quality-${{ github.ref }}
+  # github.workflow is the caller's name under workflow_call, so the three
+  # deployments that call this on one push do not cancel each other.
+  group: code-quality-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+# A public repository: GitHub-hosted runners, as the cluster runners admit
+# private repositories only.
 jobs:
   quality:
     uses: ultimatelemon/shared-actions/.github/workflows/node-quality.yml@v2
     with:
       runs-on: ubuntu-latest
-      container-image: ""
+      container-image: ''
