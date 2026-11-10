@@ -212,6 +212,11 @@ email, and the app password on the link page:
 **Gmail, Google Workspace, Outlook, Hotmail, Microsoft 365, Fastmail, iCloud,
 Yahoo, Zoho, Proton (via Bridge).**
 
+That includes your own domain on one of them, such as Google Workspace or
+Microsoft 365 on `you@yourcompany.com`: when the domain itself is unknown,
+postbus-mcp looks up its MX records and recognises the provider from the mail
+server they point to. The lookup gives up after 3 seconds.
+
 For anything else, pass them yourself:
 
 ```
