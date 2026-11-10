@@ -9,7 +9,7 @@ import {
 } from '../db/links.js';
 import { logEvent } from '../log.js';
 import { release } from '../providers/imap/connection.js';
-import { findPreset } from '../providers/imap/presets.js';
+import { findPresetByHost } from '../providers/imap/presets.js';
 import { ImapSmtpProvider } from '../providers/imap/provider.js';
 import {
   assertMailTargetAllowed,
@@ -128,7 +128,7 @@ function form(
   status = 200,
   attemptsLeft?: number
 ): Response {
-  const appPasswordUrl = findPreset(link.email)?.appPasswordUrl;
+  const appPasswordUrl = findPresetByHost(link.imapHost)?.appPasswordUrl;
   const where = appPasswordUrl
     ? `Create one at <a href="${escapeHtml(appPasswordUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(new URL(appPasswordUrl).host)}</a>.`
     : 'Your mail provider issues it.';

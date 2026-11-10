@@ -10,7 +10,7 @@ import { registerTools } from './tools/index.js';
 import { PostbusError, type User } from './types.js';
 import { linkPages } from './web/link.js';
 
-export const VERSION = '0.4.0';
+export const VERSION = '0.4.1';
 
 const TOKEN_HINT = 'Postbus tokens are handed out by the server operator.';
 

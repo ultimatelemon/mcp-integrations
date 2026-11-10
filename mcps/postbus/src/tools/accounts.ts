@@ -2,7 +2,12 @@ import type { McpServer } from '@modelcontextprotocol/server';
 import { z } from 'zod';
 import { accountExists, listAccounts, removeAccount } from '../db/accounts.js';
 import { createLinkRequest, LINK_TTL_MS } from '../db/links.js';
-import { findPreset } from '../providers/imap/presets.js';
+import {
+  detectPreset,
+  findPreset,
+  findPresetByHost,
+  type MxResolver
+} from '../providers/imap/presets.js';
 import { release } from '../providers/imap/connection.js';
 import { MAX_ACCOUNTS_PER_USER, publicBaseUrl } from '../config.js';
 import { assertMailHostAllowed, isLoopbackHost } from '../net.js';
@@ -108,7 +113,7 @@ export function registerAccountTools(
           );
         }
 
-        const settings = resolveSettings(input);
+        const settings = await resolveSettings(input);
         await assertMailTargetAllowed(settings);
         assertRoomForMailbox(context.user.id, alias);
 
@@ -122,7 +127,9 @@ export function registerAccountTools(
           ...settings
         });
 
-        const appPasswordUrl = findPreset(email)?.appPasswordUrl;
+        const appPasswordUrl = findPresetByHost(
+          settings.imapHost
+        )?.appPasswordUrl;
         return [
           `To finish linking "${alias}" (${email}), the user opens this link and enters an app password there:`,
           '',
@@ -230,15 +237,23 @@ export interface SettingsInput {
 const IMPLICIT_TLS_IMAP_PORT = 993;
 const IMPLICIT_TLS_SMTP_PORT = 465;
 
-export function resolveSettings(input: SettingsInput): {
+export async function resolveSettings(
+  input: SettingsInput,
+  resolver?: MxResolver
+): Promise<{
   imapHost: string;
   imapPort: number;
   imapSecure: boolean;
   smtpHost: string;
   smtpPort: number;
   smtpSecure: boolean;
-} {
-  const preset = findPreset(input.email);
+}> {
+  // Explicit servers need no DNS; the domain list still supplies the ports.
+  const preset =
+    findPreset(input.email) ??
+    (input.imap_host?.trim() && input.smtp_host?.trim()
+      ? findPresetByHost(input.imap_host)
+      : await detectPreset(input.email, resolver));
 
   const imapHost = input.imap_host?.trim() || preset?.imapHost;
   const smtpHost = input.smtp_host?.trim() || preset?.smtpHost;
