@@ -3,19 +3,21 @@
 [MCP](https://modelcontextprotocol.io) servers by UltimateLemon, hosted at
 `https://mcp.ultimatelemon.eu/<name>`. Perron and moneybird are stateless and
 keep no credentials: you bring your own API key in a request header. Postbus
-stores linked mailboxes and hands out a token per user.
+stores linked mailboxes, so it is self-hosted only: our instance is invite-only,
+and anyone else runs their own (see its [README](mcps/postbus)).
 
 | Server                      | URL                                      | What it does                                                     |
 | --------------------------- | ---------------------------------------- | ---------------------------------------------------------------- |
 | [perron](mcps/perron)       | `https://mcp.ultimatelemon.eu/perron`    | Dutch Railways (NS): journeys, departures, disruptions, fares    |
 | [moneybird](mcps/moneybird) | `https://mcp.ultimatelemon.eu/moneybird` | Moneybird accounting: contacts, invoices, banking, time, reports |
-| [postbus](mcps/postbus)     | `https://mcp.ultimatelemon.eu/postbus`   | Several mailboxes over IMAP/SMTP or the Gmail API                |
+| [postbus](mcps/postbus)     | self-hosted (ours is invite-only)        | Several mailboxes over IMAP/SMTP or the Gmail API                |
 
 ## Connecting
 
 Send your key for the upstream API in `X-Api-Key` (or
 `Authorization: Bearer <key>`). Each server's README says where to get one and
-which optional headers it reads.
+which optional headers it reads. Postbus is the exception: it takes a token
+from whoever runs the instance, not an upstream key.
 
 - **claude.ai / Claude Desktop**: add a custom connector with the URL, choose
   **No sign-in**, and add the headers under "Request headers".
