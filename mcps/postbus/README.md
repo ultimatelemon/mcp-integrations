@@ -171,12 +171,21 @@ server-side stream — so a `GET /mcp` deliberately returns `405`.
 
 ## Linking a mailbox
 
-You do this in the conversation, with your own token. No terminal needed:
+You start it in the conversation, with your own token. No terminal needed:
 
-> Link my Gmail as "personal", address souf@gmail.com, app password abcd efgh ijkl mnop
+> Link my Gmail as "personal", address souf@gmail.com
 
-Claude then calls `add_mail_account`. The connection is tested first (IMAP and
-SMTP both); nothing is stored until both work.
+Claude calls `add_mail_account`, which hands back a one-time link such as
+`https://mcp.example.com/postbus/link/<token>`. Open it, paste the app password
+and press "Link mailbox". The connection is tested first (IMAP and SMTP both);
+nothing is stored until both work. Then tell Claude you are done and it checks
+with `list_accounts`.
+
+The password never goes through the chat: Claude does not type passwords into
+tools, and a chat transcript is no place for one anyway. The link works once,
+expires after 10 minutes and allows 5 attempts; asking for a new link for the
+same alias cancels the old one. Set `PUBLIC_URL` so the link points at your
+own domain.
 
 ### Creating an app password
 
@@ -192,8 +201,8 @@ Never use your normal password when the provider offers app passwords.
 
 ### Host and port
 
-For known providers postbus-mcp fills these in — you only supply alias, email
-and app password:
+For known providers postbus-mcp fills these in: you only supply alias and
+email, and the app password on the link page:
 
 **Gmail, Google Workspace, Outlook, Hotmail, Microsoft 365, Fastmail, iCloud,
 Yahoo, Zoho, Proton (via Bridge).**
@@ -215,11 +224,11 @@ when the server offers it. If that assumption is wrong for your server, pass
 
 **Mailboxes**
 
-| Tool                  | What it does                                                                 |
-| --------------------- | ---------------------------------------------------------------------------- |
-| `list_accounts`       | Lists your mailboxes with alias and email address                            |
-| `add_mail_account`    | Links an IMAP/SMTP mailbox with an app password (tests the connection first) |
-| `remove_mail_account` | Unlinks a mailbox and wipes the stored app password                          |
+| Tool                  | What it does                                                                  |
+| --------------------- | ----------------------------------------------------------------------------- |
+| `list_accounts`       | Lists your mailboxes with alias and email address                             |
+| `add_mail_account`    | Returns a one-time link where you enter the app password for an IMAP/SMTP box |
+| `remove_mail_account` | Unlinks a mailbox and wipes the stored app password                           |
 
 **Reading**
 
@@ -349,6 +358,7 @@ services:
     environment:
       ENCRYPTION_KEY: ${ENCRYPTION_KEY:?set ENCRYPTION_KEY in .env}
       DATABASE_PATH: /data/postbus.db
+      PUBLIC_URL: https://${PUBLIC_HOST:-mcp.example.com}
     volumes:
       - postbus-data:/data
     networks: [proxy]
@@ -364,7 +374,9 @@ services:
 Things to watch:
 
 - Set `PUBLIC_HOST` in `.env` to your own hostname; that is the only place the
-  domain appears, so the compose file itself stays untouched.
+  domain appears, so the compose file itself stays untouched. It also becomes
+  `PUBLIC_URL`, the origin of the link pages. Behind a path prefix, set
+  `BASE_PATH` too: the links include it.
 - The `proxy` network has to exist (`docker network create proxy`) and Traefik
   has to be on it.
 - The container publishes no port of its own: only Traefik can reach it.
@@ -422,6 +434,13 @@ that could mix people up.
 instead of falling back to cleartext when a server does not offer it, which is
 what a downgrade attack arranges. Loopback is exempt, for local bridges such as
 Proton Mail Bridge.
+
+**Link pages.** A link token is 32 random bytes, stored only as a SHA-256 hash,
+valid once for 10 minutes and 5 attempts. Unknown, used and expired links get
+the same page, so a link says nothing about whether it ever existed. The pages
+allow no scripts and no framing, and are never cached. The token sits in the
+URL path, so it shows up in a proxy's access log; it is spent by the time
+anyone reads that log.
 
 **Rate limiting.** 60 tool calls per user per minute; the next call fails with
 how long to wait
