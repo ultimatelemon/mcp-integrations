@@ -11,6 +11,11 @@ Works with **any IMAP/SMTP provider** — Gmail, Outlook, Fastmail, your own mai
 server — using a plain **app password**. No Google Cloud project, no OAuth
 verification, no test-user limit.
 
+> **Self-hosted only.** Unlike perron and moneybird, postbus is not offered as
+> a public service: it stores other people's mail credentials. The instance at
+> `mcp.ultimatelemon.eu/postbus` is for UltimateLemon and people we hand a
+> token to. Want to use postbus? Run your own; see [Quick start](#quick-start).
+
 One instance serves **multiple users**. Everyone gets their own API token and
 sees only their own mailboxes. You host it, you hand out the tokens; there is no
 open sign-up.
