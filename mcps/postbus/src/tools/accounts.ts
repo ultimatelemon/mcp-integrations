@@ -1,17 +1,12 @@
 import type { McpServer } from '@modelcontextprotocol/server';
 import { z } from 'zod';
-import {
-  accountExists,
-  listAccounts,
-  removeAccount,
-  saveImapAccount
-} from '../db/accounts.js';
-import { ImapSmtpProvider } from '../providers/imap/provider.js';
+import { accountExists, listAccounts, removeAccount } from '../db/accounts.js';
+import { createLinkRequest, LINK_TTL_MS } from '../db/links.js';
 import { findPreset } from '../providers/imap/presets.js';
 import { release } from '../providers/imap/connection.js';
-import { MAX_ACCOUNTS_PER_USER } from '../config.js';
+import { MAX_ACCOUNTS_PER_USER, publicBaseUrl } from '../config.js';
 import { assertMailHostAllowed, isLoopbackHost } from '../net.js';
-import { PostbusError, type ImapAccount } from '../types.js';
+import { PostbusError } from '../types.js';
 import type { ToolContext } from './context.js';
 import { formatAccounts } from './format.js';
 import { guard } from './guard.js';
@@ -43,22 +38,17 @@ export function registerAccountTools(
     {
       title: 'Link a mailbox',
       description:
-        'Links an IMAP/SMTP mailbox to your account using an app password. ' +
-        'For known providers (Gmail, Outlook, Fastmail, iCloud, Yahoo, Zoho) only alias, email ' +
-        'and app_password are needed — host and port are filled in automatically. ' +
-        'Never use a normal account password: create an app password instead ' +
-        '(Gmail: https://myaccount.google.com/apppasswords). ' +
-        'The connection is tested before anything is stored.',
+        'Starts linking an IMAP/SMTP mailbox and returns a one-time link. The user opens it ' +
+        'and enters an app password there; the connection is tested before anything is stored. ' +
+        'Never ask for a password in the chat and never pass one to this tool. ' +
+        'For known providers (Gmail, Outlook, Fastmail, iCloud, Yahoo, Zoho) only alias and ' +
+        'email are needed; host and port are filled in automatically.',
       inputSchema: {
         alias: z
           .string()
           .min(1)
           .describe('Short name for this mailbox, e.g. "personal" or "work".'),
         email: z.string().min(3).describe('The email address of the mailbox.'),
-        app_password: z
-          .string()
-          .min(1)
-          .describe('The app password. Stored encrypted, never in plain text.'),
         imap_host: z
           .string()
           .optional()
@@ -120,62 +110,29 @@ export function registerAccountTools(
 
         const settings = resolveSettings(input);
         await assertMailTargetAllowed(settings);
+        assertRoomForMailbox(context.user.id, alias);
 
-        const replaced = accountExists(context.user.id, alias);
-        if (
-          !replaced &&
-          listAccounts(context.user.id).length >= MAX_ACCOUNTS_PER_USER
-        ) {
-          throw new PostbusError(
-            `You already have the maximum of ${MAX_ACCOUNTS_PER_USER} linked mailboxes.`,
-            'Unlink one with remove_mail_account first.',
-            'invalid_input'
-          );
-        }
-
-        // Verify first, store second: a broken mailbox helps nobody.
-        const candidate: ImapAccount = {
-          id: `probe-${alias}`,
+        const email = input.email.trim();
+        const { token } = createLinkRequest({
           userId: context.user.id,
           alias,
-          email: input.email.trim(),
+          email,
           displayName: input.display_name?.trim() || undefined,
-          createdAt: new Date().toISOString(),
-          provider: 'imap',
-          ...settings,
-          username: input.username?.trim() || input.email.trim(),
-          password: input.app_password
-        };
-
-        await new ImapSmtpProvider().verify(candidate);
-
-        const saved = saveImapAccount({
-          userId: context.user.id,
-          alias,
-          email: candidate.email,
-          displayName: candidate.displayName,
-          imapHost: candidate.imapHost,
-          imapPort: candidate.imapPort,
-          imapSecure: candidate.imapSecure,
-          smtpHost: candidate.smtpHost,
-          smtpPort: candidate.smtpPort,
-          smtpSecure: candidate.smtpSecure,
-          username: candidate.username,
-          password: candidate.password
+          username: input.username?.trim() || email,
+          ...settings
         });
 
-        // An upsert keeps the row id, and the pool is keyed on it, so without
-        // this a relink kept serving the old connection for up to a minute —
-        // still authenticated with the password that was just rotated away,
-        // and against the old host if that changed too.
-        await release(saved.id);
-
+        const appPasswordUrl = findPreset(email)?.appPasswordUrl;
         return [
-          `${replaced ? 'Relinked' : 'Linked'}: "${saved.alias}" → ${saved.email}`,
-          `IMAP ${candidate.imapHost}:${candidate.imapPort} · SMTP ${candidate.smtpHost}:${candidate.smtpPort}`,
-          'Both connections were tested and the app password is stored encrypted.',
+          `To finish linking "${alias}" (${email}), the user opens this link and enters an app password there:`,
           '',
-          `Try it: search_emails with account "${saved.alias}" and query "is:unread newer_than:7d".`
+          `${publicBaseUrl()}/link/${token}`,
+          '',
+          `The link works once and expires in ${LINK_TTL_MS / 60_000} minutes. Do not ask for the password in the chat.`,
+          appPasswordUrl
+            ? `An app password is created at ${appPasswordUrl}.`
+            : 'The app password comes from the mail provider; never the normal account password.',
+          'When the page says the mailbox is linked, call list_accounts to confirm.'
         ].join('\n');
       })
   );
@@ -210,6 +167,17 @@ export function registerAccountTools(
         await release(removedId);
         return `Mailbox "${alias}" is unlinked and its stored app password is gone.`;
       })
+  );
+}
+
+export function assertRoomForMailbox(userId: string, alias: string): void {
+  if (accountExists(userId, alias)) return;
+  if (listAccounts(userId).length < MAX_ACCOUNTS_PER_USER) return;
+
+  throw new PostbusError(
+    `You already have the maximum of ${MAX_ACCOUNTS_PER_USER} linked mailboxes.`,
+    'Unlink one with remove_mail_account first.',
+    'invalid_input'
   );
 }
 

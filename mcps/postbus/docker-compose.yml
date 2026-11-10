@@ -16,6 +16,7 @@ services:
     environment:
       ENCRYPTION_KEY: ${ENCRYPTION_KEY:?set ENCRYPTION_KEY in .env (openssl rand -base64 32)}
       DATABASE_PATH: /data/postbus.db
+      PUBLIC_URL: https://${PUBLIC_HOST:-mcp.example.com}
       PORT: '3000'
       HOST: 0.0.0.0
       MAIL_TIMEOUT_MS: '30000'

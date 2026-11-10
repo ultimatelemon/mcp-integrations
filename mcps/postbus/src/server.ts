@@ -8,8 +8,9 @@ import { findUserByToken } from './db/users.js';
 import { logEvent } from './log.js';
 import { registerTools } from './tools/index.js';
 import { PostbusError, type User } from './types.js';
+import { linkPages } from './web/link.js';
 
-export const VERSION = '0.3.1';
+export const VERSION = '0.4.0';
 
 const TOKEN_HINT = 'Postbus tokens are handed out by the server operator.';
 
@@ -23,7 +24,8 @@ export function createMcpServer(user: User): McpServer {
         "postbus-mcp gives access to this user's mailboxes. " +
         'Start with list_accounts to see which aliases exist, then pass one as `account` to ' +
         'search_emails, get_message, get_thread and send_email. ' +
-        'If no mailbox is linked yet, use add_mail_account (address + app password). ' +
+        'If no mailbox is linked yet, use add_mail_account with the address: it returns a one-time ' +
+        'link where the user enters the app password. Never ask for a password in the chat. ' +
         'Every search_emails result carries an id and a threadId: get_message reads one message, ' +
         'get_thread the whole conversation. ' +
         'send_email sends immediately — confirm the content with the user before calling it, ' +
@@ -52,6 +54,7 @@ export function startServer(options: ServerOptions): Promise<McpHttpServer> {
       return createMcpServer(user);
     },
     ...options,
+    pages: linkPages(options.basePath),
     apiKey: {
       hint: TOKEN_HINT,
       verify: (key) => findUserByToken(key) !== undefined

@@ -33,6 +33,8 @@ const schema = z.object({
   PORT: port.default(3000),
   HOST: z.string().trim().min(1).default('0.0.0.0'),
   BASE_PATH: z.string().trim().default(''),
+  // Origin people open the one-time link pages on, e.g. https://mcp.example.com.
+  PUBLIC_URL: z.url().optional(),
 
   DATABASE_PATH: z
     .string()
@@ -80,13 +82,24 @@ const config = load();
 
 export const PORT = config.PORT;
 export const HOST = config.HOST;
-export const BASE_PATH = config.BASE_PATH;
+// Same normalisation as mcp-http, so the link pages match the path it hands over.
+export const BASE_PATH = config.BASE_PATH.replace(/\/+$/, '').replace(
+  /^(?=[^/])/,
+  '/'
+);
 export const DATABASE_PATH = config.DATABASE_PATH;
 export const MAIL_TIMEOUT_MS = config.MAIL_TIMEOUT_MS;
 export const MAX_MESSAGE_BYTES = config.MAX_MESSAGE_BYTES;
 export const RATE_LIMIT_PER_MINUTE = config.RATE_LIMIT_PER_MINUTE;
 export const MAX_ACCOUNTS_PER_USER = config.MAX_ACCOUNTS_PER_USER;
 export const OAUTH_CALLBACK_PORT = config.OAUTH_CALLBACK_PORT;
+
+export function publicBaseUrl(): string {
+  const origin = (
+    config.PUBLIC_URL ?? `http://localhost:${config.PORT}`
+  ).replace(/\/+$/, '');
+  return `${origin}${BASE_PATH}`;
+}
 
 export function getGoogleOAuthConfig(): {
   clientId: string;

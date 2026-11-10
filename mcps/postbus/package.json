@@ -1,6 +1,6 @@
 {
   "name": "@ultimatelemon-eu/postbus",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "MCP server for managing multiple mailboxes (IMAP/SMTP, optionally the Gmail API).",
   "license": "MIT",
   "type": "module",
@@ -29,7 +29,7 @@
     "@modelcontextprotocol/node": "^2.1.2",
     "@modelcontextprotocol/server": "^2.4.0",
     "@ultimatelemon-eu/crypto": "^1.2.0",
-    "@ultimatelemon-eu/mcp-http": "^2.4.0",
+    "@ultimatelemon-eu/mcp-http": "^2.5.0",
     "better-sqlite3": "^13.0.3",
     "dotenv": "^17.4.2",
     "imapflow": "^1.7.6",
