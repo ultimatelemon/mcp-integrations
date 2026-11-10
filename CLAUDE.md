@@ -63,10 +63,11 @@ container; mcp-http's `apiKey.verify` answers 401 for an unknown one. Rate
 limiting (per user) sits in the tool guard.
 
 Decided 10-11-2026: postbus stays self-hosted only. It holds other people's
-mail credentials, so it gets no public sign-up, no self-service sign-in and no
-web form for app passwords. Our instance on `/postbus` is invite-only (tokens
-from the operator); anyone else runs their own. Keep new postbus features
-within that model.
+mail credentials, so it gets no public sign-up and no self-service sign-in.
+Our instance on `/postbus` is invite-only (tokens from the operator); anyone
+else runs their own. App passwords go in through a one-time link that
+`add_mail_account` hands out, never through the chat: Claude refuses to type
+passwords into a tool. Keep new postbus features within that model.
 
 Upstream rate limits: keep one limiter per key when the upstream counts per
 key (perron), and one shared limiter when it counts per IP (moneybird).
