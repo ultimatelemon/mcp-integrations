@@ -1,6 +1,12 @@
 import { McpServer } from '@modelcontextprotocol/server';
 import type { ServerConfig } from '../config/schema.ts';
 import { permissionsFor } from '../config/schema.ts';
+import {
+  accountsOf,
+  linkedAdministrations,
+  tokenFor,
+  type LinkedAccount
+} from '../moneybird/accounts.ts';
 import { MoneybirdClient, type Limiters } from '../moneybird/client.ts';
 import { allTools } from '../tools/index.ts';
 import { registerTools, type RegistrationSummary } from '../tools/registry.ts';
@@ -10,7 +16,7 @@ export const SERVER_NAME = 'moneybird';
 
 export interface CreateServerOptions {
   config: ServerConfig;
-  /** The caller's Moneybird API token. */
+  /** The caller's Moneybird API token, or the bundle of tokens a sign-in linked. */
   token: string;
   /** Rate-limit budgets shared by every request in this process. */
   limiters?: Limiters;
@@ -28,6 +34,19 @@ export interface CreatedServer {
   registration: RegistrationSummary;
 }
 
+function linkedLine(accounts: readonly LinkedAccount[]): string[] {
+  if (accounts.length < 2) return [];
+  const names = linkedAdministrations(accounts).map((administration) =>
+    administration.name
+      ? `${administration.name} (${administration.id})`
+      : administration.id
+  );
+  return [
+    `This connection links these administrations: ${names.join(', ')}. Pass administration_id ` +
+      'to choose one; others are not reachable.'
+  ];
+}
+
 function administrationLine(config: ServerConfig): string {
   return config.administrationId
     ? `Default administration: ${config.administrationId}. This is only a default: every ` +
@@ -39,6 +58,7 @@ function administrationLine(config: ServerConfig): string {
 
 function instructionsFor(
   config: ServerConfig,
+  accounts: readonly LinkedAccount[],
   notes: readonly string[]
 ): string {
   const permissions = permissionsFor(config);
@@ -57,6 +77,7 @@ function instructionsFor(
         : ''),
     'For anything the tools do not cover, use find_moneybird_endpoint and moneybird_api.',
     administrationLine(config),
+    ...linkedLine(accounts),
     ...notes,
     '',
     'Amounts are decimal strings and follow the administration currency. Dates are ISO 8601.',
@@ -70,9 +91,10 @@ export function createMoneybirdServer(
   options: CreateServerOptions
 ): CreatedServer {
   const { config } = options;
+  const accounts = accountsOf(options.token);
 
   const client = new MoneybirdClient({
-    token: options.token,
+    token: (administrationId) => tokenFor(accounts, administrationId),
     administrationId: config.administrationId,
     ...(config.baseUrl ? { baseUrl: config.baseUrl } : {}),
     ...(config.timeZone ? { timeZone: config.timeZone } : {}),
@@ -85,14 +107,14 @@ export function createMoneybirdServer(
 
   const server = new McpServer(
     { name: SERVER_NAME, version: options.version ?? '0.0.0' },
-    { instructions: instructionsFor(config, options.notes ?? []) }
+    { instructions: instructionsFor(config, accounts, options.notes ?? []) }
   );
 
   const registration = registerTools({
     server,
     definitions: options.tools ?? allTools,
     config,
-    context: { client, config }
+    context: { client, config, accounts }
   });
 
   return { server, client, registration };

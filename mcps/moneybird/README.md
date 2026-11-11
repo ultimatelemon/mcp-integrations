@@ -16,6 +16,18 @@ In claude.ai or Claude Desktop, add a custom connector with URL
 Connecting sends you to Moneybird to approve access, then asks for this
 connection's default administration, access level and extra toolsets.
 
+Moneybird approves one administration at a time. After each approval the server
+lists what the connection reaches; **Link another administration** sends you to
+Moneybird again to pick the next one, and **Continue** finishes. One connection
+can hold up to 10 administrations, and the tools reach each of them through
+`administration_id`. Linking has to finish within the ten minutes a sign-in
+lasts; to add an administration later, connect again.
+
+The sign-in accepts clients that identify themselves with a Client ID Metadata
+Document on `claude.ai`, which claude.ai, Claude Desktop and Claude Code do.
+There is no dynamic client registration, so other clients use a
+[personal API token](#personal-api-token).
+
 The server keeps no copy of your Moneybird token: it travels, encrypted, inside
 the token your client holds. To disconnect, remove the connector and revoke
 the app under your Moneybird account's authorized applications.
@@ -132,7 +144,8 @@ docker run --rm -p 127.0.0.1:3000:3000 ghcr.io/ultimatelemon/mcp-moneybird:lates
 
 For the sign-in, register an OAuth application at
 <https://moneybird.com/user/applications/new> with redirect URI
-`<PUBLIC_URL><BASE_PATH>/oauth/callback`. Behind a path-routing proxy, also
+`<PUBLIC_URL><BASE_PATH>/oauth/link`, the page where users link more
+administrations (the server logs it at startup as `moneybirdRedirectUri`). Behind a path-routing proxy, also
 route `/.well-known/oauth-authorization-server<BASE_PATH>` and
 `/.well-known/oauth-protected-resource<BASE_PATH>` to the server.
 

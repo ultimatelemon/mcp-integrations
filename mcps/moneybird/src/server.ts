@@ -22,7 +22,7 @@ async function main(): Promise<void> {
   });
   const defaults = configFromEnv();
   const limiters = createLimiters();
-  const oauth = moneybirdOAuth(process.env, {
+  const signIn = moneybirdOAuth(process.env, {
     limiters,
     baseUrl: defaults.baseUrl
   });
@@ -46,11 +46,16 @@ async function main(): Promise<void> {
     host: process.env['HOST'] ?? '0.0.0.0',
     basePath: process.env['BASE_PATH'] ?? '',
     apiKey: { hint: API_KEY_HINT },
-    ...(oauth ? { oauth } : {}),
+    ...(signIn ? { oauth: signIn.oauth, pages: signIn.pages } : {}),
     logger
   });
   logger.info(
-    { url: http.url, version, oauth: Boolean(oauth) },
+    {
+      url: http.url,
+      version,
+      oauth: Boolean(signIn),
+      ...(signIn ? { moneybirdRedirectUri: signIn.redirectUri } : {})
+    },
     'moneybird listening'
   );
 

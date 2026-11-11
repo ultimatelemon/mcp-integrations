@@ -141,11 +141,31 @@ export const coreTools: readonly ToolDefinition[] = [
     toolset: 'core',
     access: 'read',
     inputSchema: z.object({}),
-    handler: async (_args, { client }) => {
-      const response = await client.get('administrations', {
-        administrationScoped: false
-      });
-      return textResult(response.data);
+    handler: async (_args, { client, accounts }) => {
+      if (accounts.length === 1) {
+        const response = await client.get('administrations', {
+          administrationScoped: false
+        });
+        return textResult(response.data);
+      }
+      // Each approval answers for its own administration only.
+      const lists = [];
+      for (const account of accounts) {
+        const response = await client.get('administrations', {
+          administrationScoped: false,
+          token: account.accessToken
+        });
+        lists.push(Array.isArray(response.data) ? response.data : []);
+      }
+      const seen = new Set<string>();
+      return textResult(
+        lists.flat().filter((administration: unknown) => {
+          const id = String((administration as { id?: unknown }).id);
+          if (seen.has(id)) return false;
+          seen.add(id);
+          return true;
+        })
+      );
     }
   }),
 

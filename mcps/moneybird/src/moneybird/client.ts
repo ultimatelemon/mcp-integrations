@@ -59,6 +59,8 @@ export interface RequestOptions {
   administrationId?: string | undefined;
   /** Set to `false` for the one global endpoint, `GET /administrations`. */
   administrationScoped?: boolean;
+  /** Sends this token instead of asking the client's token provider. */
+  token?: string;
   query?: Record<string, string | number | boolean | undefined>;
   body?: unknown;
   /**
@@ -170,6 +172,12 @@ export class MoneybirdClient {
   ): Promise<MoneybirdResponse<T>> {
     const url = this.buildUrl(options);
     const method = options.method ?? 'GET';
+    // Resolved once, outside the retries: a token that cannot be found is not a network error.
+    const token =
+      options.token ??
+      (await this.getToken(
+        options.administrationId ?? this.resolveAdministrationId()
+      ));
 
     let lastError: MoneybirdError | undefined;
     for (let attempt = 0; attempt <= this.maxRetries; attempt += 1) {
@@ -177,7 +185,7 @@ export class MoneybirdClient {
 
       let response: Response;
       try {
-        response = await this.send(url, method, options);
+        response = await this.send(url, method, token, options);
       } catch (cause) {
         lastError = this.toNetworkError(cause, method, url);
         if (attempt === this.maxRetries) throw lastError;
@@ -288,11 +296,9 @@ export class MoneybirdClient {
   private async send(
     url: string,
     method: string,
+    token: string,
     options: RequestOptions
   ): Promise<Response> {
-    const token = await this.getToken(
-      options.administrationId ?? this.resolveAdministrationId()
-    );
     const headers = new Headers({
       authorization: `Bearer ${token}`,
       accept: 'application/json',
