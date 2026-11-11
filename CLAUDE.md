@@ -58,6 +58,13 @@ through CIMD only (`registration: false`; mcp-http trusts `claude.ai`
 documents): open DCR would let any redirect URI ride an existing upstream
 session. Clients without CIMD send a key instead.
 
+A Moneybird approval covers one administration. The moneybird sign-in therefore
+puts its own upstream (`src/server/link.ts`) between mcp-http and Moneybird:
+Moneybird redirects to `/<name>/oauth/link` (served through mcp-http's
+`pages`), where the user approves as many administrations as they like; the
+tokens then go to mcp-http as one `mbl1.` bundle, still stateless. The server
+picks the token per `administration_id`.
+
 Exception: postbus. A user links several mailboxes, which does not fit in four
 headers, so it keeps users and mailboxes in SQLite, with app passwords sealed
 by `@ultimatelemon-eu/crypto` under `ENCRYPTION_KEY`, bound to their row. The

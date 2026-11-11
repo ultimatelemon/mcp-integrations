@@ -8,11 +8,14 @@ import type {
   MoneybirdResponse
 } from '../moneybird/client.ts';
 import type { ServerConfig, Toolset } from '../config/schema.ts';
+import type { LinkedAccount } from '../moneybird/accounts.ts';
 import { MAX_PER_PAGE } from '../moneybird/pagination.ts';
 
 export interface ToolContext {
   client: MoneybirdClient;
   config: ServerConfig;
+  /** One per Moneybird approval; several when the sign-in linked more than one administration. */
+  accounts: readonly LinkedAccount[];
 }
 
 /**

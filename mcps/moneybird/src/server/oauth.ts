@@ -9,7 +9,13 @@ import {
   DEFAULT_TOOLSETS,
   TOOLSETS
 } from '../config/schema.ts';
+import {
+  decodeAccounts,
+  linkedAdministrations,
+  type LinkedAdministration
+} from '../moneybird/accounts.ts';
 import { MoneybirdClient, type Limiters } from '../moneybird/client.ts';
+import { createLinking } from './link.ts';
 
 export const AUTHORIZE_URL = 'https://moneybird.com/oauth/authorize';
 export const TOKEN_URL = 'https://moneybird.com/oauth/token';
@@ -36,21 +42,46 @@ export interface MoneybirdOAuthDeps {
   fetch?: typeof globalThis.fetch;
 }
 
-async function settingsForm(
-  token: string,
-  deps: MoneybirdOAuthDeps
-): Promise<SettingsForm> {
-  const client = new MoneybirdClient({
+function clientFor(token: string, deps: MoneybirdOAuthDeps): MoneybirdClient {
+  return new MoneybirdClient({
     token,
     limiters: deps.limiters,
     maxRetries: 1,
     ...(deps.baseUrl ? { baseUrl: deps.baseUrl } : {}),
     ...(deps.fetch ? { fetch: deps.fetch } : {})
   });
-  const { data } = await client.get<Administration[]>('administrations', {
-    administrationScoped: false
-  });
-  const administrations = Array.isArray(data) ? data : [];
+}
+
+async function fetchAdministrations(
+  token: string,
+  deps: MoneybirdOAuthDeps
+): Promise<Administration[]> {
+  const { data } = await clientFor(token, deps).get<Administration[]>(
+    'administrations',
+    { administrationScoped: false }
+  );
+  return Array.isArray(data) ? data : [];
+}
+
+/** The administrations one approval reaches, as recorded in the linked token. */
+export async function administrationsOf(
+  token: string,
+  deps: MoneybirdOAuthDeps
+): Promise<LinkedAdministration[]> {
+  return (await fetchAdministrations(token, deps)).map((administration) => ({
+    id: String(administration.id),
+    ...(administration.name ? { name: administration.name } : {})
+  }));
+}
+
+async function settingsForm(
+  token: string,
+  deps: MoneybirdOAuthDeps
+): Promise<SettingsForm> {
+  const linked = decodeAccounts(token);
+  const administrations: Administration[] = linked
+    ? linkedAdministrations(linked)
+    : await fetchAdministrations(token, deps);
 
   return {
     title: 'Connect Moneybird',
@@ -60,7 +91,7 @@ async function settingsForm(
       {
         name: 'administration',
         label: 'Default administration',
-        hint: 'Used when a request does not name one. All administrations stay reachable.',
+        hint: 'Used when a request does not name one. The other linked administrations stay reachable.',
         options: [
           ...administrations.map((administration) => ({
             value: String(administration.id),
@@ -105,11 +136,24 @@ async function settingsForm(
   };
 }
 
+export interface MoneybirdOAuth {
+  oauth: OAuthOptions;
+  /** The page Moneybird redirects back to, where the user links more administrations. */
+  pages: (request: Request) => Promise<Response | undefined>;
+  /** Register this at Moneybird as the application's redirect URI. */
+  redirectUri: string;
+}
+
+function normalizeBasePath(value: string | undefined): string {
+  const trimmed = (value ?? '').replace(/\/+$/, '');
+  return trimmed && !trimmed.startsWith('/') ? `/${trimmed}` : trimmed;
+}
+
 /** OAuth sign-in when MONEYBIRD_CLIENT_ID and MONEYBIRD_CLIENT_SECRET are set. */
 export function moneybirdOAuth(
   env: NodeJS.ProcessEnv,
   deps: MoneybirdOAuthDeps
-): OAuthOptions | undefined {
+): MoneybirdOAuth | undefined {
   const clientId = env['MONEYBIRD_CLIENT_ID'];
   const clientSecret = env['MONEYBIRD_CLIENT_SECRET'];
   if (!clientId && !clientSecret) return undefined;
@@ -122,10 +166,13 @@ export function moneybirdOAuth(
   if (!publicUrl) {
     throw new ConfigError('PUBLIC_URL is required for the OAuth sign-in.');
   }
-  return {
-    publicUrl,
-    name: 'Moneybird',
-    upstream: oauth2Upstream({
+  const basePath = normalizeBasePath(env['BASE_PATH']);
+  // A Moneybird approval covers one administration, so the sign-in asks for
+  // as many as the user wants before handing mcp-http one bundle of tokens.
+  const linking = createLinking({
+    issuer: `${publicUrl.replace(/\/+$/, '')}${basePath}`,
+    basePath,
+    moneybird: oauth2Upstream({
       authorizeUrl: AUTHORIZE_URL,
       tokenUrl: TOKEN_URL,
       clientId,
@@ -133,11 +180,21 @@ export function moneybirdOAuth(
       scopes: OAUTH_SCOPES,
       ...(deps.fetch ? { fetch: deps.fetch } : {})
     }),
-    settings: (token) => settingsForm(token, deps),
-    // Clients identify themselves with a Client ID Metadata Document on a
-    // trusted host (claude.ai); open registration would let any redirect uri
-    // ride an existing Moneybird session. Other clients send a token instead.
-    registration: false
+    administrationsOf: (token) => administrationsOf(token, deps)
+  });
+  return {
+    oauth: {
+      publicUrl,
+      name: 'Moneybird',
+      upstream: linking.upstream,
+      settings: (token) => settingsForm(token, deps),
+      // Clients identify themselves with a Client ID Metadata Document on a
+      // trusted host (claude.ai); open registration would let any redirect uri
+      // ride an existing Moneybird session. Other clients send a token instead.
+      registration: false
+    },
+    pages: linking.pages,
+    redirectUri: linking.redirectUri
   };
 }
 
