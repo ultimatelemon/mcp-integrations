@@ -54,9 +54,9 @@ the access token. Settings picked after sign-in arrive as `oauth.settings`; the
 moneybird server maps them onto its `X-Moneybird-*` headers, and real headers
 win. Traefik must also route `/.well-known/oauth-authorization-server/<name>`
 and `/.well-known/oauth-protected-resource/<name>` to the app. Clients come in
-through CIMD only (`registration: false`; mcp-http trusts `claude.ai`
-documents): open DCR would let any redirect URI ride an existing upstream
-session. Clients without CIMD send a key instead.
+through CIMD only (`registration: false`; moneybird trusts `claude.ai` and
+`assistent.studiosouf.com` documents): open DCR would let any redirect URI
+ride an existing upstream session. Clients without CIMD send a key instead.
 
 A Moneybird approval covers one administration. The moneybird sign-in therefore
 puts its own upstream (`src/server/link.ts`) between mcp-http and Moneybird:
