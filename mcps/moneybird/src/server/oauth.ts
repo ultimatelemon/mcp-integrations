@@ -1,4 +1,5 @@
 import {
+  DEFAULT_TRUSTED_HOSTS,
   oauth2Upstream,
   type OAuthOptions,
   type SettingsForm
@@ -27,6 +28,12 @@ export const OAUTH_SCOPES = [
   'bank',
   'time_entries',
   'settings'
+] as const;
+
+/** Hosts whose Client ID Metadata Documents may sign in: Claude and the Mike assistant. */
+export const TRUSTED_CLIENT_HOSTS = [
+  ...DEFAULT_TRUSTED_HOSTS,
+  'assistent.studiosouf.com'
 ] as const;
 
 interface Administration {
@@ -189,8 +196,9 @@ export function moneybirdOAuth(
       upstream: linking.upstream,
       settings: (token) => settingsForm(token, deps),
       // Clients identify themselves with a Client ID Metadata Document on a
-      // trusted host (claude.ai); open registration would let any redirect uri
-      // ride an existing Moneybird session. Other clients send a token instead.
+      // trusted host; open registration would let any redirect uri ride an
+      // existing Moneybird session. Other clients send a token instead.
+      clientIdMetadata: { trustedHosts: TRUSTED_CLIENT_HOSTS },
       registration: false
     },
     pages: linking.pages,

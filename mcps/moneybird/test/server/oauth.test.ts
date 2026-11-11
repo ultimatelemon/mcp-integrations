@@ -79,6 +79,13 @@ describe('moneybirdOAuth', () => {
     expect(handler.owns('/moneybird/register')).toBe(false);
   });
 
+  it('trusts metadata documents from claude.ai and the Mike assistant', () => {
+    const signIn = moneybirdOAuth(env, { limiters: createLimiters() });
+    expect(signIn?.oauth.clientIdMetadata).toEqual({
+      trustedHosts: ['claude.ai', 'assistent.studiosouf.com']
+    });
+  });
+
   it('offers the administrations the token reaches', async () => {
     const upstream = stubFetch({
       body: [

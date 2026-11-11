@@ -24,7 +24,8 @@ can hold up to 10 administrations, and the tools reach each of them through
 lasts; to add an administration later, connect again.
 
 The sign-in accepts clients that identify themselves with a Client ID Metadata
-Document on `claude.ai`, which claude.ai, Claude Desktop and Claude Code do.
+Document on `claude.ai` (claude.ai, Claude Desktop and Claude Code) or
+`assistent.studiosouf.com` (the Mike assistant).
 There is no dynamic client registration, so other clients use a
 [personal API token](#personal-api-token).
 
