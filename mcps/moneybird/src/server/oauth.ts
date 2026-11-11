@@ -133,7 +133,11 @@ export function moneybirdOAuth(
       scopes: OAUTH_SCOPES,
       ...(deps.fetch ? { fetch: deps.fetch } : {})
     }),
-    settings: (token) => settingsForm(token, deps)
+    settings: (token) => settingsForm(token, deps),
+    // Clients identify themselves with a Client ID Metadata Document on a
+    // trusted host (claude.ai); open registration would let any redirect uri
+    // ride an existing Moneybird session. Other clients send a token instead.
+    registration: false
   };
 }
 

@@ -16,6 +16,11 @@ In claude.ai or Claude Desktop, add a custom connector with URL
 Connecting sends you to Moneybird to approve access, then asks for this
 connection's default administration, access level and extra toolsets.
 
+The sign-in accepts clients that identify themselves with a Client ID Metadata
+Document on `claude.ai`, which claude.ai, Claude Desktop and Claude Code do.
+There is no dynamic client registration, so other clients use a
+[personal API token](#personal-api-token).
+
 The server keeps no copy of your Moneybird token: it travels, encrypted, inside
 the token your client holds. To disconnect, remove the connector and revoke
 the app under your Moneybird account's authorized applications.

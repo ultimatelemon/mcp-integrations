@@ -1,3 +1,4 @@
+import { createOAuthHandler } from '@ultimatelemon-eu/mcp-http';
 import { describe, expect, it } from 'vitest';
 import {
   callerConfig,
@@ -29,13 +30,14 @@ describe('moneybirdOAuth', () => {
     ).toThrow(/PUBLIC_URL/);
   });
 
-  it('sends the user to Moneybird with every scope', () => {
+  it('sends the user to Moneybird with every scope', async () => {
     const oauth = moneybirdOAuth(env, { limiters: createLimiters() });
     const url = new URL(
-      oauth?.upstream.authorizeUrl({
+      (await oauth?.upstream.authorizeUrl({
         redirectUri: 'https://mcp.example.test/moneybird/oauth/callback',
-        state: 's'
-      }) ?? ''
+        state: 's',
+        codeChallenge: 'c'
+      })) ?? ''
     );
     expect(url.origin + url.pathname).toBe(
       'https://moneybird.com/oauth/authorize'
@@ -43,6 +45,29 @@ describe('moneybirdOAuth', () => {
     expect(url.searchParams.get('scope')).toBe(
       'sales_invoices documents estimates bank time_entries settings'
     );
+  });
+
+  it('accepts metadata-document clients only, without open registration', async () => {
+    const previous = process.env['ENCRYPTION_KEY'];
+    process.env['ENCRYPTION_KEY'] = Buffer.alloc(32, 7).toString('base64');
+    try {
+      const oauth = moneybirdOAuth(env, { limiters: createLimiters() });
+      if (!oauth) throw new Error('OAuth should be on');
+      const handler = createOAuthHandler(oauth, '/moneybird');
+
+      const response = await handler.handle(
+        new Request(
+          'https://mcp.example.test/.well-known/oauth-authorization-server/moneybird'
+        )
+      );
+      const metadata = (await response.json()) as Record<string, unknown>;
+      expect(metadata['client_id_metadata_document_supported']).toBe(true);
+      expect(metadata).not.toHaveProperty('registration_endpoint');
+      expect(handler.owns('/moneybird/register')).toBe(false);
+    } finally {
+      if (previous === undefined) delete process.env['ENCRYPTION_KEY'];
+      else process.env['ENCRYPTION_KEY'] = previous;
+    }
   });
 
   it('offers the administrations the token reaches', async () => {
