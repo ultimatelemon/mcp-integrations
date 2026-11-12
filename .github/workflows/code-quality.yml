@@ -17,7 +17,7 @@ concurrency:
 # private repositories only.
 jobs:
   quality:
-    uses: ultimatelemon/shared-actions/.github/workflows/node-quality.yml@v2
+    uses: ultimatelemon/shared-actions/.github/workflows/node-quality.yml@3f13461ca15be922d4476580c7a24a9b19310aa6
     with:
       runs-on: ubuntu-latest
       container-image: ''
