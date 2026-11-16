@@ -2,7 +2,7 @@
 
 Public monorepo with UltimateLemon's MCP servers. Each server is served under
 its own path on `https://mcp.ultimatelemon.eu`: `/perron`, `/moneybird`,
-`/postbus`.
+`/postbus`, and the routes of `mcps/gateway` (`/garmin`).
 
 ## Layout
 
@@ -33,6 +33,7 @@ mcps/<name>/   one MCP server: own package.json, Dockerfile, tests, README
 | `perron`    | `/perron`    | NS API, OVapi GTFS, deelmobiliteit | Redis (optional), `/app/data` volume |
 | `moneybird` | `/moneybird` | Moneybird API                      | none                                 |
 | `postbus`   | `/postbus`   | IMAP/SMTP, Gmail API               | SQLite on volume `postbus-data`      |
+| `gateway`   | `/garmin`    | Taxuspt garmin_mcp (internal)      | none                                 |
 
 Env vars per server are in `mcps/<name>/.env.example` and the server's
 README.
@@ -79,6 +80,21 @@ else runs their own. App passwords go in through a one-time link that
 `add_mail_account` hands out, never through the chat: Claude refuses to type
 passwords into a tool. Keep new postbus features within that model.
 
+Exception: `mcps/gateway` (ADR-0019). An MCP server that acts on an account
+of ours and has no sign-in of its own (Taxuspt garmin_mcp, later postbus) is
+reachable only through the gateway. Routes live in `mcps/gateway/routes.yaml`
+(path, internal upstream, the env var name of the upstream token, allowed
+subjects); values come from the environment. Per route, mcp-http's
+`createOAuthHandler` with `oidcUpstream` to one Zitadel OIDC app (project
+"MCP", `GATEWAY_OIDC_*`), `registration: false`, CIMD from `claude.ai` and
+`assistent.studiosouf.com`. Only allowed Zitadel subjects get through
+(`GATEWAY_OWNER_SUB`). Tokens are bound to their route's issuer, so one route's
+token does not open another. The gateway strips the caller's `Authorization`
+and adds the upstream's token; the upstream has no Traefik route. Keep the
+gateway small, never log bodies or tokens, and give every change a security
+review. Adding a route is config, env and one redirect URI in Zitadel; see its
+README.
+
 Upstream rate limits: keep one limiter per key when the upstream counts per
 key (perron), and one shared limiter when it counts per IP (moneybird).
 
@@ -97,8 +113,11 @@ key (perron), and one shared limiter when it counts per IP (moneybird).
   private repositories only. The deploy step needs the repository secret
   `DOKPLOY_DEPLOY_URL_<NAME>` (the app's deploy webhook in Dokploy).
 - Dokploy project "Model Context Protocols": apps `perron` (with
-  `perron-redis` and volume `perron-data` on `/app/data`), `moneybird`, and
-  `postbus` (volume `postbus-data` on `/data`).
+  `perron-redis` and volume `perron-data` on `/app/data`), `moneybird`,
+  `postbus` (volume `postbus-data` on `/data`) and `gateway`.
+- The gateway serves several paths without `BASE_PATH`: Traefik routes
+  `PathPrefix(/<path>)` and the root `/.well-known/*/<path>` metadata paths of
+  each route to it, and its `/healthz` sits at the root.
 
 ## Node 26 and install scripts
 

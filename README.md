@@ -11,6 +11,7 @@ and anyone else runs their own (see its [README](mcps/postbus)).
 | [perron](mcps/perron)       | `https://mcp.ultimatelemon.eu/perron`    | Dutch Railways (NS): journeys, departures, disruptions, fares    |
 | [moneybird](mcps/moneybird) | `https://mcp.ultimatelemon.eu/moneybird` | Moneybird accounting: contacts, invoices, banking, time, reports |
 | [postbus](mcps/postbus)     | self-hosted (ours is invite-only)        | Several mailboxes over IMAP/SMTP or the Gmail API                |
+| [gateway](mcps/gateway)     | `https://mcp.ultimatelemon.eu/garmin`    | OAuth sign-in in front of our own self-hosted servers (Garmin)   |
 
 ## Connecting
 
@@ -23,6 +24,10 @@ from whoever runs the instance, not an upstream key.
   **No sign-in**, and add the headers under "Request headers".
 - **Claude Code**:
   `claude mcp add --transport http <name> <url> --header "X-Api-Key: <key>"`
+
+The [gateway](mcps/gateway) routes (`/garmin`) are for the owner only: they
+act on our own accounts, so they take a Zitadel sign-in instead of a key, and
+only allowed users get through.
 
 ## Development
 
