@@ -116,7 +116,7 @@ key (perron), and one shared limiter when it counts per IP (moneybird).
   `perron-redis` and volume `perron-data` on `/app/data`), `moneybird`,
   `postbus` (volume `postbus-data` on `/data`) and `gateway`.
 - The gateway serves several paths without `BASE_PATH`: Traefik routes
-  `PathPrefix(/<path>)` and the root `/.well-known/*/<path>` metadata paths of
+  `PathPrefix(<path>)` and the root `/.well-known/*<path>` metadata paths of
   each route to it, and its `/healthz` sits at the root.
 
 ## Node 26 and install scripts

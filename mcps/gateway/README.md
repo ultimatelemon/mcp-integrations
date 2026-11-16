@@ -38,7 +38,7 @@ network, with that server's own token.
 ## Connecting
 
 In claude.ai or Claude Desktop, add a custom connector with URL
-`https://mcp.ultimatelemon.eu/<route>` (e.g. `/garmin`) and leave
+`https://mcp.ultimatelemon.eu<path>` (e.g. `https://mcp.ultimatelemon.eu/garmin`) and leave
 authentication on OAuth; claude.ai uses its published identity. Mike connects
 with `auth: oauth` and its own client metadata document.
 
@@ -61,12 +61,12 @@ with `auth: oauth` and its own client metadata document.
 
 2. Put the upstream token (and the `sub` of any new subject) in Infisical,
    next to the gateway's other variables (ADR-0007).
-3. In Zitadel, project "MCP", add `https://mcp.ultimatelemon.eu/<path>/oauth/callback`
-   as a redirect URI of the gateway's OIDC app.
-4. In Traefik, route these to the gateway: `PathPrefix(/<path>)`,
-   `/.well-known/oauth-protected-resource/<path>`,
-   `/.well-known/oauth-authorization-server/<path>` and
-   `/.well-known/openid-configuration/<path>`. Remove the upstream's own public
+3. In Zitadel, project "MCP", add
+   `https://mcp.ultimatelemon.eu<path>/oauth/callback` as a redirect URI of the gateway's OIDC app.
+4. In Traefik, route these to the gateway: `PathPrefix(<path>)`,
+   `/.well-known/oauth-protected-resource<path>`,
+   `/.well-known/oauth-authorization-server<path>` and
+   `/.well-known/openid-configuration<path>`. Remove the upstream's own public
    route: it is reachable only on the internal network.
 
 No code changes. The gateway and the upstream must share a Docker network.
