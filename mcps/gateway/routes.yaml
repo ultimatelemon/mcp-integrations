@@ -1,0 +1,16 @@
+# Routes of the gateway. No secrets here: token and subject values come from
+# the environment variables named below. See README "Adding a route".
+
+# Zitadel users a route can allow, by name: each maps to the env var that
+# holds that user's `sub`.
+subjects:
+  owner: GATEWAY_OWNER_SUB
+
+routes:
+  garmin:
+    path: /garmin
+    # Taxuspt/garmin_mcp on the internal Docker network.
+    upstream: http://garmin-mcp:8000/mcp
+    upstreamTokenEnv: GARMIN_MCP_HTTP_TOKEN
+    name: Garmin
+    allowedSubjects: [owner]
