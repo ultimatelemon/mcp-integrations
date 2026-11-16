@@ -65,7 +65,13 @@ function onlyFor(
   };
   const refresh = upstream.refresh?.bind(upstream);
   return {
-    authorizeUrl: (params) => upstream.authorizeUrl(params),
+    // claude.ai's client_id is shared by every claude.ai user, so a forwarded
+    // authorize link must not complete on the owner's live Zitadel session.
+    authorizeUrl: async (params) => {
+      const url = new URL(await upstream.authorizeUrl(params));
+      url.searchParams.set('prompt', 'login');
+      return url.toString();
+    },
     exchangeCode: async (params) =>
       check(await upstream.exchangeCode(params), true),
     ...(refresh

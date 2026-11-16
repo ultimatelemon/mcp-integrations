@@ -4,6 +4,7 @@ import type { RunningGateway } from '../src/gateway.ts';
 import {
   captureLogger,
   CLAUDE_CLIENT_ID,
+  CLAUDE_REDIRECT_URI,
   DUMMY_TOKEN,
   ENCRYPTION_KEY,
   FRIEND_SUB,
@@ -191,6 +192,79 @@ describe('authentication', () => {
       ['/garmin-mcp', `Bearer ${GARMIN_TOKEN}`],
       ['/dummy-mcp', `Bearer ${DUMMY_TOKEN}`]
     ]);
+  });
+});
+
+async function refresh(
+  base: string,
+  path: string,
+  refreshToken: string
+): Promise<Response> {
+  return fetch(`${base}${path}/token`, {
+    method: 'POST',
+    body: new URLSearchParams({
+      grant_type: 'refresh_token',
+      refresh_token: refreshToken,
+      client_id: CLAUDE_CLIENT_ID
+    })
+  });
+}
+
+describe('sign-in', () => {
+  it('makes Zitadel ask for a login even with a live session', async () => {
+    const response = await fetch(
+      `${gateway.url}/garmin/authorize?${new URLSearchParams({
+        response_type: 'code',
+        client_id: CLAUDE_CLIENT_ID,
+        redirect_uri: CLAUDE_REDIRECT_URI,
+        code_challenge: 'x'.repeat(43),
+        code_challenge_method: 'S256'
+      }).toString()}`,
+      { redirect: 'manual' }
+    );
+    expect(response.status).toBe(302);
+    const location = new URL(response.headers.get('location') ?? '');
+    expect(location.searchParams.get('prompt')).toBe('login');
+  });
+
+  it('refreshes through Zitadel without a prompt', async () => {
+    const result = await signIn(
+      gateway.url,
+      '/garmin',
+      OWNER_SUB,
+      undefined,
+      `code:${OWNER_SUB}:short`
+    );
+    if (!result.ok) throw new Error(result.body);
+    const response = await refresh(gateway.url, '/garmin', result.refreshToken);
+    expect(response.status).toBe(200);
+    const body = (await response.json()) as { access_token: string };
+    const call = await mcpCall(gateway.url, '/garmin/mcp', body.access_token);
+    expect(call.status).toBe(200);
+  });
+
+  it('refuses a refresh once the subject is no longer allowed', async () => {
+    const before = await startTestGateway(
+      routesWithDummy((file) => {
+        file.routes['garmin']?.allowedSubjects.push('friend');
+      }),
+      testEnv(upstream.url)
+    );
+    const result = await signIn(
+      before.url,
+      '/garmin',
+      FRIEND_SUB,
+      undefined,
+      `code:${FRIEND_SUB}:short`
+    );
+    await before.close();
+    if (!result.ok) throw new Error(result.body);
+
+    const response = await refresh(gateway.url, '/garmin', result.refreshToken);
+    expect(response.ok).toBe(false);
+    expect(await response.text()).toContain(
+      'This account has no access to Garmin here.'
+    );
   });
 });
 

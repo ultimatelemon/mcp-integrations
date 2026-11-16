@@ -95,17 +95,23 @@ export const fakeFetch: typeof globalThis.fetch = async (input, init) => {
     ) {
       return Response.json({ error: 'invalid_client' }, { status: 401 });
     }
-    // The fake signs in whoever the code names: `code:<sub>`.
-    const code = body.get('code') ?? '';
-    if (!code.startsWith('code:')) {
+    // The fake signs in whoever the code names: `code:<sub>`, or
+    // `code:<sub>:short` for a Zitadel token the gateway must refresh at once.
+    // Its refresh token carries the same: `refresh:<sub>[:short]`.
+    const grant =
+      body.get('grant_type') === 'refresh_token'
+        ? (body.get('refresh_token') ?? '').replace(/^refresh:/, 'code:')
+        : (body.get('code') ?? '');
+    if (!grant.startsWith('code:')) {
       return Response.json({ error: 'invalid_grant' }, { status: 400 });
     }
+    const [sub = '', short] = grant.slice('code:'.length).split(':');
     return Response.json({
       access_token: ZITADEL_ACCESS_TOKEN,
       token_type: 'Bearer',
-      expires_in: 3600,
-      refresh_token: 'zitadel-refresh-token',
-      id_token: idToken(code.slice('code:'.length))
+      expires_in: short ? 60 : 3600,
+      refresh_token: `refresh:${grant.slice('code:'.length)}`,
+      id_token: idToken(sub)
     });
   }
   return new Response('not found', { status: 404 });
@@ -254,7 +260,8 @@ export async function signIn(
   base: string,
   path: string,
   sub: string,
-  client = { id: CLAUDE_CLIENT_ID, redirectUri: CLAUDE_REDIRECT_URI }
+  client = { id: CLAUDE_CLIENT_ID, redirectUri: CLAUDE_REDIRECT_URI },
+  zitadelCode = `code:${sub}`
 ): Promise<SignInResult> {
   const verifier = randomBytes(32).toString('base64url');
   const authorize = new URL(`${base}${path}/authorize`);
@@ -279,13 +286,14 @@ export async function signIn(
     `${zitadel.origin}${zitadel.pathname}` !== `${ISSUER}/oauth/v2/authorize` ||
     zitadel.searchParams.get('redirect_uri') !==
       `${PUBLIC_URL}${path}/oauth/callback` ||
-    !zitadel.searchParams.get('scope')?.split(' ').includes('offline_access')
+    !zitadel.searchParams.get('scope')?.split(' ').includes('offline_access') ||
+    zitadel.searchParams.get('prompt') !== 'login'
   ) {
     throw new Error(`Unexpected Zitadel redirect: ${zitadel.href}`);
   }
 
   const callback = new URL(`${base}${path}/oauth/callback`);
-  callback.searchParams.set('code', `code:${sub}`);
+  callback.searchParams.set('code', zitadelCode);
   callback.searchParams.set('state', zitadel.searchParams.get('state') ?? '');
   const toClient = await fetch(callback, { redirect: 'manual' });
   if (toClient.status !== 302) {
