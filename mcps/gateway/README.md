@@ -17,15 +17,21 @@ network, with that server's own token.
 - Each route is its own OAuth 2.1 authorization server
   (`createOAuthHandler` from `@ultimatelemon-eu/mcp-http/oauth`) with issuer
   `<PUBLIC_URL><path>`, signing in through one Zitadel OIDC app with
-  `offline_access`. Tokens are sealed with `ENCRYPTION_KEY` and bound to their
+  `offline_access` and `prompt=login`: claude.ai's client ID is shared by all
+  its users, so a forwarded authorize link must not complete on a live
+  Zitadel session. Tokens are sealed with `ENCRYPTION_KEY` and bound to their
   issuer, so a token for one route is refused on every other.
 - Only clients with a Client ID Metadata Document on `claude.ai` or
   `assistent.studiosouf.com` can sign in; there is no dynamic registration.
 - Only the Zitadel users a route allows get through: anyone else is turned away
   at sign-in, and a token whose subject is no longer allowed gets 403.
+- Deactivating a user in Zitadel takes effect at the next upstream refresh
+  (within an hour). To cut someone off at once, remove the subject from the
+  route or rotate `ENCRYPTION_KEY`.
 - `<path>` and `<path>/mcp` are proxied to the upstream with
-  `Authorization: Bearer <upstream token>`. The caller's `Authorization`,
-  cookies and hop-by-hop headers are dropped; responses, SSE included, stream
+  `Authorization: Bearer <upstream token>`. Of the caller's headers only
+  `content-type`, `accept`, `user-agent`, `mcp-session-id`,
+  `mcp-protocol-version` and `last-event-id` go along; responses, SSE included, stream
   through as they arrive. An upstream that refuses the gateway's token, or
   redirects, gives 502.
 - Without a token: 401 with `WWW-Authenticate` pointing at the route's
@@ -63,13 +69,20 @@ with `auth: oauth` and its own client metadata document.
    next to the gateway's other variables (ADR-0007).
 3. In Zitadel, project "MCP", add
    `https://mcp.ultimatelemon.eu<path>/oauth/callback` as a redirect URI of the gateway's OIDC app.
-4. In Traefik, route these to the gateway: `PathPrefix(<path>)`,
+4. In Traefik, route these to the gateway: `Path(<path>) || PathPrefix(<path>/)`,
    `/.well-known/oauth-protected-resource<path>`,
    `/.well-known/oauth-authorization-server<path>` and
    `/.well-known/openid-configuration<path>`. Remove the upstream's own public
    route: it is reachable only on the internal network.
 
-No code changes. The gateway and the upstream must share a Docker network.
+No code changes. The upstream itself:
+
+- requires its bearer token. Check that it refuses a call without one: some
+  servers start open with only a warning when their token variable is unset
+  (Taxuspt does without `GARMIN_MCP_HTTP_TOKEN`).
+- publishes no ports and has no Traefik route.
+- shares a Docker network with the gateway, preferably one only the two of
+  them are on.
 
 ## Variables
 
@@ -78,7 +91,7 @@ See [`.env.example`](.env.example).
 | Variable                     | Purpose                                                                     |
 | ---------------------------- | --------------------------------------------------------------------------- |
 | `PUBLIC_URL`                 | Public origin, `https://mcp.ultimatelemon.eu`                               |
-| `ENCRYPTION_KEY`             | Seals tokens; rotating it signs everyone out                                |
+| `ENCRYPTION_KEY`             | Seals tokens, the gateway's own key; rotating it signs everyone out         |
 | `GATEWAY_OIDC_ISSUER`        | `https://id.ultimatelemon.eu`                                               |
 | `GATEWAY_OIDC_CLIENT_ID`     | The gateway's Zitadel OIDC app (confidential, Refresh Token grant on)       |
 | `GATEWAY_OIDC_CLIENT_SECRET` |                                                                             |
