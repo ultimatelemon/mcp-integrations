@@ -338,7 +338,7 @@ describe('proxy', () => {
     expect(upstream.requests.map((r) => r.method)).toEqual(['GET', 'DELETE']);
   });
 
-  it('swaps the caller token for the upstream token and strips hop-by-hop headers', async () => {
+  it('swaps the caller token for the upstream token and forwards only MCP headers', async () => {
     const body = JSON.stringify({ jsonrpc: '2.0', id: 7, method: 'ping' });
     const response = await new Promise<{
       status: number;
@@ -359,7 +359,13 @@ describe('proxy', () => {
             'proxy-authorization': 'Basic abc',
             'mcp-session-id': 'session-1',
             'mcp-protocol-version': '2025-06-18',
-            'x-kept': 'yes'
+            'last-event-id': 'event-3',
+            'user-agent': 'claude-test',
+            origin: 'https://claude.ai',
+            'x-forwarded-for': '203.0.113.9',
+            'x-forwarded-host': 'mcp.ultimatelemon.eu',
+            'x-api-key': 'caller-key',
+            'x-other': 'dropped'
           }
         },
         (res) => {
@@ -383,14 +389,21 @@ describe('proxy', () => {
       authorization: `Bearer ${GARMIN_TOKEN}`,
       'mcp-session-id': 'session-1',
       'mcp-protocol-version': '2025-06-18',
-      'x-kept': 'yes'
+      'last-event-id': 'event-3',
+      'user-agent': 'claude-test',
+      'content-type': 'application/json'
     });
     for (const name of [
       'cookie',
       'x-hop',
       'keep-alive',
       'te',
-      'proxy-authorization'
+      'proxy-authorization',
+      'origin',
+      'x-forwarded-for',
+      'x-forwarded-host',
+      'x-api-key',
+      'x-other'
     ]) {
       expect(seen?.headers).not.toHaveProperty(name);
     }

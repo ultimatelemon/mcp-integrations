@@ -16,17 +16,16 @@ const HOP_BY_HOP = [
   'upgrade'
 ];
 
-// The caller's credentials never reach the upstream; fetch sets host and
-// length itself, and the internal hop needs no compression.
-const DROPPED_REQUEST_HEADERS = new Set([
-  ...HOP_BY_HOP,
-  'authorization',
-  'cookie',
-  'host',
-  'content-length',
-  'accept-encoding',
-  'expect'
-]);
+// Only what MCP needs reaches the upstream: no caller credentials, cookies,
+// forwarding or origin headers. fetch sets host, length and encoding itself.
+const FORWARDED_REQUEST_HEADERS = [
+  'content-type',
+  'accept',
+  'user-agent',
+  'mcp-session-id',
+  'mcp-protocol-version',
+  'last-event-id'
+];
 
 // fetch has already decoded the body, so its encoding and length no longer apply.
 const DROPPED_RESPONSE_HEADERS = new Set([
@@ -51,12 +50,12 @@ function connectionTokens(value: string | string[] | null | undefined) {
 }
 
 function upstreamHeaders(req: IncomingMessage, token: string): Headers {
-  const listed = connectionTokens(req.headers.connection);
   const headers = new Headers();
-  for (const [name, value] of Object.entries(req.headers)) {
-    if (value === undefined) continue;
-    if (DROPPED_REQUEST_HEADERS.has(name) || listed.has(name)) continue;
-    headers.set(name, Array.isArray(value) ? value.join(', ') : value);
+  for (const name of FORWARDED_REQUEST_HEADERS) {
+    const value = req.headers[name];
+    if (value !== undefined) {
+      headers.set(name, Array.isArray(value) ? value.join(', ') : value);
+    }
   }
   headers.set('authorization', `Bearer ${token}`);
   return headers;
