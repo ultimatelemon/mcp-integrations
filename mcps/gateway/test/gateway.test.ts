@@ -367,6 +367,51 @@ describe('proxy', () => {
     });
   });
 
+  it.each([
+    ['while the upstream stream is open', true],
+    ['before the upstream answers', false]
+  ])(
+    'ends the upstream request when the client goes away %s',
+    async (_when, streaming) => {
+      let reached: () => void = () => undefined;
+      const arrived = new Promise<void>((resolve) => {
+        reached = resolve;
+      });
+      let upstreamClosed: () => void = () => undefined;
+      const closed = new Promise<void>((resolve) => {
+        upstreamClosed = resolve;
+      });
+      upstream.on('/garmin-mcp', (_req, res) => {
+        res.on('close', () => upstreamClosed());
+        if (streaming) {
+          res.writeHead(200, { 'content-type': 'text/event-stream' });
+          res.write('event: message\ndata: {}\n\n');
+        }
+        reached();
+      });
+
+      const controller = new AbortController();
+      const response = fetch(`${gateway.url}/garmin/mcp`, {
+        headers: { authorization: `Bearer ${ownerGarmin}` },
+        signal: controller.signal
+      });
+      if (streaming) {
+        const body = (await response).body as ReadableStream<Uint8Array>;
+        await body.getReader().read();
+      } else {
+        response.catch(() => undefined);
+        await arrived;
+      }
+      controller.abort();
+
+      await expect(closed).resolves.toBeUndefined();
+      upstream.on('/garmin-mcp', (_req, res) => {
+        res.writeHead(200, { 'content-type': 'application/json' });
+        res.end('{}');
+      });
+    }
+  );
+
   it('answers 502 without the upstream challenge when the upstream refuses its token', async () => {
     upstream.on('/dummy-mcp', (_req, res) => {
       res.writeHead(401, { 'www-authenticate': 'Bearer realm="upstream"' });
