@@ -10,7 +10,15 @@ export class ConfigError extends Error {
 }
 
 const ENV_NAME = /^[A-Z][A-Z0-9_]*$/;
-const RESERVED_PATHS = new Set(['/healthz', '/.well-known', '/mcp']);
+// The other servers on this host keep their own paths.
+const RESERVED_PATHS = new Set([
+  '/healthz',
+  '/.well-known',
+  '/mcp',
+  '/perron',
+  '/moneybird',
+  '/postbus'
+]);
 
 const httpUrl = z.url({ protocol: /^https?$/ });
 

@@ -101,11 +101,11 @@ describe('parseRoutesFile', () => {
       garmin.replace('GARMIN_MCP_HTTP_TOKEN', 'sk-live-123'),
       'routes.garmin.upstreamTokenEnv'
     ],
-    [
-      'a reserved path',
-      garmin.replace('/garmin', '/healthz'),
+    ...['/healthz', '/perron', '/moneybird', '/postbus'].map((path) => [
+      `the reserved path ${path}`,
+      garmin.replace('/garmin', path),
       'routes.garmin.path: is reserved'
-    ],
+    ]),
     ['a nested path', garmin.replace('/garmin', '/a/b'), 'routes.garmin.path'],
     [
       'a non-http upstream',
