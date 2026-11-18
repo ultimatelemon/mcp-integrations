@@ -1,10 +1,11 @@
 name: Python Quality
 
+# Not path-filtered on purpose: `python-quality` is a required check in the
+# protect-main ruleset (infrastructure, repositories/ultimatelemon), and a
+# required check from a path-filtered workflow blocks every pull request that
+# skips the path.
 on:
   pull_request:
-    paths:
-      - 'mcps/broker/**'
-      - '.github/workflows/python-quality.yml'
   workflow_call:
     inputs:
       working-directory:
@@ -23,6 +24,7 @@ concurrency:
 # checks here. A public repository: GitHub-hosted runners.
 jobs:
   quality:
+    name: python-quality
     runs-on: ubuntu-latest
     defaults:
       run:
