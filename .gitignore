@@ -6,3 +6,9 @@ coverage/
 
 .env*
 !.env.example
+
+# Python (mcps/broker)
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
