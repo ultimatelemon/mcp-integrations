@@ -1,14 +1,18 @@
 # broker
 
-A read-only [MCP](https://modelcontextprotocol.io) server for one Interactive
-Brokers (IBKR) account. It talks to an IB Gateway over the TWS API with
+An [MCP](https://modelcontextprotocol.io) server for one Interactive Brokers
+(IBKR) account. It talks to an IB Gateway over the TWS API with
 [`ib_async`](https://github.com/ib-api-reloaded/ib_async) and gives Claude, or
 any other MCP client, the account summary, positions, open orders, today's
 fills, contract search, quotes, historical bars and a position-size
 calculator.
 
-No tool places, changes or cancels an order, the connection is opened with
-`readonly=True`, and the gateway itself should run with `READ_ONLY_API=yes`.
+By default it is read-only: no order tool exists, the connection is opened
+with `readonly=True`, and the gateway runs with `READ_ONLY_API=yes`. With
+`ORDERS_ENABLED=true` (paper; live needs `LIVE_ORDERS_ENABLED=true` as well)
+it adds bracket orders, tightening a stop, closing a position and cancelling
+entries, with every safety limit enforced by this server (see
+[Orders](#orders)).
 
 > **Not an official IBKR project.** IBKR is not involved and does not support it.
 
@@ -20,7 +24,7 @@ Node or Go library. It is not an npm workspace and has its own checks
 
 | Tool                      | What it answers                                                                                                                                 |
 | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| `get_account_summary`     | Net liquidation, total cash, buying power, maintenance margin, excess liquidity, gross position value, `leverage` and `margin_cushion`          |
+| `get_account_summary`     | Net liquidation, total cash, buying power, maintenance margin, excess liquidity, gross position value, `leverage`, `margin_cushion` and `exchange_rates` |
 | `get_positions`           | Per position: symbol, exchange, currency, quantity, average cost, market price, market value, unrealized PnL, % of net liquidation              |
 | `get_open_orders`         | Working orders from every client (TWS, mobile, API), read-only                                                                                  |
 | `get_executions`          | Fills with time, side, quantity, price, commission and realized PnL, for a date range and optional symbol (see [Limits](#limits))               |
@@ -40,6 +44,65 @@ Node or Go library. It is not an npm workspace and has its own checks
 - `get_quote` and `get_historical_bars` take a `symbol` (default `STK`,
   `SMART`, `USD`) or a `con_id` from `search_contract`. An ambiguous symbol
   returns the candidates with their `con_id`.
+- `exchange_rates` are IBKR's ExchangeRate account values: base currency per
+  unit of each currency the account holds (not the base itself).
+
+## Orders
+
+Only with `ORDERS_ENABLED=true`, and on a live account only with
+`LIVE_ORDERS_ENABLED=true` too; otherwise the tools below do not exist and the
+connection stays `readonly=True`. Only the token labels in `ORDER_CLIENTS` may
+call them: another client gets "may not use order tools", so the owner's own
+claude.ai connection stays read-only. Stocks only.
+
+| Tool                  | What it does                                                                                                                  |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `place_bracket_order` | `con_id`, `side` (buy/sell), `quantity`, `entry_limit`, `stop_price`, `target_price`, optional `target_quantity`, `order_ref` |
+| `modify_stop`         | `order_id`, `new_stop`: only tighter (higher for a long, lower for a short), never wider                                      |
+| `close_position`      | `con_id`, `quantity`, optional `limit_price` (else market): all or part of a position                                        |
+| `cancel_order`        | `order_id` of an entry this server placed; never a stop or take-profit                                                        |
+| `cancel_entry_orders` | Every open entry this server placed; never a stop or take-profit                                                              |
+
+**A bracket** is three orders transmitted together (only the last has
+`transmit=True`): a limit entry with `tif=DAY`, a take-profit limit for
+`target_quantity` (default all) and a stop for the whole `quantity`, both
+`tif=GTC` so the protection does not expire overnight. All are regular
+trading hours only (`outsideRth=False`), carry the `order_ref` and the
+account, and the two children share OCA group `oca-<order_ref>` with
+`ocaType=2` (reduce with block): when the take-profit fills half, the stop
+shrinks to the other half instead of being cancelled. The children of an
+entry that never fills are never active and go with it.
+
+**The server refuses**, with the rule in the error:
+
+- a stop or target on the wrong side: a buy needs `stop < entry < target`, a
+  sell `target < entry < stop`; `quantity` and prices above 0;
+  `0 < target_quantity <= quantity`; an `order_ref` of 1-40 of
+  `A-Z a-z 0-9 . _ : -`;
+- an entry above `MAX_ORDER_NOTIONAL_PCT` of net liquidation (quantity x
+  entry limit, converted with IBKR's exchange rate; no rate, no order);
+- more than `MAX_ORDERS_PER_DAY` new brackets on one day (Europe/Amsterdam).
+  Exits, stop changes and cancels never count, so an exit is never blocked;
+- a stop move that widens, or that would trigger at once against the last
+  (delayed) price: that is `close_position`;
+- closing more than the position; cancelling anything but an entry this
+  server placed.
+
+**Idempotent `order_ref`:** the same `order_ref` again returns the existing
+bracket (`outcome: existing`) instead of placing one, from the journal or,
+when the journal does not know it, from IBKR's open and completed orders.
+
+**Closing** joins the bracket's OCA group, so the stop and take-profit shrink
+by what is closed and no stop is left to open a reverse position. Cancelling
+an entry after a partial fill shrinks its stop and take-profit to the filled
+quantity.
+
+**Journal and log.** Every order request, accepted or refused, is a JSON line
+in `ORDER_JOURNAL` (default `/data/orders.jsonl`, fsynced) and in the log
+(`"event": "order_request"`, with `tool`, `order_ref`, `client`, `outcome`,
+`reason` and the order ids). The journal holds the daily count and the
+`order_ref`s, so both survive a restart and a redeploy. With order tools on,
+the server refuses to start when the journal is not writable.
 
 ## Limits
 
@@ -64,8 +127,13 @@ Node or Go library. It is not an npm workspace and has its own checks
 
 ## Safety model
 
-- **Read-only, three times over:** no write tool exists, `ib_async` connects
-  with `readonly=True`, and the gateway runs with `READ_ONLY_API=yes`.
+- **Read-only by default, three times over:** without `ORDERS_ENABLED` no
+  write tool exists, `ib_async` connects with `readonly=True`, and the gateway
+  runs with `READ_ONLY_API=yes`. Live orders need a second flag,
+  `LIVE_ORDERS_ENABLED`, and a gateway with `READ_ONLY_API=no`.
+- **Limits in the server, not only the client:** every rule in
+  [Orders](#orders) is checked here, whatever the client checked before, and
+  only `ORDER_CLIENTS` may use the order tools.
 - **The right account or nothing.** The gateway must be logged in to exactly
   `IB_EXPECTED_ACCOUNT`, checked on every (re)connect. `IB_TRADING_MODE` must
   match the account too (paper accounts start with `D`). A mismatch at startup
@@ -108,7 +176,8 @@ broker:
 ```
 
 with `MCP_BROKER_TOKEN` (the `mike` token) in Infisical, `broker` in
-`MCP_SERVERS`, and every tool as `read` in `internal/mcp/allowlist.yaml`.
+`MCP_SERVERS`, and every read tool as `read` in `internal/mcp/allowlist.yaml`.
+Mike only gets the order tools once they are in his allowlist.
 
 ### Rotating a token
 
@@ -133,6 +202,12 @@ See [`.env.example`](.env.example).
 | `IB_CONNECT_TIMEOUT`     | no       | `10`    | Seconds for a connection attempt                                           |
 | `IB_REQUEST_TIMEOUT`     | no       | `20`    | Seconds per IBKR request (historical data gets three times this)           |
 | `IB_RECONNECT_MAX_DELAY` | no       | `60`    | Upper bound of the reconnect backoff in seconds                            |
+| `ORDERS_ENABLED`         | no       | `false` | `true` adds the order tools and connects with `readonly=False`             |
+| `LIVE_ORDERS_ENABLED`    | no       | `false` | Also needed for order tools on a live account                              |
+| `ORDER_CLIENTS`          | with orders |      | `AUTH_TOKENS` labels that may use the order tools, e.g. `mike`             |
+| `MAX_ORDERS_PER_DAY`     | no       | `5`     | New brackets per day (Europe/Amsterdam); exits and cancels do not count    |
+| `MAX_ORDER_NOTIONAL_PCT` | no       | `20`    | Largest entry value as % of net liquidation, above 0 and at most 100       |
+| `ORDER_JOURNAL`          | no       | `/data/orders.jsonl` | The order journal, on a volume                                |
 
 The process exits with code 2 on an invalid configuration, naming every
 problem but never a token.
@@ -140,8 +215,8 @@ problem but never a token.
 ## Deployment (Dokploy)
 
 1. **IB Gateway** (exists): Dokploy application `dealdome-ib-gateway-jykfo0`
-   on `dokploy-network`, `READ_ONLY_API=yes`, **no domain and no published
-   ports**. Check under the app's "Domains" and "Advanced, Ports" that both
+   on `dokploy-network`, `READ_ONLY_API=yes` (`no` on the paper gateway when
+   orders are on), **no domain and no published ports**. Check under the app's "Domains" and "Advanced, Ports" that both
    are empty; `docker ps` on the server should show no `0.0.0.0:400x` for it.
 2. **broker**: a Dokploy application in project "Model Context Protocols",
    image `ghcr.io/ultimatelemon/mcp-broker:latest`, on `dokploy-network` so it
@@ -149,7 +224,10 @@ problem but never a token.
    - Domain `mcp.ultimatelemon.eu`, path `/broker` (Traefik
      `PathPrefix(/broker)`), container port 3000, path not stripped.
    - Environment from Infisical: `BASE_PATH=/broker` and the variables above.
-   - No volume: the server keeps no state.
+   - With orders on: a named volume `broker-data` on `/data` (Advanced,
+     Volumes, type Volume, not a bind mount), so the order journal survives a
+     redeploy. The image creates `/data` owned by the `broker` user, and a new
+     named volume takes that owner. Without orders the server keeps no state.
 3. **CI**: `broker-deployment.yml` runs the Python checks, publishes the image
    and calls the deploy webhook in the repository secret
    `DOKPLOY_DEPLOY_URL_BROKER`.
@@ -182,6 +260,30 @@ BROKER_TOKEN=<owner token> python -m broker.smoke --url https://mcp.ultimatelemo
 Each step prints `PASS` or `FAIL`; the exit code is 0 when all passed. Expect
 `delayed=True` on the quote and possibly a market data permission failure on
 the bars while there is no subscription.
+
+### Order check (paper only)
+
+`python -m broker.smoke_orders` places real orders on the **paper** account
+and refuses a live one. It uses `IB_CLIENT_ID + 101` and a throwaway journal,
+so it neither takes over the server's connection nor uses its daily count;
+its orders carry an `order_ref` starting with `smoke-`. Run it before a
+client relies on orders, in the container's terminal:
+
+```bash
+python -m broker.smoke_orders            # expiry check, any time
+python -m broker.smoke_orders --trade    # plus the fill checks, during US regular hours
+```
+
+1. **Expiry:** an entry far below the market with a 90-second time in force,
+   plus its GTC stop and take-profit. When the entry expires unfilled, the
+   stop and take-profit must be gone too and no position left: what happens
+   to a DAY entry that never fills by the close.
+2. **`--trade`**, 2 shares of `--symbol` (default `F`): a marketable bracket
+   with the take-profit for 1 share. After the fill the stop covers 2 and the
+   take-profit 1 in OCA type 2; a wider stop is refused and a tighter one
+   accepted; closing 1 share must shrink the stop to 1 (the `ocaType=2`
+   reduce); closing the last share must leave no stop, take-profit or
+   position. Whatever is left is cancelled and flattened at the end.
 
 ## Development
 

@@ -91,6 +91,7 @@ class FakeIB:
         self.values: list[AccountValue] = []
         self.items: list[PortfolioItem] = []
         self.trades: list[Trade] = []
+        self.completed: list[Trade] = []
         self.fills: list[Fill] = []
         self.matches: list[ContractDescription] = []
         self.qualified: list[Any] = []
@@ -159,6 +160,9 @@ class FakeIB:
     def reqAllOpenOrdersAsync(self) -> Any:
         return self._answer("openOrders", None, self.trades)
 
+    def reqCompletedOrdersAsync(self, apiOnly: bool) -> Any:
+        return self._answer("completedOrders", apiOnly, self.completed)
+
     def reqExecutionsAsync(self, execFilter: Any = None) -> Any:
         return self._answer("executions", execFilter, self.fills)
 
@@ -174,12 +178,46 @@ class FakeIB:
     def reqHistoricalDataAsync(self, contract: Contract, **kwargs: Any) -> Any:
         return self._answer("historical", kwargs, self.bars)
 
-    # These must never be called: the server is read-only.
+    # These must never be called while the server is read-only; OrderIB allows them.
     def placeOrder(self, *args: Any, **kwargs: Any) -> Any:
         raise AssertionError("placeOrder called")
 
     def cancelOrder(self, *args: Any, **kwargs: Any) -> Any:
         raise AssertionError("cancelOrder called")
+
+
+class FakeClient:
+    def __init__(self) -> None:
+        self.next_id = 100
+
+    def getReqId(self) -> int:
+        self.next_id += 1
+        return self.next_id
+
+
+class OrderIB(FakeIB):
+    """FakeIB that takes orders: placed orders show up as open trades, like IB's."""
+
+    def __init__(self, accounts: list[str] | None = None) -> None:
+        super().__init__(accounts)
+        self.client = FakeClient()
+        self.placed: list[tuple[Contract, Order]] = []
+        self.cancelled: list[Order] = []
+
+    def placeOrder(self, contract: Contract, order: Order) -> Trade:
+        self.placed.append((contract, order))
+        order.clientId = 17
+        for t in self.trades:
+            if t.order.orderId == order.orderId:
+                t.order = order
+                return t
+        t = trade(contract, order)
+        self.trades.append(t)
+        return t
+
+    def cancelOrder(self, order: Order, manualCancelOrderTime: str = "") -> Trade | None:
+        self.cancelled.append(order)
+        return None
 
 
 def account_value(tag: str, value: str, currency: str = "EUR", account: str = ACCOUNT) -> AccountValue:

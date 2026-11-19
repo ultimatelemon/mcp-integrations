@@ -155,7 +155,8 @@ def over_http(url: str) -> int:
         results.append(show("wrong token refused", error.code == 401, f"HTTP {error.code}"))
     try:
         listed = post(url, token, "tools/list", {})["result"]["tools"]
-        results.append(show("tools/list", len(listed) == 8, ", ".join(t["name"] for t in listed)))
+        # 8 read tools, plus 5 order tools when the server is configured for orders.
+        results.append(show("tools/list", len(listed) in (8, 13), ", ".join(t["name"] for t in listed)))
         for name, args in (
             ("get_account_summary", {}),
             ("get_quote", {"symbol": SYMBOL}),

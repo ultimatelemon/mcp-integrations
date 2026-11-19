@@ -1,6 +1,7 @@
 """The HTTP surface end to end: token check, routes, and MCP over Streamable HTTP."""
 
 import asyncio
+import contextlib
 import json
 from collections.abc import AsyncIterator
 from typing import Any
@@ -12,7 +13,8 @@ from starlette.applications import Starlette
 from broker.app import create_app, find_token
 from broker.config import AuthToken
 from broker.gateway import AccountMismatch, Gateway
-from tests.fakes import ACCOUNT, OTHER_TOKEN, TOKEN, FakeIB, account_value, settings
+from broker.journal import OrderJournal
+from tests.fakes import ACCOUNT, OTHER_TOKEN, TOKEN, FakeIB, OrderIB, account_value, settings, stock
 
 MCP_HEADERS = {"accept": "application/json, text/event-stream", "content-type": "application/json"}
 
@@ -30,7 +32,12 @@ EXPECTED_TOOLS = {
 
 @pytest.fixture
 async def client(gateway: Gateway) -> AsyncIterator[httpx.AsyncClient]:
-    app: Starlette = create_app(settings(), gateway)
+    async with running(create_app(settings(), gateway)) as c:
+        yield c
+
+
+@contextlib.asynccontextmanager
+async def running(app: Starlette) -> AsyncIterator[httpx.AsyncClient]:
     started, stop = asyncio.Event(), asyncio.Event()
 
     # The lifespan holds an anyio task group, which must be entered and left in
@@ -84,6 +91,7 @@ async def test_healthz(client: httpx.AsyncClient) -> None:
         "ib_state": "connected",
         "ib_detail": "connected",
         "trading_mode": "paper",
+        "orders": "off",
     }
 
 
@@ -184,3 +192,70 @@ async def test_unexpected_crash_reveals_nothing(client: httpx.AsyncClient, ib: F
     result = await call_tool(client, "get_open_orders")
     assert result["isError"] is True
     assert "secret" not in result["content"][0]["text"]
+
+
+ORDER_TOOLS = {"place_bracket_order", "modify_stop", "close_position", "cancel_order", "cancel_entry_orders"}
+
+
+@pytest.fixture
+async def order_client(tmp_path: Any) -> AsyncIterator[tuple[httpx.AsyncClient, OrderIB]]:
+    ib = OrderIB()
+    ib.summary = [account_value("NetLiquidation", "10000")]
+    ib.values = [account_value("ExchangeRate", "0.9", currency="USD")]
+    ib.qualified = [stock("NVDA", con_id=5)]
+    s = settings(orders_enabled=True, order_clients=("mike",))
+    g = Gateway(s, ib_factory=lambda: ib)
+    await g.connect_once()
+    async with running(create_app(s, g, OrderJournal.open(tmp_path / "orders.jsonl"))) as c:
+        yield c, ib
+
+
+BRACKET = {
+    "con_id": 5,
+    "side": "buy",
+    "quantity": 10,
+    "entry_limit": 20,
+    "stop_price": 18,
+    "target_price": 25,
+    "order_ref": "app-1",
+}
+
+
+async def test_order_tools_only_when_configured(order_client: tuple[httpx.AsyncClient, OrderIB]) -> None:
+    client, _ = order_client
+    r = await rpc(client, "tools/list")
+    tools = {t["name"]: t for t in r.json()["result"]["tools"]}
+    assert set(tools) == EXPECTED_TOOLS | ORDER_TOOLS
+    for name in ORDER_TOOLS:
+        assert tools[name]["annotations"]["readOnlyHint"] is False
+        assert tools[name]["annotations"]["destructiveHint"] is True
+    health = (await client.get("/broker/healthz")).json()
+    assert health["orders"] == "paper"
+    init = await rpc(
+        client,
+        "initialize",
+        {"protocolVersion": "2025-06-18", "capabilities": {}, "clientInfo": {"name": "test", "version": "1"}},
+    )
+    assert "place_bracket_order" in init.json()["result"]["instructions"]
+
+
+async def test_only_order_clients_place_orders_over_mcp(order_client: tuple[httpx.AsyncClient, OrderIB]) -> None:
+    client, ib = order_client
+    owner = await rpc(client, "tools/call", {"name": "place_bracket_order", "arguments": BRACKET}, token=OTHER_TOKEN)
+    result = owner.json()["result"]
+    assert result["isError"] is True
+    assert "'owner' may not use order tools" in result["content"][0]["text"]
+    assert ib.placed == []
+    mike = await call_tool(client, "place_bracket_order", BRACKET)
+    assert mike.get("isError") is not True, mike
+    assert json.loads(mike["content"][0]["text"])["outcome"] == "placed"
+    assert len(ib.placed) == 3
+    # A refused rule comes back as a readable tool error.
+    bad = await call_tool(client, "place_bracket_order", {**BRACKET, "order_ref": "app-2", "stop_price": 21})
+    assert bad["isError"] is True
+    assert "stop_price < entry_limit" in bad["content"][0]["text"]
+
+
+def test_order_tools_need_the_journal(gateway: Gateway) -> None:
+    with pytest.raises(ValueError, match="journal"):
+        create_app(settings(orders_enabled=True, order_clients=("mike",)), gateway)

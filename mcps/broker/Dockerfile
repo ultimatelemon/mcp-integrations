@@ -12,7 +12,9 @@ COPY mcps/broker/src ./src
 RUN uv sync --frozen --no-dev --no-editable
 
 FROM python:3.13-slim AS runner
-RUN useradd --system --uid 10001 --no-create-home broker
+RUN useradd --system --uid 10001 --no-create-home broker \
+    # The order journal's volume: a new named volume takes this owner.
+    && mkdir -p /data && chown broker:broker /data
 WORKDIR /app
 COPY --from=build /app/.venv /app/.venv
 ENV PATH=/app/.venv/bin:$PATH \

@@ -13,7 +13,7 @@ bearer tokens (see its [README](mcps/broker)).
 | [perron](mcps/perron)       | `https://mcp.ultimatelemon.eu/perron`    | Dutch Railways (NS): journeys, departures, disruptions, fares    |
 | [moneybird](mcps/moneybird) | `https://mcp.ultimatelemon.eu/moneybird` | Moneybird accounting: contacts, invoices, banking, time, reports |
 | [postbus](mcps/postbus)     | self-hosted (ours is invite-only)        | Several mailboxes over IMAP/SMTP or the Gmail API                |
-| [broker](mcps/broker)       | `https://mcp.ultimatelemon.eu/broker`    | Interactive Brokers, read-only: account, positions, orders, data |
+| [broker](mcps/broker)       | `https://mcp.ultimatelemon.eu/broker`    | Interactive Brokers: account, positions, data; gated orders      |
 
 ## Connecting
 

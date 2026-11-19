@@ -8,6 +8,9 @@ from dataclasses import dataclass
 from typing import Literal
 
 TradingMode = Literal["paper", "live"]
+OrdersMode = Literal["off", "paper", "live"]
+
+DEFAULT_ORDER_JOURNAL = "/data/orders.jsonl"
 
 # Shorter tokens are easy to guess; `openssl rand -hex 32` gives 64 characters.
 MIN_TOKEN_LENGTH = 32
@@ -43,13 +46,29 @@ class Settings:
     connect_timeout: float = 10.0
     request_timeout: float = 20.0
     reconnect_max_delay: float = 60.0
+    orders_enabled: bool = False
+    live_orders_enabled: bool = False
+    max_orders_per_day: int = 5
+    max_order_notional_pct: float = 20.0
+    order_clients: tuple[str, ...] = ()
+    order_journal: str = DEFAULT_ORDER_JOURNAL
+
+    @property
+    def orders_mode(self) -> OrdersMode:
+        """Whether the order tools exist: never on live without LIVE_ORDERS_ENABLED too."""
+        if not self.orders_enabled:
+            return "off"
+        if self.trading_mode == "live" and not self.live_orders_enabled:
+            return "off"
+        return self.trading_mode
 
     def __repr__(self) -> str:
         # Never print the tokens, even by accident in a traceback.
         labels = ",".join(t.label for t in self.auth_tokens)
         return (
             f"Settings(ib={self.ib_host}:{self.ib_port}, client_id={self.ib_client_id}, "
-            f"mode={self.trading_mode}, account={self.expected_account}, tokens=[{labels}])"
+            f"mode={self.trading_mode}, account={self.expected_account}, tokens=[{labels}], "
+            f"orders={self.orders_mode}, order_clients=[{','.join(self.order_clients)}])"
         )
 
 
@@ -86,6 +105,31 @@ def _number(env: Mapping[str, str], name: str, default: float, errors: list[str]
     if value <= 0:
         errors.append(f"{name} must be above 0")
     return value
+
+
+def _flag(env: Mapping[str, str], name: str, errors: list[str]) -> bool:
+    raw = env.get(name, "").strip().lower()
+    if raw in ("", "false", "0", "no"):
+        return False
+    if raw in ("true", "1", "yes"):
+        return True
+    errors.append(f"{name} must be true or false")
+    return False
+
+
+def parse_order_clients(raw: str, tokens: tuple[AuthToken, ...], errors: list[str]) -> tuple[str, ...]:
+    """Labels of AUTH_TOKENS that may use the order tools, e.g. `mike`."""
+    labels: list[str] = []
+    known = {t.label for t in tokens}
+    for label in (p.strip() for p in raw.split(",")):
+        if not label:
+            continue
+        if label not in known:
+            errors.append(f"ORDER_CLIENTS label {label!r} is not in AUTH_TOKENS")
+            continue
+        if label not in labels:
+            labels.append(label)
+    return tuple(labels)
 
 
 def parse_tokens(raw: str, errors: list[str]) -> tuple[AuthToken, ...]:
@@ -155,6 +199,21 @@ def load_settings(env: Mapping[str, str]) -> Settings:
     if client_id < 0:
         errors.append("IB_CLIENT_ID must be 0 or more")
 
+    orders_enabled = _flag(env, "ORDERS_ENABLED", errors)
+    live_orders_enabled = _flag(env, "LIVE_ORDERS_ENABLED", errors)
+    max_orders = _integer(env, "MAX_ORDERS_PER_DAY", 5, errors)
+    max_notional = _number(env, "MAX_ORDER_NOTIONAL_PCT", 20.0, errors)
+    order_clients = parse_order_clients(env.get("ORDER_CLIENTS", ""), tokens, errors)
+    journal = env.get("ORDER_JOURNAL", "").strip() or DEFAULT_ORDER_JOURNAL
+    if max_orders < 1:
+        errors.append("MAX_ORDERS_PER_DAY must be at least 1")
+    if max_notional > 100:
+        errors.append("MAX_ORDER_NOTIONAL_PCT must be at most 100")
+    if orders_enabled and not order_clients:
+        errors.append("ORDER_CLIENTS is required with ORDERS_ENABLED: the token labels that may place orders")
+    if orders_enabled and not journal.startswith("/"):
+        errors.append("ORDER_JOURNAL must be an absolute path")
+
     settings = Settings(
         ib_host=host,
         ib_port=port,
@@ -167,6 +226,12 @@ def load_settings(env: Mapping[str, str]) -> Settings:
         connect_timeout=_number(env, "IB_CONNECT_TIMEOUT", 10.0, errors),
         request_timeout=_number(env, "IB_REQUEST_TIMEOUT", 20.0, errors),
         reconnect_max_delay=_number(env, "IB_RECONNECT_MAX_DELAY", 60.0, errors),
+        orders_enabled=orders_enabled,
+        live_orders_enabled=live_orders_enabled,
+        max_orders_per_day=max_orders,
+        max_order_notional_pct=max_notional,
+        order_clients=order_clients,
+        order_journal=journal,
     )
     if errors:
         raise ConfigError("; ".join(errors))

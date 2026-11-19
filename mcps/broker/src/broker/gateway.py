@@ -1,4 +1,5 @@
-"""One read-only connection to IB Gateway, kept alive across its nightly restart."""
+"""One connection to IB Gateway, kept alive across its nightly restart. Read-only
+unless the order tools are on (Settings.orders_mode)."""
 
 from __future__ import annotations
 
@@ -102,6 +103,10 @@ class Gateway:
     def trading_mode(self) -> str:
         return self._settings.trading_mode
 
+    @property
+    def orders_mode(self) -> str:
+        return self._settings.orders_mode
+
     def require(self) -> Any:
         """The connected `IB`, or a clear error the tools pass on to the caller."""
         if self._state is State.REFUSED:
@@ -127,7 +132,7 @@ class Gateway:
                 port=s.ib_port,
                 clientId=s.ib_client_id,
                 timeout=s.connect_timeout,
-                readonly=True,
+                readonly=s.orders_mode == "off",
                 account=s.expected_account,
             )
             check_accounts(ib.managedAccounts(), s.expected_account)
@@ -143,7 +148,12 @@ class Gateway:
         self._detail = "connected"
         log.info(
             "connected to IB Gateway",
-            extra={"account": s.expected_account, "mode": s.trading_mode, "client_id": s.ib_client_id},
+            extra={
+                "account": s.expected_account,
+                "mode": s.trading_mode,
+                "client_id": s.ib_client_id,
+                "orders": s.orders_mode,
+            },
         )
 
     def _on_disconnected(self) -> None:
