@@ -54,6 +54,9 @@ from broker.journal import OrderJournal
 from broker.orders import DONE, OCA_REDUCE_WITH_BLOCK, OrderRefused, Orders, build_bracket
 
 CLIENT = "smoke"
+# Every order of the check, closes included, has an order_ref starting with
+# "smoke-", so Mike skips its fills.
+SMOKE_CLOSE = "smoke-close"
 EXPIRY_SECONDS = 90
 
 AMSTERDAM = ZoneInfo("Europe/Amsterdam")
@@ -258,7 +261,7 @@ async def trade_check(orders: Orders, contract: Contract, price: float, stamp: s
     m = await orders.modify_stop(CLIENT, r["stop_order_id"], tighter)
     results.append(show("trade: tighter stop accepted", m["new_stop"] == tighter, f"stop {m['old_stop']} -> {tighter}"))
 
-    await orders.close_position(CLIENT, contract.conId, 1, None)
+    await orders.close_position(CLIENT, contract.conId, 1, None, ref_prefix=SMOKE_CLOSE)
     halved = await wait_for(lambda: _position_is(orders, contract.conId, start + 1), 60)
     trades = {t.order.orderId: t for t in active(await open_trades(orders), ids)}
     stop = trades.get(r["stop_order_id"])
@@ -270,7 +273,7 @@ async def trade_check(orders: Orders, contract: Contract, price: float, stamp: s
             _describe(stop, trades.get(r["take_profit_order_id"])),
         )
     )
-    await orders.close_position(CLIENT, contract.conId, 1, None)
+    await orders.close_position(CLIENT, contract.conId, 1, None, ref_prefix=SMOKE_CLOSE)
     flat = await wait_for(lambda: _position_is(orders, contract.conId, start), 60)
     leftover = await wait_for(lambda: _none_active(orders, ids), 30)
     results.append(

@@ -14,7 +14,14 @@ from broker.ecb import EcbRates
 from broker.gateway import Gateway, GatewayUnavailable
 from broker.journal import TZ, JournalError, OrderJournal
 from broker.orders import OCA_REDUCE_WITH_BLOCK, OrderRefused, Orders, build_bracket
-from broker.smoke_orders import closed_message, market_open, paper_settings, parse_liquid_hours, weekday_sessions
+from broker.smoke_orders import (
+    SMOKE_CLOSE,
+    closed_message,
+    market_open,
+    paper_settings,
+    parse_liquid_hours,
+    weekday_sessions,
+)
 from tests.fakes import ACCOUNT, ECB_XML, OrderIB, account_value, portfolio_item, settings, stock, trade
 
 NVDA = 4815747
@@ -362,6 +369,16 @@ async def test_close_joins_the_bracket_group(orders: Orders, ib: OrderIB) -> Non
     assert r["oca_group"] == "oca-per66-nvda-1"
     await orders.close_position("mike", NVDA, 25, 21.5)
     assert (ib.placed[-1][1].orderType, ib.placed[-1][1].lmtPrice) == ("LMT", 21.5)
+
+
+async def test_close_ref_prefix(orders: Orders, ib: OrderIB) -> None:
+    ib.items = [portfolio_item(stock("NVDA", con_id=NVDA), 10, 21.0, 210, 20.0, 10)]
+    await orders.close_position("mike", NVDA, 5, None)
+    assert ib.placed[-1][1].orderRef.startswith(f"close:{NVDA}:")
+    # The smoke check's closes carry its prefix, so clients skip their fills.
+    r = await orders.close_position("mike", NVDA, 5, None, ref_prefix=SMOKE_CLOSE)
+    assert ib.placed[-1][1].orderRef.startswith(f"smoke-close:{NVDA}:")
+    assert r["order_ref"].startswith("smoke-")
 
 
 async def test_close_a_short_buys(orders: Orders, ib: OrderIB) -> None:

@@ -269,8 +269,10 @@ class Orders:
     # --- close_position -------------------------------------------------------
 
     async def close_position(
-        self, client: str, con_id: int, quantity: float, limit_price: float | None
+        self, client: str, con_id: int, quantity: float, limit_price: float | None, *, ref_prefix: str = "close"
     ) -> dict[str, Any]:
+        """ref_prefix is not part of the MCP tool: the smoke check passes
+        "smoke-close" so clients can tell its fills from real ones."""
         details = {"con_id": con_id, "quantity": quantity, "limit_price": limit_price}
 
         async def work() -> dict[str, Any]:
@@ -289,7 +291,7 @@ class Orders:
                 raise OrderRefused(f"quantity {quantity:g} is more than the position of {abs(held):g}")
             action = "SELL" if held > 0 else "BUY"
             group = self._protective_group(await self._open_trades(ib), con_id, action, quantity)
-            ref = f"close:{con_id}:{self.journal.clock().strftime('%Y%m%dT%H%M%S')}"
+            ref = f"{ref_prefix}:{con_id}:{self.journal.clock().strftime('%Y%m%dT%H%M%S')}"
             order: Order = (
                 MarketOrder(action, quantity) if limit_price is None else LimitOrder(action, quantity, limit_price)
             )
