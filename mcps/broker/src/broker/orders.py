@@ -263,23 +263,33 @@ class Orders:
         return await self._run("place_bracket_order", client, details, work)
 
     async def _find_by_ref(self, ib: Any, order_ref: str) -> dict[str, Any] | None:
+        """The bracket IBKR knows under this order_ref. Open orders give the
+        entries' ids (two with a runner); a completed order only proves it
+        exists, because ib_async leaves orderId and parentId of completed
+        orders at 0, children and parents alike."""
         trades = await self._open_trades(ib)
-        completed = await call(self.gateway, ib.reqCompletedOrdersAsync(apiOnly=True), self.timeout)
         parents = sorted(
-            {
-                t.order.orderId: t
-                for t in [*trades, *completed]
-                if t.order.orderRef == order_ref and not t.order.parentId
-            }.items()
+            (t.order.orderId, t)
+            for t in trades
+            if t.order.orderRef == order_ref and not t.order.parentId and t.order.orderId > 0
         )
-        if not parents:
+        if parents:
+            first = parents[0][1]
+            return {
+                "order_ref": order_ref,
+                "parent_order_id": first.order.orderId,
+                "runner_parent_order_id": parents[1][0] if len(parents) > 1 else None,
+                "status": first.orderStatus.status,
+            }
+        completed = await call(self.gateway, ib.reqCompletedOrdersAsync(apiOnly=True), self.timeout)
+        done = next((t for t in completed if t.order.orderRef == order_ref), None)
+        if done is None:
             return None
-        first = parents[0][1]
         return {
             "order_ref": order_ref,
-            "parent_order_id": first.order.orderId,
-            "runner_parent_order_id": parents[1][0] if len(parents) > 1 else None,
-            "status": first.orderStatus.status,
+            "parent_order_id": None,
+            "runner_parent_order_id": None,
+            "status": done.orderStatus.status,
         }
 
     async def _notional_pct(self, ib: Any, currency: str, notional: float) -> float:

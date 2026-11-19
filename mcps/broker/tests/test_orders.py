@@ -268,13 +268,24 @@ async def test_same_order_ref_returns_the_existing_bracket(
 
 
 async def test_order_ref_known_at_ibkr_is_not_placed_again(orders: Orders, ib: OrderIB) -> None:
-    # The journal was lost, but IBKR has the order.
-    old = LimitOrder("BUY", 50, 20.0, orderId=7, orderRef="per66-nvda-1")
+    # The journal was lost, but IBKR has the order. ib_async gives completed
+    # orders no orderId: it proves the ref exists, without ids.
+    old = LimitOrder("BUY", 50, 20.0, orderId=0, orderRef="per66-nvda-1")
     ib.completed = [trade(stock("NVDA", con_id=NVDA), old, "Filled")]
     r = await bracket(orders)
     assert r["outcome"] == "existing"
-    assert r["parent_order_id"] == 7
+    assert r["parent_order_id"] is None
     assert ib.placed == []
+
+
+async def test_order_ref_open_at_ibkr_gives_both_entries(orders: Orders, ib: OrderIB, tmp_path: Path) -> None:
+    await bracket(orders, target_quantity=25, runner_target_price=30.0)
+    ids = sorted(o.orderId for _, o in ib.placed if not o.parentId)
+    # A new journal: the ids come from IBKR's open orders.
+    fresh = Orders(orders.gateway, orders.settings, OrderJournal.open(tmp_path / "new.jsonl"), 1.0)
+    r = await fresh.place_bracket_order("mike", NVDA, "buy", 50, 20.0, 18.0, 25.0, 25, "per66-nvda-1", 30.0)
+    assert (r["outcome"], r["parent_order_id"], r["runner_parent_order_id"]) == ("existing", ids[0], ids[1])
+    assert len(ib.placed) == 6
 
 
 async def test_notional_limit(orders: Orders, ib: OrderIB) -> None:
