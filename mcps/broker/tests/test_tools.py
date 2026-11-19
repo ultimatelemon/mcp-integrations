@@ -50,8 +50,20 @@ async def test_account_summary(gateway: Gateway, ib: FakeIB) -> None:
         "gross_position_value": 6000.0,
         "leverage": 0.6,
         "margin_cushion": 0.85,
+        "exchange_rates": {},
     }
     assert ib.calls == [("accountSummary", ACCOUNT)]
+
+
+async def test_account_summary_exchange_rates(gateway: Gateway, ib: FakeIB) -> None:
+    summary(ib)
+    ib.values = [
+        account_value("ExchangeRate", "0.9", currency="USD"),
+        account_value("ExchangeRate", "1", currency="BASE"),
+        account_value("ExchangeRate", "1", currency="EUR"),
+    ]
+    r = await tools.get_account_summary(gateway, T)
+    assert r["exchange_rates"] == {"USD": 0.9}
 
 
 async def test_account_summary_without_net_liquidation(gateway: Gateway, ib: FakeIB) -> None:

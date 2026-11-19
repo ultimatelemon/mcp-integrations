@@ -170,12 +170,16 @@ async def get_account_summary(gateway: Gateway, timeout: float) -> dict[str, Any
     ib = gateway.require()
     values, currency = await account_values(gateway, ib, timeout)
     nlv = values["net_liquidation"]
+    rates = exchange_rates(ib, gateway.account, currency)
     return {
         **header(gateway),
         "currency": currency or None,
         **values,
         "leverage": ratio(values["gross_position_value"], nlv),
         "margin_cushion": ratio(values["excess_liquidity"], nlv),
+        # IBKR's ExchangeRate account values: base currency per unit, for the
+        # currencies the account holds.
+        "exchange_rates": {c: r for c, r in sorted(rates.items()) if c != currency},
     }
 
 
