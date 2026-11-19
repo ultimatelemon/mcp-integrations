@@ -19,6 +19,7 @@ from typing import Any, Literal
 from ib_async import Contract, LimitOrder, MarketOrder, Order, StopOrder, Trade
 
 from broker.config import Settings
+from broker.ecb import EcbRates
 from broker.gateway import Gateway, GatewayUnavailable
 from broker.journal import OrderJournal
 from broker.tools import BrokerError, account_values, call, exchange_rates, num, qualify
@@ -49,6 +50,7 @@ class Orders:
     # One order request at a time: check, place and journal are one step, so
     # two calls with the same order_ref never both place.
     lock: asyncio.Lock = field(default_factory=asyncio.Lock)
+    ecb: EcbRates = field(default_factory=EcbRates)
 
     # --- shared ------------------------------------------------------------
 
@@ -188,7 +190,18 @@ class Orders:
             # a euro account without dollars has none for USD.
             rate = await self._quoted_rate(ib, base, currency)
         if rate is None or rate <= 0:
-            raise OrderRefused(f"no IBKR exchange rate for {currency} to {base}; cannot check the notional limit")
+            # Without forex market data there is no IDEALPRO quote either.
+            reference = await self.ecb.rate(base, currency)
+            if reference is not None:
+                rate, day = reference
+                log.info(
+                    "notional converted at the ECB reference rate",
+                    extra={"event": "ecb_rate_used", "currency": currency, "base": base, "rate": rate, "day": str(day)},
+                )
+        if rate is None or rate <= 0:
+            raise OrderRefused(
+                f"no exchange rate for {currency} to {base} (IBKR, IDEALPRO or ECB); cannot check the notional limit"
+            )
         return notional * rate / nlv * 100
 
     async def _quoted_rate(self, ib: Any, base: str, currency: str) -> float | None:

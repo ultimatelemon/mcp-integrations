@@ -82,7 +82,9 @@ entry that never fills are never active and go with it.
 - an entry above `MAX_ORDER_NOTIONAL_PCT` of net liquidation (quantity x
   entry limit, converted with IBKR's ExchangeRate account value, which IBKR
   only sends for currencies the account holds, else with the IDEALPRO quote
-  of the pair; no rate, no order);
+  of the pair, which needs forex market data, else with the ECB's daily
+  reference rate of at most 5 days old, fetched from `www.ecb.europa.eu` at
+  most every 6 hours; no rate, no order);
 - more than `MAX_ORDERS_PER_DAY` new brackets on one day (Europe/Amsterdam).
   Exits, stop changes and cancels never count, so an exit is never blocked;
 - a stop move that widens, or that would trigger at once against the last

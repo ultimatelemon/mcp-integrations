@@ -258,3 +258,18 @@ def fill(contract: Contract, exec_id: str, when: datetime, side: str = "BOT", ac
 
 def utc(*args: int) -> datetime:
     return datetime(*args, tzinfo=UTC)  # type: ignore[arg-type]
+
+
+# The ECB's daily rates, trimmed: units of currency per euro.
+ECB_XML = """<?xml version="1.0" encoding="UTF-8"?>
+<gesmes:Envelope xmlns:gesmes="http://www.gesmes.org/xml/2002-08-01" xmlns="http://www.ecb.int/vocabulary/2002-08-01/eurofxref">
+  <gesmes:subject>Reference rates</gesmes:subject>
+  <Cube>
+    <Cube time='2026-11-19'>
+      <Cube currency='USD' rate='1.25'/>
+      <Cube currency='JPY' rate='160.00'/>
+      <Cube currency='GBP' rate='0.8'/>
+    </Cube>
+  </Cube>
+</gesmes:Envelope>
+"""

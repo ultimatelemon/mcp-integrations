@@ -2,7 +2,7 @@
 
 import json
 import logging
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
@@ -10,11 +10,12 @@ import pytest
 from ib_async import Contract, LimitOrder, Order, StopOrder, Ticker
 
 from broker.config import ConfigError, Settings
+from broker.ecb import EcbRates
 from broker.gateway import Gateway, GatewayUnavailable
 from broker.journal import TZ, JournalError, OrderJournal
 from broker.orders import OCA_REDUCE_WITH_BLOCK, OrderRefused, Orders, build_bracket
 from broker.smoke_orders import closed_message, market_open, paper_settings, parse_liquid_hours, weekday_sessions
-from tests.fakes import ACCOUNT, OrderIB, account_value, portfolio_item, settings, stock, trade
+from tests.fakes import ACCOUNT, ECB_XML, OrderIB, account_value, portfolio_item, settings, stock, trade
 
 NVDA = 4815747
 
@@ -57,7 +58,11 @@ async def orders(ib: OrderIB, journal: OrderJournal) -> Orders:
     s = order_settings()
     g = Gateway(s, ib_factory=lambda: ib)
     await g.connect_once()
-    return Orders(g, s, journal, 1.0)
+    return Orders(g, s, journal, 1.0, ecb=EcbRates(fetch=offline))
+
+
+async def offline() -> str:
+    raise OSError("no network in tests")
 
 
 async def bracket(orders: Orders, **overrides: Any) -> dict[str, Any]:
@@ -195,7 +200,7 @@ async def test_notional_limit(orders: Orders, ib: OrderIB) -> None:
 
 async def test_notional_needs_an_exchange_rate(orders: Orders, ib: OrderIB) -> None:
     ib.values = []
-    with pytest.raises(OrderRefused, match="no IBKR exchange rate for USD"):
+    with pytest.raises(OrderRefused, match=r"no exchange rate for USD to EUR \(IBKR, IDEALPRO or ECB\)"):
         await bracket(orders)
     ib.values = [account_value("ExchangeRate", "0.9", currency="USD")]
     ib.summary = [account_value("NetLiquidation", "0")]
@@ -220,6 +225,24 @@ async def test_notional_falls_back_to_the_idealpro_quote(orders: Orders, ib: Ord
     assert (asked[0].symbol, asked[0].currency, asked[0].exchange) == ("EUR", "USD", "IDEALPRO")
     fx_calls = [args for name, args in ib.calls if name == "fxTickers"]
     assert fx_calls[0][0].conId == 12087792
+
+
+async def test_notional_falls_back_to_the_ecb_rate(orders: Orders, ib: OrderIB) -> None:
+    # No dollars and no forex market data (error 10089): the pair qualifies,
+    # but its quote has no prices.
+    ib.values = []
+    eurusd = Contract(secType="CASH", conId=12087792, symbol="EUR", currency="USD", exchange="IDEALPRO")
+    ib.qualified_fx = [eurusd]
+    ib.fx_tickers = [Ticker(contract=eurusd)]
+
+    async def ecb() -> str:
+        return ECB_XML
+
+    orders.ecb = EcbRates(fetch=ecb, now=lambda: datetime(2026, 11, 19, 15, tzinfo=UTC))
+    r = await bracket(orders)
+    # 50 x $20 at 1,25 dollar per euro is €800 of €10.000.
+    assert r["outcome"] == "placed"
+    assert r["notional_pct"] == 8.0
 
 
 async def test_daily_limit_counts_entries_only(orders: Orders, ib: OrderIB, clock: Clock) -> None:
