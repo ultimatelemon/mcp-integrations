@@ -350,9 +350,13 @@ async def run(symbol: str, trade: bool, offset: int) -> int:
         )
         results: list[bool] = []
         try:
-            results += await expiry_check(orders, contract, price, stamp)
-            if trade:
-                results += await trade_check(orders, contract, price, stamp)
+            for name, check in (("expiry", expiry_check), ("trade", trade_check)):
+                if name == "trade" and not trade:
+                    continue
+                try:
+                    results += await check(orders, contract, price, stamp)
+                except Exception as error:  # a check that breaks is a FAIL, not a traceback
+                    results.append(show(f"{name}: check ran", False, f"{type(error).__name__}: {error}"))
         finally:
             await cleanup(orders, contract, start)
             await asyncio.sleep(2)

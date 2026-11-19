@@ -96,6 +96,8 @@ class FakeIB:
         self.matches: list[ContractDescription] = []
         self.qualified: list[Any] = []
         self.tickers: list[Ticker] = []
+        # Quotes of currency pairs (secType CASH), apart from stock quotes.
+        self.fx_tickers: list[Ticker] = []
         self.bars: list[BarData] = []
         self.calls: list[tuple[str, Any]] = []
 
@@ -173,6 +175,8 @@ class FakeIB:
         return self._answer("qualify", contracts, self.qualified)
 
     def reqTickersAsync(self, *contracts: Contract) -> Any:
+        if contracts and contracts[0].secType == "CASH":
+            return self._answer("fxTickers", contracts, self.fx_tickers)
         return self._answer("tickers", contracts, self.tickers)
 
     def reqHistoricalDataAsync(self, contract: Contract, **kwargs: Any) -> Any:

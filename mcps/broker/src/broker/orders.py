@@ -184,8 +184,27 @@ class Orders:
             raise OrderRefused("net liquidation is unknown or not positive; no order without it")
         rate = 1.0 if currency == base else exchange_rates(ib, self.gateway.account, base).get(currency)
         if rate is None or rate <= 0:
+            # IBKR only sends ExchangeRate for currencies the account holds:
+            # a euro account without dollars has none for USD.
+            rate = await self._quoted_rate(ib, base, currency)
+        if rate is None or rate <= 0:
             raise OrderRefused(f"no IBKR exchange rate for {currency} to {base}; cannot check the notional limit")
         return notional * rate / nlv * 100
+
+    async def _quoted_rate(self, ib: Any, base: str, currency: str) -> float | None:
+        """Base currency per unit of currency from the IDEALPRO quote of BASE.CURRENCY
+        (quoted in currency per base), the midpoint when there is one."""
+        pair = Contract(secType="CASH", symbol=base, currency=currency, exchange="IDEALPRO")
+        try:
+            tickers = await call(self.gateway, ib.reqTickersAsync(pair), self.timeout)
+        except BrokerError:
+            return None
+        if not tickers:
+            return None
+        t = tickers[0]
+        bid, ask = num(t.bid), num(t.ask)
+        price = (bid + ask) / 2 if bid and ask and bid > 0 and ask > 0 else num(t.last) or num(t.close)
+        return 1 / price if price and price > 0 else None
 
     # --- modify_stop ----------------------------------------------------------
 
