@@ -207,15 +207,19 @@ async def test_notional_needs_an_exchange_rate(orders: Orders, ib: OrderIB) -> N
 async def test_notional_falls_back_to_the_idealpro_quote(orders: Orders, ib: OrderIB) -> None:
     # A euro account without dollars: IBKR sends no ExchangeRate for USD.
     ib.values = []
-    pair = Ticker(contract=Contract(secType="CASH", symbol="EUR", currency="USD", exchange="IDEALPRO"))
+    eurusd = Contract(secType="CASH", conId=12087792, symbol="EUR", currency="USD", exchange="IDEALPRO")
+    ib.qualified_fx = [eurusd]
+    pair = Ticker(contract=eurusd)
     pair.bid, pair.ask = 1.10, 1.12
     ib.fx_tickers = [pair]
     r = await bracket(orders)
     # 50 x $20 at 1,11 dollar per euro is €900,90 of €10.000.
     assert r["notional_pct"] == 9.01
+    # The pair is qualified first: ib_async only quotes a contract with a conId.
+    asked = [args[0] for name, args in ib.calls if name == "qualifyFx"]
+    assert (asked[0].symbol, asked[0].currency, asked[0].exchange) == ("EUR", "USD", "IDEALPRO")
     fx_calls = [args for name, args in ib.calls if name == "fxTickers"]
-    assert fx_calls[0][0].symbol == "EUR"
-    assert fx_calls[0][0].currency == "USD"
+    assert fx_calls[0][0].conId == 12087792
 
 
 async def test_daily_limit_counts_entries_only(orders: Orders, ib: OrderIB, clock: Clock) -> None:
