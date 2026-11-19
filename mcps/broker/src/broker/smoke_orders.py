@@ -1,0 +1,277 @@
+"""Order check against the real IB Gateway, PAPER ONLY. Run it before Mike relies on orders.
+
+From a container on the gateway's network, with the server's IB_* variables:
+
+    python -m broker.smoke_orders            # expiry check only, any time
+    python -m broker.smoke_orders --trade    # also the fill checks, during US regular hours
+
+It uses its own client id (IB_CLIENT_ID + 101) and a throwaway journal, so it
+does not touch the server's connection or its daily count. Its orders carry an
+order_ref starting with `smoke-`.
+
+1. Expiry: an entry far from the market with a 90-second time in force, and its
+   GTC stop and take-profit. When the entry expires unfilled, the stop and
+   take-profit must be gone too, with no position left: what happens to a DAY
+   entry that never fills at the close.
+2. --trade, with 2 shares of --symbol (default F): a marketable bracket with the
+   take-profit for 1 share; after the fill the stop covers 2 and the take-profit 1,
+   in one OCA group of type 2. A wider stop is refused, a tighter one accepted.
+   Closing 1 share in the group must shrink the stop to 1 (ocaType=2, "reduce
+   with block"); closing the last share must leave no stop, take-profit or
+   position. Anything left over is cancelled and flattened at the end.
+
+Exit code 0 when every check passed.
+"""
+
+from __future__ import annotations
+
+import argparse
+import asyncio
+import math
+import os
+import sys
+import tempfile
+from dataclasses import replace
+from datetime import UTC, datetime, timedelta
+from pathlib import Path
+from typing import Any
+
+from ib_async import Contract, MarketOrder, Trade
+
+from broker import tools
+from broker.config import ConfigError, Settings, load_settings
+from broker.gateway import Gateway
+from broker.journal import OrderJournal
+from broker.orders import DONE, OCA_REDUCE_WITH_BLOCK, OrderRefused, Orders, build_bracket
+
+CLIENT = "smoke"
+EXPIRY_SECONDS = 90
+
+
+def show(name: str, ok: bool, detail: str) -> bool:
+    print(f"{'PASS' if ok else 'FAIL'}  {name:<34} {detail}")
+    return ok
+
+
+def paper_settings(env: dict[str, str], offset: int) -> Settings:
+    env = dict(env)
+    env.setdefault("AUTH_TOKENS", f"{CLIENT}:" + "x" * 32)
+    settings = load_settings(env)
+    if settings.trading_mode != "paper" or not settings.expected_account.startswith("D"):
+        raise ConfigError("the order smoke check only runs on a paper account")
+    return replace(
+        settings,
+        ib_client_id=settings.ib_client_id + offset,
+        orders_enabled=True,
+        live_orders_enabled=False,
+        order_clients=(CLIENT,),
+    )
+
+
+async def open_trades(orders: Orders) -> list[Trade]:
+    ib = orders.gateway.require()
+    return await tools.call(orders.gateway, ib.reqAllOpenOrdersAsync(), orders.timeout)
+
+
+def active(trades: list[Trade], ids: set[int]) -> list[Trade]:
+    return [t for t in trades if t.order.orderId in ids and t.orderStatus.status not in DONE]
+
+
+def position(orders: Orders, con_id: int) -> float:
+    ib = orders.gateway.require()
+    return sum(float(p.position) for p in ib.portfolio(orders.gateway.account) if p.contract.conId == con_id)
+
+
+async def wait_for(check: Any, seconds: float, every: float = 3.0) -> bool:
+    deadline = asyncio.get_running_loop().time() + seconds
+    while True:
+        if await check():
+            return True
+        if asyncio.get_running_loop().time() > deadline:
+            return False
+        await asyncio.sleep(every)
+
+
+async def expiry_check(orders: Orders, contract: Contract, price: float, stamp: str) -> list[bool]:
+    ib = orders.gateway.require()
+    ref = f"smoke-exp-{stamp}"
+    until = datetime.now(UTC) + timedelta(seconds=EXPIRY_SECONDS)
+    entry = round(price * 0.5, 2)
+    parent, tp, sl = build_bracket(
+        ib.client.getReqId,
+        orders.gateway.account,
+        "buy",
+        1,
+        entry,
+        round(entry * 0.9, 2),
+        round(entry * 1.2, 2),
+        1,
+        ref,
+        entry_tif="GTD",
+        good_till=until,
+    )
+    for o in (parent, tp, sl):
+        ib.placeOrder(contract, o)
+    ids = {parent.orderId, tp.orderId, sl.orderId}
+    before = position(orders, contract.conId)
+    results = []
+    listed = await wait_for(lambda: _has_all(orders, ids), 20)
+    results.append(show("expiry: bracket accepted", listed, f"entry {entry} until {until:%H:%M:%S} UTC"))
+    gone = await wait_for(lambda: _none_active(orders, ids), EXPIRY_SECONDS + 120, every=10)
+    left = active(await open_trades(orders), ids)
+    results.append(
+        show(
+            "expiry: stop and target go with entry",
+            gone,
+            "all three gone"
+            if gone
+            else "still open: " + ", ".join(f"{t.order.orderType} {t.orderStatus.status}" for t in left),
+        )
+    )
+    results.append(show("expiry: no position left", position(orders, contract.conId) == before, f"position {before}"))
+    return results
+
+
+async def _has_all(orders: Orders, ids: set[int]) -> bool:
+    return len(active(await open_trades(orders), ids)) == len(ids)
+
+
+async def _none_active(orders: Orders, ids: set[int]) -> bool:
+    return not active(await open_trades(orders), ids)
+
+
+async def trade_check(orders: Orders, contract: Contract, price: float, stamp: str) -> list[bool]:
+    results: list[bool] = []
+    ref = f"smoke-trade-{stamp}"
+    start = position(orders, contract.conId)
+    entry = round(price * 1.02, 2)
+    r = await orders.place_bracket_order(
+        CLIENT, contract.conId, "buy", 2, entry, round(price * 0.9, 2), round(price * 1.2, 2), 1, ref
+    )
+    ids = {r["parent_order_id"], r["take_profit_order_id"], r["stop_order_id"]}
+    filled = await wait_for(lambda: _position_is(orders, contract.conId, start + 2), 90)
+    results.append(show("trade: entry filled", filled, f"2 @ <= {entry}" if filled else "not filled: market closed?"))
+    if not filled:
+        return results
+    trades = {t.order.orderId: t for t in active(await open_trades(orders), ids)}
+    stop, tp = trades.get(r["stop_order_id"]), trades.get(r["take_profit_order_id"])
+    ok = (
+        stop is not None
+        and tp is not None
+        and stop.order.totalQuantity == 2
+        and tp.order.totalQuantity == 1
+        and stop.order.ocaType == tp.order.ocaType == OCA_REDUCE_WITH_BLOCK
+        and stop.order.tif == tp.order.tif == "GTC"
+    )
+    results.append(show("trade: stop 2, target 1, OCA type 2", ok, _describe(stop, tp)))
+    try:
+        await orders.modify_stop(CLIENT, r["stop_order_id"], round(price * 0.85, 2))
+        results.append(show("trade: wider stop refused", False, "a wider stop was accepted"))
+    except OrderRefused as error:
+        results.append(show("trade: wider stop refused", True, str(error)[:60]))
+    tighter = round(price * 0.92, 2)
+    m = await orders.modify_stop(CLIENT, r["stop_order_id"], tighter)
+    results.append(show("trade: tighter stop accepted", m["new_stop"] == tighter, f"stop {m['old_stop']} -> {tighter}"))
+
+    await orders.close_position(CLIENT, contract.conId, 1, None)
+    halved = await wait_for(lambda: _position_is(orders, contract.conId, start + 1), 60)
+    trades = {t.order.orderId: t for t in active(await open_trades(orders), ids)}
+    stop = trades.get(r["stop_order_id"])
+    reduced = stop is not None and _remaining(stop) == 1
+    results.append(
+        show(
+            "trade: closing 1 shrinks the stop to 1",
+            halved and reduced,
+            _describe(stop, trades.get(r["take_profit_order_id"])),
+        )
+    )
+    await orders.close_position(CLIENT, contract.conId, 1, None)
+    flat = await wait_for(lambda: _position_is(orders, contract.conId, start), 60)
+    leftover = await wait_for(lambda: _none_active(orders, ids), 30)
+    results.append(
+        show("trade: flat, no stop or target left", flat and leftover, f"position {position(orders, contract.conId)}")
+    )
+    return results
+
+
+def _remaining(t: Trade) -> float:
+    rem = tools.num(t.orderStatus.remaining)
+    return rem if rem is not None else float(t.order.totalQuantity)
+
+
+def _describe(stop: Trade | None, tp: Trade | None) -> str:
+    parts = []
+    for name, t in (("stop", stop), ("target", tp)):
+        parts.append(
+            f"{name} gone" if t is None else f"{name} {_remaining(t):g} {t.orderStatus.status} oca {t.order.ocaType}"
+        )
+    return ", ".join(parts)
+
+
+async def _position_is(orders: Orders, con_id: int, expected: float) -> bool:
+    return math.isclose(position(orders, con_id), expected)
+
+
+async def cleanup(orders: Orders, contract: Contract, start: float) -> None:
+    """Cancel every smoke order still open and flatten what the check bought."""
+    ib = orders.gateway.require()
+    for t in await open_trades(orders):
+        if t.order.orderRef.startswith("smoke-") and t.orderStatus.status not in DONE:
+            ib.cancelOrder(t.order)
+    extra = position(orders, contract.conId) - start
+    if extra:
+        order = MarketOrder("SELL" if extra > 0 else "BUY", abs(extra))
+        order.account, order.orderRef = orders.gateway.account, "smoke-cleanup"
+        ib.placeOrder(contract, order)
+        print(f"cleanup: flattened {extra:g} {contract.symbol}")
+
+
+async def run(symbol: str, trade: bool, offset: int) -> int:
+    try:
+        settings = paper_settings(dict(os.environ), offset)
+    except ConfigError as error:
+        print(f"config: {error}", file=sys.stderr)
+        return 2
+    gateway = Gateway(settings)
+    await gateway.connect_once()
+    with tempfile.TemporaryDirectory() as tmp:
+        orders = Orders(gateway, settings, OrderJournal.open(Path(tmp) / "orders.jsonl"), settings.request_timeout)
+        q = await tools.get_quote(gateway, settings.request_timeout, symbol, None, "STK", "SMART", "USD")
+        price = q["last"] or q["close"] or q["ask"]
+        if not price:
+            print(f"no price for {symbol}", file=sys.stderr)
+            await gateway.stop()
+            return 2
+        ib = gateway.require()
+        contract = await tools.qualify(
+            gateway, ib, Contract(conId=q["con_id"], exchange="SMART"), settings.request_timeout
+        )
+        start = position(orders, contract.conId)
+        stamp = datetime.now(UTC).strftime("%Y%m%d%H%M%S")
+        print(
+            f"paper account {gateway.account}, {symbol} at {price} (delayed={q['delayed']}), "
+            f"client id {settings.ib_client_id}"
+        )
+        results: list[bool] = []
+        try:
+            results += await expiry_check(orders, contract, price, stamp)
+            if trade:
+                results += await trade_check(orders, contract, price, stamp)
+        finally:
+            await cleanup(orders, contract, start)
+            await asyncio.sleep(2)
+            await gateway.stop()
+    return 0 if results and all(results) else 1
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("--symbol", default="F", help="a cheap, liquid US stock (default F)")
+    parser.add_argument("--trade", action="store_true", help="also buy and sell 2 shares to check the OCA group")
+    parser.add_argument("--client-id-offset", type=int, default=101)
+    args = parser.parse_args()
+    sys.exit(asyncio.run(run(args.symbol, args.trade, args.client_id_offset)))
+
+
+if __name__ == "__main__":
+    main()

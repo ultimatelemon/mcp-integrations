@@ -12,6 +12,7 @@ import uvicorn
 from broker.app import create_app
 from broker.config import ConfigError, Settings, load_settings
 from broker.gateway import AccountMismatch, Gateway
+from broker.journal import JournalError, OrderJournal
 from broker.log import setup_logging
 
 log = logging.getLogger("broker")
@@ -32,13 +33,24 @@ def warn_on_port(settings: Settings) -> None:
 
 
 async def serve(settings: Settings) -> int:
+    journal: OrderJournal | None = None
+    if settings.orders_mode != "off":
+        try:
+            journal = OrderJournal.open(settings.order_journal)
+        except JournalError as error:
+            log.error(
+                "refusing to start: order tools are on but the journal is not usable", extra={"reason": str(error)}
+            )
+            return 1
+    elif settings.orders_enabled:
+        log.warning("ORDERS_ENABLED is set on a live account without LIVE_ORDERS_ENABLED; the server stays read-only")
     gateway = Gateway(settings)
     try:
         await gateway.start()
     except AccountMismatch:
         log.error("refusing to start: IB Gateway serves another account than IB_EXPECTED_ACCOUNT")
         return 1
-    app = create_app(settings, gateway)
+    app = create_app(settings, gateway, journal)
     config = uvicorn.Config(
         app,
         host="0.0.0.0",  # noqa: S104 - inside a container, reached through Traefik

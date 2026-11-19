@@ -19,6 +19,8 @@ from starlette.types import ASGIApp, Receive, Scope, Send
 
 from broker.config import AuthToken, Settings
 from broker.gateway import Gateway, State
+from broker.journal import OrderJournal
+from broker.orders import Orders
 from broker.server import build_server
 
 log = logging.getLogger("broker.http")
@@ -99,12 +101,18 @@ def health_body(gateway: Gateway) -> tuple[int, dict[str, Any]]:
             "ib_state": gateway.state.value,
             "ib_detail": gateway.detail,
             "trading_mode": gateway.trading_mode,
+            "orders": gateway.orders_mode,
         },
     )
 
 
-def create_app(settings: Settings, gateway: Gateway) -> Starlette:
-    mcp = build_server(gateway, settings.request_timeout)
+def create_app(settings: Settings, gateway: Gateway, journal: OrderJournal | None = None) -> Starlette:
+    orders: Orders | None = None
+    if settings.orders_mode != "off":
+        if journal is None:
+            raise ValueError("order tools need the order journal")
+        orders = Orders(gateway, settings, journal, settings.request_timeout)
+    mcp = build_server(gateway, settings.request_timeout, orders)
     # Behind Traefik the Host header is the public domain; the bearer token,
     # not a host allowlist, is what keeps other callers out.
     mcp.streamable_http_app(

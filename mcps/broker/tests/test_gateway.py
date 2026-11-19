@@ -1,4 +1,5 @@
 import asyncio
+from typing import Any
 
 import pytest
 
@@ -161,3 +162,19 @@ async def test_wrong_account_after_reconnect_refuses_for_good() -> None:
         gateway.require()
     await gateway.stop()
     assert gateway.state is State.REFUSED
+
+
+@pytest.mark.parametrize(
+    ("overrides", "readonly"),
+    [
+        ({}, True),
+        ({"orders_enabled": True, "order_clients": ("mike",)}, False),
+        # Live without LIVE_ORDERS_ENABLED stays read-only, even with ORDERS_ENABLED.
+        ({"trading_mode": "live", "expected_account": "U1", "orders_enabled": True, "order_clients": ("mike",)}, True),
+    ],
+)
+async def test_read_only_unless_orders_are_on(overrides: dict[str, Any], readonly: bool) -> None:
+    ib = FakeIB(accounts=[overrides.get("expected_account", ACCOUNT)])
+    g = Gateway(settings(**overrides), ib_factory=lambda: ib)
+    await g.connect_once()
+    assert ib.connect_kwargs["readonly"] is readonly

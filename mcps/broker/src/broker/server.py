@@ -8,27 +8,42 @@ from collections.abc import Iterator
 from datetime import date, datetime
 from typing import Annotated, Any
 
-from mcp.server.mcpserver import MCPServer
+from mcp.server.mcpserver import Context, MCPServer
 from mcp.server.mcpserver.exceptions import ToolError
 from mcp.types import ToolAnnotations
 from pydantic import Field
 
 from broker import tools
 from broker.gateway import Gateway, GatewayUnavailable
+from broker.journal import JournalError
+from broker.orders import Orders, Side
 from broker.sizing import SizingError, calculate_position_size
 from broker.tools import BarSize, BrokerError, SecType, WhatToShow
 
 log = logging.getLogger("broker.tools")
 
-INSTRUCTIONS = """\
+READ_ONLY_INTRO = """\
 Read-only access to one Interactive Brokers account through IB Gateway. No tool can place, \
-change or cancel orders. Quotes are usually delayed (15 minutes for US stocks) because the \
+change or cancel orders."""
+
+ORDERS_INTRO = """\
+Access to one Interactive Brokers account through IB Gateway, with order tools \
+(place_bracket_order, modify_stop, close_position, cancel_order, cancel_entry_orders) that \
+enforce the server's own limits: a refused order says which rule refused it."""
+
+INSTRUCTIONS = """\
+Quotes are usually delayed (15 minutes for US stocks) because the \
 account has no market data subscription: check the `delayed` field before treating a price \
 as current. IB Gateway restarts nightly around 23:59 Europe/Amsterdam; a 'not connected' \
 error then means: try again in a minute. Times are Europe/Amsterdam."""
 
 READ = ToolAnnotations(read_only_hint=True, destructive_hint=False, idempotent_hint=True, open_world_hint=True)
 PURE = ToolAnnotations(read_only_hint=True, destructive_hint=False, idempotent_hint=True, open_world_hint=False)
+WRITE = ToolAnnotations(read_only_hint=False, destructive_hint=True, idempotent_hint=False, open_world_hint=True)
+# Same order_ref, same bracket: placing it again returns the existing one.
+WRITE_IDEMPOTENT = ToolAnnotations(
+    read_only_hint=False, destructive_hint=True, idempotent_hint=True, open_world_hint=True
+)
 
 Symbol = Annotated[str | None, Field(description="Ticker, e.g. AAPL or ASML. Give this or con_id.")]
 ConId = Annotated[int | None, Field(description="IBKR contract id from search_contract; wins over symbol.", gt=0)]
@@ -42,13 +57,26 @@ def guard(tool: str) -> Iterator[None]:
     """Anticipated failures become a readable tool error; anything else is a crash the SDK hides."""
     try:
         yield
-    except (BrokerError, GatewayUnavailable, SizingError) as error:
+    except (BrokerError, GatewayUnavailable, SizingError, JournalError) as error:
         log.info("tool failed", extra={"tool": tool, "reason": type(error).__name__})
         raise ToolError(str(error)) from None
 
 
-def build_server(gateway: Gateway, request_timeout: float) -> MCPServer:
-    mcp = MCPServer(name="broker", version="1.0.0", instructions=INSTRUCTIONS)
+def client_label(ctx: Context) -> str:
+    """The AUTH_TOKENS label of the caller, set by the token check; unknown fails closed."""
+    try:
+        request = ctx.request_context.request
+    except ValueError:
+        return ""
+    scope = getattr(request, "scope", None)
+    state = scope.get("state", {}) if isinstance(scope, dict) else {}
+    label = state.get("client") if isinstance(state, dict) else None
+    return label if isinstance(label, str) else ""
+
+
+def build_server(gateway: Gateway, request_timeout: float, orders: Orders | None = None) -> MCPServer:
+    intro = READ_ONLY_INTRO if orders is None else ORDERS_INTRO
+    mcp = MCPServer(name="broker", version="1.0.0", instructions=intro + " " + INSTRUCTIONS)
     t = request_timeout
 
     @mcp.tool(annotations=READ)
@@ -147,4 +175,88 @@ def build_server(gateway: Gateway, request_timeout: float) -> MCPServer:
         with guard("calculate_position_size"):
             return calculate_position_size(equity, entry, exit_price, risk_pct)
 
+    if orders is not None:
+        add_order_tools(mcp, orders)
     return mcp
+
+
+OrderId = Annotated[int, Field(description="order_id from place_bracket_order or get_open_orders.", gt=0)]
+
+
+def add_order_tools(mcp: MCPServer, orders: Orders) -> None:
+    """The order tools; only registered when the server is configured for orders."""
+
+    @mcp.tool(annotations=WRITE_IDEMPOTENT)
+    async def place_bracket_order(
+        ctx: Context,
+        con_id: Annotated[int, Field(description="IBKR contract id of a stock, from search_contract.", gt=0)],
+        side: Annotated[Side, Field(description="buy (long) or sell (short).")],
+        quantity: Annotated[float, Field(description="Shares of the entry and of the stop.", gt=0)],
+        entry_limit: Annotated[float, Field(description="Limit price of the entry.", gt=0)],
+        stop_price: Annotated[float, Field(description="Stop-loss: below entry for a buy, above for a sell.", gt=0)],
+        target_price: Annotated[
+            float, Field(description="Take-profit: above entry for a buy, below for a sell.", gt=0)
+        ],
+        order_ref: Annotated[
+            str,
+            Field(
+                description="Your unique reference (1-40 of A-Z a-z 0-9 . _ : -); the same ref again returns "
+                "the existing bracket instead of placing a new one.",
+                max_length=40,
+            ),
+        ],
+        target_quantity: Annotated[
+            float | None, Field(description="Shares of the take-profit, e.g. half; default all.", gt=0)
+        ] = None,
+    ) -> dict[str, Any]:
+        """Place a bracket: a DAY limit entry with a GTC stop-loss and a GTC take-profit in one
+        OCA group that reduces on fill, regular trading hours only, transmitted together. The
+        server refuses a stop or target on the wrong side, an order above MAX_ORDER_NOTIONAL_PCT
+        of net liquidation and more than MAX_ORDERS_PER_DAY new orders a day."""
+        with guard("place_bracket_order"):
+            return await orders.place_bracket_order(
+                client_label(ctx),
+                con_id,
+                side,
+                quantity,
+                entry_limit,
+                stop_price,
+                target_price,
+                target_quantity,
+                order_ref,
+            )
+
+    @mcp.tool(annotations=WRITE)
+    async def modify_stop(
+        ctx: Context,
+        order_id: OrderId,
+        new_stop: Annotated[float, Field(description="The new stop price.", gt=0)],
+    ) -> dict[str, Any]:
+        """Move a stop-loss closer to the price: higher for a long, lower for a short. Never wider."""
+        with guard("modify_stop"):
+            return await orders.modify_stop(client_label(ctx), order_id, new_stop)
+
+    @mcp.tool(annotations=WRITE)
+    async def close_position(
+        ctx: Context,
+        con_id: Annotated[int, Field(description="IBKR contract id of the position.", gt=0)],
+        quantity: Annotated[float, Field(description="Shares to close, at most the position.", gt=0)],
+        limit_price: Annotated[float | None, Field(description="Limit price; without it a market order.", gt=0)] = None,
+    ) -> dict[str, Any]:
+        """Close all or part of a position, e.g. when the thesis broke or the catalyst passed. Joins
+        the bracket's OCA group, so its stop and take-profit shrink by what is closed."""
+        with guard("close_position"):
+            return await orders.close_position(client_label(ctx), con_id, quantity, limit_price)
+
+    @mcp.tool(annotations=WRITE)
+    async def cancel_order(ctx: Context, order_id: OrderId) -> dict[str, Any]:
+        """Cancel the unfilled part of an entry order this server placed. Stops and take-profits
+        are never cancelled; after a partial fill they shrink to the filled quantity."""
+        with guard("cancel_order"):
+            return await orders.cancel_order(client_label(ctx), order_id)
+
+    @mcp.tool(annotations=WRITE)
+    async def cancel_entry_orders(ctx: Context) -> dict[str, Any]:
+        """Cancel every open entry order this server placed; never a stop or take-profit."""
+        with guard("cancel_entry_orders"):
+            return await orders.cancel_entry_orders(client_label(ctx))

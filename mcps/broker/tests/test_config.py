@@ -87,3 +87,46 @@ def test_bad_numbers_and_paths() -> None:
     assert "BASE_PATH" in text
     assert "IB_REQUEST_TIMEOUT" in text
     assert TOKEN not in text
+
+
+ORDERS = {**ENV, "ORDERS_ENABLED": "true", "ORDER_CLIENTS": "mike"}
+LIVE = {**ENV, "IB_TRADING_MODE": "live", "IB_EXPECTED_ACCOUNT": "U1234567", "IB_PORT": "4003"}
+
+
+def test_orders_are_off_by_default() -> None:
+    s = load_settings(ENV)
+    assert s.orders_mode == "off"
+    assert (s.max_orders_per_day, s.max_order_notional_pct, s.order_journal) == (5, 20.0, "/data/orders.jsonl")
+
+
+def test_orders_on_paper() -> None:
+    s = load_settings({**ORDERS, "MAX_ORDERS_PER_DAY": "3", "MAX_ORDER_NOTIONAL_PCT": "12.5"})
+    assert s.orders_mode == "paper"
+    assert s.order_clients == ("mike",)
+    assert (s.max_orders_per_day, s.max_order_notional_pct) == (3, 12.5)
+    assert "orders=paper" in repr(s)
+
+
+def test_live_orders_need_their_own_flag() -> None:
+    assert load_settings({**LIVE, "ORDERS_ENABLED": "true", "ORDER_CLIENTS": "mike"}).orders_mode == "off"
+    s = load_settings({**LIVE, "ORDERS_ENABLED": "true", "LIVE_ORDERS_ENABLED": "true", "ORDER_CLIENTS": "mike"})
+    assert s.orders_mode == "live"
+    # LIVE_ORDERS_ENABLED alone turns nothing on.
+    assert load_settings({**LIVE, "LIVE_ORDERS_ENABLED": "true"}).orders_mode == "off"
+
+
+@pytest.mark.parametrize(
+    ("env", "message"),
+    [
+        ({**ENV, "ORDERS_ENABLED": "true"}, "ORDER_CLIENTS is required"),
+        ({**ORDERS, "ORDER_CLIENTS": "nova"}, "'nova' is not in AUTH_TOKENS"),
+        ({**ORDERS, "ORDERS_ENABLED": "maybe"}, "ORDERS_ENABLED must be true or false"),
+        ({**ORDERS, "MAX_ORDERS_PER_DAY": "0"}, "MAX_ORDERS_PER_DAY must be at least 1"),
+        ({**ORDERS, "MAX_ORDER_NOTIONAL_PCT": "0"}, "MAX_ORDER_NOTIONAL_PCT must be above 0"),
+        ({**ORDERS, "MAX_ORDER_NOTIONAL_PCT": "101"}, "MAX_ORDER_NOTIONAL_PCT must be at most 100"),
+        ({**ORDERS, "ORDER_JOURNAL": "data/orders.jsonl"}, "ORDER_JOURNAL must be an absolute path"),
+    ],
+)
+def test_order_config_errors(env: dict[str, str], message: str) -> None:
+    with pytest.raises(ConfigError, match=message):
+        load_settings(env)
