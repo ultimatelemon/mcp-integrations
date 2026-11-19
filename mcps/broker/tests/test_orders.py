@@ -477,8 +477,9 @@ async def test_no_close_when_ibkr_refuses_the_resize(orders: Orders, ib: OrderIB
     with pytest.raises(OrderRefused, match="Error 10326") as error:
         await orders.close_position("mike", NVDA, 20, None)
     assert all(o.orderType != "MKT" for _, o in ib.placed)
-    # The take-profit went first; the error says so.
+    # The take-profit went first; the error says so. The stop still covers all 50.
     assert open_order(ib, r["take_profit_order_id"]).order.totalQuantity == 30
+    assert open_order(ib, r["stop_order_id"]).order.totalQuantity == 50
     assert f"already changed: [{{'order_id': {r['take_profit_order_id']}, 'quantity': 30.0}}]" in str(error.value)
     assert str(error.value).endswith("no close was sent")
 

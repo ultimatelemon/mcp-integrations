@@ -317,10 +317,10 @@ async def target_check(orders: Orders, contract: Contract, price: float, stamp: 
     gone = await wait_for(lambda: _none_active(orders, {sl.orderId}), 30)
     flat = await wait_for(lambda: _position_is(orders, contract.conId, start), 30)
     left = active(await open_trades(orders), {sl.orderId})
-    detail = f"position {position(orders, contract.conId):g}" + (
+    detail = f"position {position(orders, contract.conId):g} (start {start:g})" + (
         f", stop still {left[0].orderStatus.status}" if left else ""
     )
-    results.append(show("target: IBKR cancels the stop, flat", gone and flat, detail))
+    results.append(show("target: IBKR cancels the stop", gone and flat, detail))
     return results
 
 

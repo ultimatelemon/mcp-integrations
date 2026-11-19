@@ -126,6 +126,10 @@ class Orders:
         changed = copy.copy(trade.order)
         for name, value in values.items():
             setattr(changed, name, value)
+        # A bracket's entry and take-profit go out with transmit=False so the
+        # stop sends all three. A change with that flag still on is acknowledged
+        # ("Modified") but never reaches IBKR.
+        changed.transmit = True
         mark = len(trade.log)
         placed = ib.placeOrder(trade.contract, changed)
 
@@ -422,7 +426,9 @@ class Orders:
                     break
                 size = max(b.size - excess, 0.0)
                 excess -= b.size - size
-                for t in b.orders:
+                # The stop last: when a change fails, no close goes out and the
+                # stop still covers the whole position.
+                for t in sorted(b.orders, key=lambda t: t.order.orderType == "STP"):
                     have = open_quantity(t)
                     if size <= 1e-9:
                         status = await self._cancel(ib, t)
