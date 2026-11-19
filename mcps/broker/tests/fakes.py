@@ -226,6 +226,10 @@ class OrderIB(FakeIB):
         order.clientId = 17
         for t in self.trades:
             if t.order.orderId == order.orderId:
+                if not order.transmit:
+                    # IB Gateway acknowledges a change without transmit, but keeps it to itself.
+                    t.log.append(TradeLogEntry(datetime.now(UTC), t.orderStatus.status, "Modified"))
+                    return t
                 if order.orderId in self.reject:
                     code, message = self.reject[order.orderId]
                     text = f"Error {code}, reqId {order.orderId}: {message}"
