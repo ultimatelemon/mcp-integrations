@@ -80,7 +80,9 @@ entry that never fills are never active and go with it.
   `0 < target_quantity <= quantity`; an `order_ref` of 1-40 of
   `A-Z a-z 0-9 . _ : -`;
 - an entry above `MAX_ORDER_NOTIONAL_PCT` of net liquidation (quantity x
-  entry limit, converted with IBKR's exchange rate; no rate, no order);
+  entry limit, converted with IBKR's ExchangeRate account value, which IBKR
+  only sends for currencies the account holds, else with the IDEALPRO quote
+  of the pair; no rate, no order);
 - more than `MAX_ORDERS_PER_DAY` new brackets on one day (Europe/Amsterdam).
   Exits, stop changes and cancels never count, so an exit is never blocked;
 - a stop move that widens, or that would trigger at once against the last

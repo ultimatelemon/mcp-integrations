@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-from ib_async import LimitOrder, Order, StopOrder, Ticker
+from ib_async import Contract, LimitOrder, Order, StopOrder, Ticker
 
 from broker.config import ConfigError, Settings
 from broker.gateway import Gateway, GatewayUnavailable
@@ -202,6 +202,20 @@ async def test_notional_needs_an_exchange_rate(orders: Orders, ib: OrderIB) -> N
     with pytest.raises(OrderRefused, match="net liquidation is unknown"):
         await bracket(orders)
     assert ib.placed == []
+
+
+async def test_notional_falls_back_to_the_idealpro_quote(orders: Orders, ib: OrderIB) -> None:
+    # A euro account without dollars: IBKR sends no ExchangeRate for USD.
+    ib.values = []
+    pair = Ticker(contract=Contract(secType="CASH", symbol="EUR", currency="USD", exchange="IDEALPRO"))
+    pair.bid, pair.ask = 1.10, 1.12
+    ib.fx_tickers = [pair]
+    r = await bracket(orders)
+    # 50 x $20 at 1,11 dollar per euro is €900,90 of €10.000.
+    assert r["notional_pct"] == 9.01
+    fx_calls = [args for name, args in ib.calls if name == "fxTickers"]
+    assert fx_calls[0][0].symbol == "EUR"
+    assert fx_calls[0][0].currency == "USD"
 
 
 async def test_daily_limit_counts_entries_only(orders: Orders, ib: OrderIB, clock: Clock) -> None:
