@@ -55,13 +55,13 @@ connection stays `readonly=True`. Only the token labels in `ORDER_CLIENTS` may
 call them: another client gets "may not use order tools", so the owner's own
 claude.ai connection stays read-only. Stocks only.
 
-| Tool                  | What it does                                                                                                                  |
-| --------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| `place_bracket_order` | `con_id`, `side` (buy/sell), `quantity`, `entry_limit`, `stop_price`, `target_price`, optional `target_quantity`, `order_ref` |
-| `modify_stop`         | `order_id`, `new_stop`: only tighter (higher for a long, lower for a short), never wider                                      |
-| `close_position`      | `con_id`, `quantity`, optional `limit_price` (else market): all or part of a position                                        |
-| `cancel_order`        | `order_id` of an entry this server placed; never a stop or take-profit                                                        |
-| `cancel_entry_orders` | Every open entry this server placed; never a stop or take-profit                                                              |
+| Tool                  | What it does                                                                                                                                            |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `place_bracket_order` | `con_id`, `side` (buy/sell), `quantity`, `entry_limit`, `stop_price`, `target_price`, `order_ref`, optional `target_quantity` and `runner_target_price` |
+| `modify_stop`         | `order_id`, `new_stop`: only tighter (higher for a long, lower for a short), never wider                                                                |
+| `close_position`      | `con_id`, `quantity`, optional `limit_price` (else market): all or part of a position                                                                   |
+| `cancel_order`        | `order_id` of an entry this server placed; never a stop or take-profit                                                                                  |
+| `cancel_entry_orders` | Every open entry this server placed; never a stop or take-profit                                                                                        |
 
 **A bracket** is three orders transmitted together (only the last has
 `transmit=True`): a limit entry with `tif=DAY`, and a take-profit limit and a
@@ -72,8 +72,19 @@ when one fills it cancels the other. There is no OCA group of our own: with
 one, IBKR refused a later stop move (error 10326), and a close in that group
 neither shrank the stop nor let a second close in ("OCA group is already
 filled"). The children of an entry that never fills are never active and go
-with it. IBKR sizes the take-profit to the entry, so `target_quantity` must
-equal `quantity`; take profit on part of a position with `close_position`.
+with it.
+
+**Take profit on part (`target_quantity` below `quantity`).** IBKR sizes a
+bracket's take-profit to its entry, so the server places two brackets with
+the same entry, stop and `order_ref`: `target_quantity` with its take-profit
+at `target_price`, and the runner, the rest, with its take-profit at
+`runner_target_price` (required, beyond `target_price`). The answer has the
+runner's order ids as `runner_parent_order_id`, `runner_take_profit_order_id`
+and `runner_stop_order_id` (null for one bracket). It is one request: one
+notional check over all shares, one journal entry and one entry for
+`MAX_ORDERS_PER_DAY`. When the first take-profit fills, IBKR cancels that
+leg's stop; the runner keeps its own, which the client can move with
+`modify_stop`.
 
 **Changes count once IBKR shows them.** IBKR refuses a change with an error
 and keeps the order as it was, so `modify_stop` and every resize or cancel
@@ -84,7 +95,8 @@ report IBKR's error otherwise.
 
 - a stop or target on the wrong side: a buy needs `stop < entry < target`, a
   sell `target < entry < stop`; `quantity` and prices above 0;
-  a `target_quantity` other than `quantity`; an `order_ref` of 1-40 of
+  a `target_quantity` below `quantity` without a `runner_target_price` beyond
+  `target_price`; an `order_ref` of 1-40 of
   `A-Z a-z 0-9 . _ : -`;
 - an entry above `MAX_ORDER_NOTIONAL_PCT` of net liquidation (quantity x
   entry limit, converted with IBKR's ExchangeRate account value, which IBKR
@@ -314,6 +326,11 @@ New York.
    take-profit or position.
 3. **`--trade`, target:** a bracket of 1 share whose take-profit fills right
    after the entry; IBKR must cancel the stop by itself and leave no position.
+4. **`--trade`, legs:** take profit on half, two brackets of 1 share as
+   `place_bracket_order` builds them. The first leg's take-profit fills at
+   once; IBKR must cancel that leg's stop and keep the runner's stop and
+   take-profit at 1; the runner's stop moves up and the runner closes, leaving
+   nothing.
 
 Whatever is left is cancelled and flattened at the end, and the check says
 whether the position is back where it started.

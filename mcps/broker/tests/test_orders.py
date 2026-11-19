@@ -136,9 +136,71 @@ async def test_bracket_is_three_linked_orders(orders: Orders, ib: OrderIB, journ
     assert entry["day"] == "2026-11-19"
 
 
-async def test_target_quantity_may_only_be_all(orders: Orders, ib: OrderIB) -> None:
+async def test_target_quantity_of_all_is_one_bracket(orders: Orders, ib: OrderIB) -> None:
     await bracket(orders, target_quantity=50)
     assert ib.placed[1][1].totalQuantity == 50
+
+
+async def test_take_profit_on_half_is_two_brackets(orders: Orders, ib: OrderIB, journal: OrderJournal) -> None:
+    r = await bracket(orders, target_quantity=25, runner_target_price=30.0)
+    assert [(o.orderType, o.totalQuantity) for _, o in ib.placed] == [
+        ("LMT", 25),
+        ("LMT", 25),
+        ("STP", 25),
+        ("LMT", 25),
+        ("LMT", 25),
+        ("STP", 25),
+    ]
+    a_parent, a_tp, a_stop, b_parent, b_tp, b_stop = (o for _, o in ib.placed)
+    assert (a_tp.lmtPrice, b_tp.lmtPrice) == (25.0, 30.0)
+    assert a_stop.auxPrice == b_stop.auxPrice == 18.0
+    assert a_parent.lmtPrice == b_parent.lmtPrice == 20.0
+    assert a_tp.parentId == a_stop.parentId == a_parent.orderId
+    assert b_tp.parentId == b_stop.parentId == b_parent.orderId
+    # Each leg transmits on its own stop.
+    assert [o.transmit for _, o in ib.placed] == [False, False, True, False, False, True]
+    assert {o.orderRef for _, o in ib.placed} == {"per66-nvda-1"}
+    assert (r["parent_order_id"], r["take_profit_order_id"], r["stop_order_id"]) == (
+        a_parent.orderId,
+        a_tp.orderId,
+        a_stop.orderId,
+    )
+    assert (r["runner_parent_order_id"], r["runner_take_profit_order_id"], r["runner_stop_order_id"]) == (
+        b_parent.orderId,
+        b_tp.orderId,
+        b_stop.orderId,
+    )
+    # One request: the notional of all 50 shares, one journal entry, one for the daily limit.
+    assert r["notional_pct"] == 9.0
+    assert [e["outcome"] for e in lines(journal)] == ["placed"]
+    assert journal.entries_placed_on(journal.today()) == 1
+    # Both entries may be cancelled, the runner's too.
+    assert set(journal.entry_orders()) == {a_parent.orderId, b_parent.orderId}
+    again = await bracket(orders, target_quantity=25, runner_target_price=30.0)
+    assert again["outcome"] == "existing"
+    assert again["runner_stop_order_id"] == b_stop.orderId
+    assert len(ib.placed) == 6
+
+
+async def test_two_legs_close_and_cancel(orders: Orders, ib: OrderIB) -> None:
+    r = await bracket(orders, target_quantity=25, runner_target_price=30.0)
+    c = await orders.cancel_order("mike", r["runner_parent_order_id"])
+    assert c["outcome"] == "cancelled"
+    assert [o.orderId for o in ib.cancelled] == [r["runner_parent_order_id"]]
+
+
+async def test_two_legs_full_close_cancels_both(orders: Orders, ib: OrderIB) -> None:
+    r = await bracket(orders, target_quantity=25, runner_target_price=30.0)
+    fill_entries(ib)
+    held(ib, 50)
+    await orders.close_position("mike", NVDA, 50, None)
+    assert {o.orderId for o in ib.cancelled} == {
+        r["stop_order_id"],
+        r["take_profit_order_id"],
+        r["runner_stop_order_id"],
+        r["runner_take_profit_order_id"],
+    }
+    assert ib.placed[-1][1].totalQuantity == 50
 
 
 async def test_short_bracket(orders: Orders, ib: OrderIB) -> None:
@@ -157,8 +219,20 @@ async def test_short_bracket(orders: Orders, ib: OrderIB) -> None:
         ({"side": "sell", "stop_price": 22.0, "target_price": 21.0}, "target_price < entry_limit < stop_price"),
         ({"quantity": 0}, "quantity must be above 0"),
         ({"quantity": float("nan")}, "quantity must be above 0"),
-        ({"target_quantity": 25}, "target_quantity must equal quantity"),
-        ({"target_quantity": 51}, "target_quantity must equal quantity"),
+        ({"target_quantity": 25}, "needs runner_target_price"),
+        ({"target_quantity": 51}, "target_quantity must be above 0 and at most quantity"),
+        ({"target_quantity": 25, "runner_target_price": 24.0}, "runner_target_price above target_price"),
+        ({"runner_target_price": 30.0}, "runner_target_price needs a target_quantity below quantity"),
+        (
+            {
+                "side": "sell",
+                "stop_price": 22.0,
+                "target_price": 15.0,
+                "target_quantity": 25,
+                "runner_target_price": 16,
+            },
+            "runner_target_price below target_price",
+        ),
         ({"entry_limit": -1}, "entry_limit must be above 0"),
         ({"order_ref": ""}, "order_ref"),
         ({"order_ref": "x" * 41}, "order_ref"),
@@ -194,13 +268,24 @@ async def test_same_order_ref_returns_the_existing_bracket(
 
 
 async def test_order_ref_known_at_ibkr_is_not_placed_again(orders: Orders, ib: OrderIB) -> None:
-    # The journal was lost, but IBKR has the order.
-    old = LimitOrder("BUY", 50, 20.0, orderId=7, orderRef="per66-nvda-1")
+    # The journal was lost, but IBKR has the order. ib_async gives completed
+    # orders no orderId: it proves the ref exists, without ids.
+    old = LimitOrder("BUY", 50, 20.0, orderId=0, orderRef="per66-nvda-1")
     ib.completed = [trade(stock("NVDA", con_id=NVDA), old, "Filled")]
     r = await bracket(orders)
     assert r["outcome"] == "existing"
-    assert r["parent_order_id"] == 7
+    assert r["parent_order_id"] is None
     assert ib.placed == []
+
+
+async def test_order_ref_open_at_ibkr_gives_both_entries(orders: Orders, ib: OrderIB, tmp_path: Path) -> None:
+    await bracket(orders, target_quantity=25, runner_target_price=30.0)
+    ids = sorted(o.orderId for _, o in ib.placed if not o.parentId)
+    # A new journal: the ids come from IBKR's open orders.
+    fresh = Orders(orders.gateway, orders.settings, OrderJournal.open(tmp_path / "new.jsonl"), 1.0)
+    r = await fresh.place_bracket_order("mike", NVDA, "buy", 50, 20.0, 18.0, 25.0, 25, "per66-nvda-1", 30.0)
+    assert (r["outcome"], r["parent_order_id"], r["runner_parent_order_id"]) == ("existing", ids[0], ids[1])
+    assert len(ib.placed) == 6
 
 
 async def test_notional_limit(orders: Orders, ib: OrderIB) -> None:
