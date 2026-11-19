@@ -248,9 +248,19 @@ def trade(contract: Contract, order: Order, status: str = "Submitted") -> Trade:
     )
 
 
-def fill(contract: Contract, exec_id: str, when: datetime, side: str = "BOT", account: str = ACCOUNT) -> Fill:
+def fill(
+    contract: Contract, exec_id: str, when: datetime, side: str = "BOT", account: str = ACCOUNT, order_ref: str = ""
+) -> Fill:
     execution = Execution(
-        execId=exec_id, time=when, acctNumber=account, exchange="ISLAND", side=side, shares=10, price=101.5, orderId=7
+        execId=exec_id,
+        time=when,
+        acctNumber=account,
+        exchange="ISLAND",
+        side=side,
+        shares=10,
+        price=101.5,
+        orderId=7,
+        orderRef=order_ref,
     )
     report = CommissionReport(execId=exec_id, commission=1.0, currency="USD", realizedPNL=UNSET)
     return Fill(contract, execution, report, when)

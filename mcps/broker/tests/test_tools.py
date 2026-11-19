@@ -126,7 +126,7 @@ async def test_open_orders(gateway: Gateway, ib: FakeIB) -> None:
 async def test_executions_filter_by_day_and_account(gateway: Gateway, ib: FakeIB) -> None:
     ib.fills = [
         fill(stock("AAPL"), "b", utc(2026, 11, 18, 15, 30)),
-        fill(stock("AAPL"), "a", utc(2026, 11, 18, 14, 30), side="SLD"),
+        fill(stock("AAPL"), "a", utc(2026, 11, 18, 14, 30), side="SLD", order_ref="trade-12"),
         # 23:30 UTC on the 17th is 00:30 on the 18th in Amsterdam.
         fill(stock("AAPL"), "c", utc(2026, 11, 17, 23, 30)),
         fill(stock("AAPL"), "d", utc(2026, 11, 17, 12, 0)),
@@ -139,6 +139,8 @@ async def test_executions_filter_by_day_and_account(gateway: Gateway, ib: FakeIB
     assert sell["time"] == "2026-11-18T15:30:00+01:00"
     assert sell["commission"] == 1.0
     assert sell["realized_pnl"] is None
+    assert sell["order_ref"] == "trade-12"
+    assert r["executions"][0]["order_ref"] is None
     assert "current trading day" in r["note"]
     flt = ib.calls[0][1]
     assert (flt.acctCode, flt.symbol) == (ACCOUNT, "AAPL")

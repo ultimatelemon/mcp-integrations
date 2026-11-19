@@ -27,7 +27,7 @@ Node or Go library. It is not an npm workspace and has its own checks
 | `get_account_summary`     | Net liquidation, total cash, buying power, maintenance margin, excess liquidity, gross position value, `leverage`, `margin_cushion` and `exchange_rates` |
 | `get_positions`           | Per position: symbol, exchange, currency, quantity, average cost, market price, market value, unrealized PnL, % of net liquidation              |
 | `get_open_orders`         | Working orders from every client (TWS, mobile, API), read-only                                                                                  |
-| `get_executions`          | Fills with time, side, quantity, price, commission and realized PnL, for a date range and optional symbol (see [Limits](#limits))               |
+| `get_executions`          | Fills with time, side, quantity, price, `order_ref`, commission, realized PnL; a date range, optional symbol (see [Limits](#limits))            |
 | `search_contract`         | A ticker or name resolved to IBKR contracts: `con_id`, primary exchange, currency                                                               |
 | `get_quote`               | Last, bid, ask, volume, open, high, low, previous close, flagged `delayed: true` when the data is delayed                                       |
 | `get_historical_bars`     | OHLCV bars for a duration (`30 D`, `6 M`, `1 Y`) and bar size (`1 min` to `1 month`), at most the last 1000                                     |

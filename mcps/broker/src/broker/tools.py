@@ -300,6 +300,7 @@ async def get_executions(
                 "venue": e.exchange or None,
                 "order_id": e.orderId or None,
                 "perm_id": e.permId or None,
+                "order_ref": e.orderRef or None,
                 "commission": num(cr.commission) if cr and cr.execId else None,
                 "commission_currency": (cr.currency or None) if cr and cr.execId else None,
                 "realized_pnl": num(cr.realizedPNL) if cr and cr.execId else None,
