@@ -208,15 +208,25 @@ def add_order_tools(mcp: MCPServer, orders: Orders) -> None:
         target_quantity: Annotated[
             float | None,
             Field(
-                description="Must equal quantity if given: IBKR sizes a bracket's take-profit to the entry. "
-                "Take profit on part later with close_position.",
+                description="Shares the take-profit at target_price sells; default all. Below quantity, the "
+                "rest is a second bracket (the runner) with the same entry and stop and its take-profit at "
+                "runner_target_price, because IBKR sizes a take-profit to its entry.",
+                gt=0,
+            ),
+        ] = None,
+        runner_target_price: Annotated[
+            float | None,
+            Field(
+                description="Take-profit of the runner, beyond target_price; required when target_quantity "
+                "is below quantity.",
                 gt=0,
             ),
         ] = None,
     ) -> dict[str, Any]:
-        """Place a bracket: a DAY limit entry with a GTC stop-loss and a GTC take-profit for the
-        whole quantity, regular trading hours only, transmitted together; when the stop or the
-        take-profit fills, IBKR cancels the other. The server refuses a stop or target on the
+        """Place a bracket: a DAY limit entry with a GTC stop-loss and a GTC take-profit, regular
+        trading hours only, transmitted together; when the stop or the take-profit fills, IBKR
+        cancels the other. With target_quantity below quantity it places two brackets (the
+        take-profit part and the runner), one request for the limits below. The server refuses a stop or target on the
         wrong side, an order above MAX_ORDER_NOTIONAL_PCT of net liquidation and more than
         MAX_ORDERS_PER_DAY new orders a day."""
         with guard("place_bracket_order"):
@@ -230,6 +240,7 @@ def add_order_tools(mcp: MCPServer, orders: Orders) -> None:
                 target_price,
                 target_quantity,
                 order_ref,
+                runner_target_price,
             )
 
     @mcp.tool(annotations=WRITE)

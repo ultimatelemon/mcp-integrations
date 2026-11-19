@@ -190,6 +190,7 @@ class Orders:
         target_price: float,
         target_quantity: float | None,
         order_ref: str,
+        runner_target_price: float | None = None,
     ) -> dict[str, Any]:
         details = {
             "order_ref": order_ref,
@@ -200,10 +201,13 @@ class Orders:
             "stop_price": stop_price,
             "target_price": target_price,
             "target_quantity": target_quantity,
+            "runner_target_price": runner_target_price,
         }
 
         async def work() -> dict[str, Any]:
-            validate_bracket(side, quantity, entry_limit, stop_price, target_price, target_quantity, order_ref)
+            validate_bracket(
+                side, quantity, entry_limit, stop_price, target_price, target_quantity, order_ref, runner_target_price
+            )
             existing = self.journal.placed(order_ref)
             if existing is not None:
                 return {"_outcome": "existing", **{k: existing.get(k) for k in BRACKET_KEYS}}
@@ -227,7 +231,7 @@ class Orders:
                     f"order value is {pct:.1f}% of net liquidation, above the "
                     f"{self.settings.max_order_notional_pct:g}% limit (MAX_ORDER_NOTIONAL_PCT)"
                 )
-            parent, take_profit, stop = build_bracket(
+            legs = build_legs(
                 ib.client.getReqId,
                 self.gateway.account,
                 side,
@@ -235,16 +239,23 @@ class Orders:
                 entry_limit,
                 stop_price,
                 target_price,
+                target_quantity,
+                runner_target_price,
                 order_ref,
             )
-            for order in (parent, take_profit, stop):
-                ib.placeOrder(contract, order)
+            for leg in legs:
+                for order in leg:
+                    ib.placeOrder(contract, order)
+            (parent, take_profit, stop), runner = legs[0], legs[1] if len(legs) > 1 else None
             placed = {
                 "symbol": contract.symbol,
                 "currency": contract.currency,
                 "parent_order_id": parent.orderId,
                 "take_profit_order_id": take_profit.orderId,
                 "stop_order_id": stop.orderId,
+                "runner_parent_order_id": runner[0].orderId if runner else None,
+                "runner_take_profit_order_id": runner[1].orderId if runner else None,
+                "runner_stop_order_id": runner[2].orderId if runner else None,
                 "notional_pct": round(pct, 2),
             }
             return {"_outcome": "placed", "_journal": placed, "order_ref": order_ref, **placed}
@@ -254,10 +265,22 @@ class Orders:
     async def _find_by_ref(self, ib: Any, order_ref: str) -> dict[str, Any] | None:
         trades = await self._open_trades(ib)
         completed = await call(self.gateway, ib.reqCompletedOrdersAsync(apiOnly=True), self.timeout)
-        for t in [*trades, *completed]:
-            if t.order.orderRef == order_ref and not t.order.parentId:
-                return {"order_ref": order_ref, "parent_order_id": t.order.orderId, "status": t.orderStatus.status}
-        return None
+        parents = sorted(
+            {
+                t.order.orderId: t
+                for t in [*trades, *completed]
+                if t.order.orderRef == order_ref and not t.order.parentId
+            }.items()
+        )
+        if not parents:
+            return None
+        first = parents[0][1]
+        return {
+            "order_ref": order_ref,
+            "parent_order_id": first.order.orderId,
+            "runner_parent_order_id": parents[1][0] if len(parents) > 1 else None,
+            "status": first.orderStatus.status,
+        }
 
     async def _notional_pct(self, ib: Any, currency: str, notional: float) -> float:
         values, base = await account_values(self.gateway, ib, self.timeout)
@@ -519,6 +542,9 @@ BRACKET_KEYS = (
     "parent_order_id",
     "take_profit_order_id",
     "stop_order_id",
+    "runner_parent_order_id",
+    "runner_take_profit_order_id",
+    "runner_stop_order_id",
 )
 
 
@@ -530,6 +556,7 @@ def validate_bracket(
     target: float,
     target_quantity: float | None,
     order_ref: str,
+    runner_target: float | None = None,
 ) -> None:
     """The pure checks of a bracket, before anything reaches IBKR."""
     if not ORDER_REF.match(order_ref):
@@ -540,10 +567,24 @@ def validate_bracket(
         if not (math.isfinite(value) and value > 0):
             raise OrderRefused(f"{name} must be above 0")
     if target_quantity is not None and not math.isclose(target_quantity, quantity):
-        raise OrderRefused(
-            "target_quantity must equal quantity: IBKR gives a bracket's take-profit the size of the entry. "
-            "Take profit on part of it later with close_position"
-        )
+        # IBKR gives a bracket's take-profit the size of its entry, so a
+        # take-profit on part of the position is a bracket of its own: the
+        # runner carries the rest with the same stop and a take-profit further out.
+        if not (math.isfinite(target_quantity) and 0 < target_quantity < quantity):
+            raise OrderRefused("target_quantity must be above 0 and at most quantity")
+        if runner_target is None:
+            raise OrderRefused(
+                "a target_quantity below quantity needs runner_target_price: the rest is a second bracket "
+                "(IBKR sizes a take-profit to its entry)"
+            )
+        if not (math.isfinite(runner_target) and runner_target > 0):
+            raise OrderRefused("runner_target_price must be above 0")
+        if side == "buy" and not runner_target > target:
+            raise OrderRefused("a buy needs runner_target_price above target_price")
+        if side == "sell" and not runner_target < target:
+            raise OrderRefused("a sell needs runner_target_price below target_price")
+    elif runner_target is not None:
+        raise OrderRefused("runner_target_price needs a target_quantity below quantity")
     if side == "buy" and not stop < entry < target:
         raise OrderRefused("a buy needs stop_price < entry_limit < target_price")
     if side == "sell" and not target < entry < stop:
@@ -597,3 +638,28 @@ def build_bracket(
         o.account = account
         o.orderRef = order_ref
     return parent, take_profit, stop_loss
+
+
+def build_legs(
+    next_id: Any,
+    account: str,
+    side: Side,
+    quantity: float,
+    entry: float,
+    stop: float,
+    target: float,
+    target_quantity: float | None,
+    runner_target: float | None,
+    order_ref: str,
+) -> list[tuple[Order, Order, Order]]:
+    """One bracket, or two when the take-profit is for part of the position:
+    `target_quantity` with the take-profit at `target`, and the runner, the
+    rest, with the same entry and stop and its take-profit at `runner_target`.
+    Both carry the order_ref; they are one request, one notional check and one
+    entry for the daily limit."""
+    if target_quantity is None or math.isclose(target_quantity, quantity) or runner_target is None:
+        return [build_bracket(next_id, account, side, quantity, entry, stop, target, order_ref)]
+    return [
+        build_bracket(next_id, account, side, target_quantity, entry, stop, target, order_ref),
+        build_bracket(next_id, account, side, quantity - target_quantity, entry, stop, runner_target, order_ref),
+    ]

@@ -87,7 +87,8 @@ class OrderJournal:
         return None
 
     def entries_placed_on(self, day: date) -> int:
-        """New entries placed on a day (Europe/Amsterdam); exits and cancels do not count."""
+        """New entries placed on a day (Europe/Amsterdam); exits and cancels do not count.
+        A request with a runner is one entry: both legs are one trade."""
         iso = day.isoformat()
         return sum(
             1
@@ -101,7 +102,8 @@ class OrderJournal:
         out: dict[int, str] = {}
         for e in self._entries:
             if e.get("tool") == "place_bracket_order" and e.get("outcome") == "placed":
-                pid, ref = e.get("parent_order_id"), e.get("order_ref")
-                if isinstance(pid, int) and isinstance(ref, str):
-                    out[pid] = ref
+                ref = e.get("order_ref")
+                for pid in (e.get("parent_order_id"), e.get("runner_parent_order_id")):
+                    if isinstance(pid, int) and isinstance(ref, str):
+                        out[pid] = ref
         return out

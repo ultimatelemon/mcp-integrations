@@ -27,6 +27,10 @@ order_ref starting with `smoke-`.
    position.
 3. --trade, target: a bracket of 1 share whose take-profit fills right after the
    entry. IBKR must cancel the stop by itself and leave no position.
+4. --trade, legs: take profit on half as place_bracket_order does it, two
+   brackets of 1 share. The first leg's take-profit fills at once; IBKR must
+   cancel that leg's stop and keep the runner's stop and take-profit at 1. The
+   runner's stop moves up and the runner closes, leaving nothing.
 
 Anything left over is cancelled and flattened at the end. Statuses are read
 from IBKR again each time: ib_async marks an order Cancelled locally on any
@@ -56,7 +60,7 @@ from broker import tools
 from broker.config import ConfigError, Settings, load_settings
 from broker.gateway import Gateway
 from broker.journal import OrderJournal
-from broker.orders import DONE, OrderRefused, Orders, build_bracket, open_quantity
+from broker.orders import DONE, OrderRefused, Orders, build_bracket, build_legs, open_quantity
 
 CLIENT = "smoke"
 # Every order of the check, closes included, has an order_ref starting with
@@ -324,6 +328,66 @@ async def target_check(orders: Orders, contract: Contract, price: float, stamp: 
     return results
 
 
+async def legs_check(orders: Orders, contract: Contract, price: float, stamp: str) -> list[bool]:
+    """Take profit on half, the way Mike trades: two brackets of 1 share with
+    one entry and stop, built by build_legs as place_bracket_order does. The
+    first leg's take-profit sits below the entry so that it fills at once;
+    IBKR must cancel that leg's stop and leave the runner's stop and
+    take-profit alone. The runner's stop then moves up and the runner closes."""
+    ib = orders.gateway.require()
+    ref = f"smoke-legs-{stamp}"
+    start = position(orders, contract.conId)
+    entry = round(price * 1.05, 2)
+    (a_parent, a_tp, a_stop), (b_parent, b_tp, b_stop) = build_legs(
+        ib.client.getReqId,
+        orders.gateway.account,
+        "buy",
+        2,
+        entry,
+        round(price * 0.8, 2),
+        round(price * 0.95, 2),
+        1,
+        round(price * 1.3, 2),
+        ref,
+    )
+    for o in (a_parent, a_tp, a_stop, b_parent, b_tp, b_stop):
+        ib.placeOrder(contract, o)
+
+    async def tp_filled() -> bool:
+        return any(f.execution.orderId == a_tp.orderId for f in ib.fills())
+
+    sold = await wait_for(tp_filled, 90)
+    held = await wait_for(lambda: _position_is(orders, contract.conId, start + 1), 30)
+    results = [
+        show(
+            "legs: take-profit of the first leg filled", sold and held, f"position {position(orders, contract.conId):g}"
+        )
+    ]
+    if not sold:
+        return results
+    a_gone = await wait_for(lambda: _none_active(orders, {a_stop.orderId}), 30)
+    stop, tp = await _children(orders, b_stop.orderId, b_tp.orderId)
+    runner = stop is not None and tp is not None and open_quantity(stop) == open_quantity(tp) == 1
+    results.append(show("legs: first stop gone, runner keeps 1 and 1", a_gone and runner, _describe(stop, tp)))
+    tighter = round(price * 0.9, 2)
+    try:
+        await orders.modify_stop(CLIENT, b_stop.orderId, tighter)
+        stop, _ = await _children(orders, b_stop.orderId, b_tp.orderId)
+        at_ibkr = tools.num(stop.order.auxPrice) if stop is not None else None
+        shown = at_ibkr is not None and math.isclose(at_ibkr, tighter)
+        results.append(show("legs: runner stop moves up", shown, f"stop {b_stop.auxPrice} -> {at_ibkr}"))
+    except tools.BrokerError as error:
+        results.append(show("legs: runner stop moves up", False, str(error)[:100]))
+    await orders.close_position(CLIENT, contract.conId, 1, None, ref_prefix=SMOKE_CLOSE)
+    flat = await wait_for(lambda: _position_is(orders, contract.conId, start), 60)
+    ids = {a_parent.orderId, a_tp.orderId, a_stop.orderId, b_parent.orderId, b_tp.orderId, b_stop.orderId}
+    leftover = await wait_for(lambda: _none_active(orders, ids), 30)
+    results.append(
+        show("legs: runner closed, nothing left", flat and leftover, f"position {position(orders, contract.conId):g}")
+    )
+    return results
+
+
 async def _children(orders: Orders, stop_id: int, tp_id: int) -> tuple[Trade | None, Trade | None]:
     trades = {t.order.orderId: t for t in active(await open_trades(orders), {stop_id, tp_id})}
     return trades.get(stop_id), trades.get(tp_id)
@@ -402,7 +466,8 @@ async def run(symbol: str, trade: bool, offset: int) -> int:
         )
         results: list[bool] = []
         try:
-            for name, check in (("expiry", expiry_check), ("trade", trade_check), ("target", target_check)):
+            checks = (("expiry", expiry_check), ("trade", trade_check), ("target", target_check), ("legs", legs_check))
+            for name, check in checks:
                 if name != "expiry" and not trade:
                     continue
                 try:
