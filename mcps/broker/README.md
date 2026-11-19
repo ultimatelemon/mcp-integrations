@@ -270,9 +270,19 @@ its orders carry an `order_ref` starting with `smoke-`. Run it before a
 client relies on orders, in the container's terminal:
 
 ```bash
-python -m broker.smoke_orders            # expiry check, any time
-python -m broker.smoke_orders --trade    # plus the fill checks, during US regular hours
+python -m broker.smoke_orders            # expiry check
+python -m broker.smoke_orders --trade    # plus the fill checks
 ```
+
+Both need the US market open: IB refuses an entry that expires before the
+open. Outside US regular hours (15:30–22:00 Amsterdam), or with less than 8
+minutes to the close, it places nothing, prints "run during US regular hours
+(15:30–22:00 Amsterdam)" with the next session in Amsterdam time, and exits
+with code 3 (0 passed, 1 a check failed, 2 a bad setup). The hours come from
+IBKR's trading calendar for the symbol (`liquidHours`), so holidays, half
+days and the weeks the US and EU change clocks on different dates (the window
+is then an hour earlier) are right; without it, Monday to Friday 09:30–16:00
+New York.
 
 1. **Expiry:** an entry far below the market with a 90-second time in force,
    plus its GTC stop and take-profit. When the entry expires unfilled, the

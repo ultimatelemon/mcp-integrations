@@ -2,7 +2,7 @@
 
 import json
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any
 
@@ -13,7 +13,7 @@ from broker.config import ConfigError, Settings
 from broker.gateway import Gateway, GatewayUnavailable
 from broker.journal import TZ, JournalError, OrderJournal
 from broker.orders import OCA_REDUCE_WITH_BLOCK, OrderRefused, Orders, build_bracket
-from broker.smoke_orders import paper_settings
+from broker.smoke_orders import closed_message, market_open, paper_settings, parse_liquid_hours, weekday_sessions
 from tests.fakes import ACCOUNT, OrderIB, account_value, portfolio_item, settings, stock, trade
 
 NVDA = 4815747
@@ -451,3 +451,65 @@ def test_order_smoke_check_is_paper_only() -> None:
     live = {**env, "IB_TRADING_MODE": "live", "IB_EXPECTED_ACCOUNT": "U1234567", "IB_PORT": "4003"}
     with pytest.raises(ConfigError, match="only runs on a paper account"):
         paper_settings({**live, "LIVE_ORDERS_ENABLED": "true"}, 101)
+
+
+# --- smoke check: US market hours ------------------------------------------------
+
+
+HOURS = "20261125:0930-20261125:1600;20261126:CLOSED;20261127:0930-20261127:1300;20261130:0930-20261130:1600"
+
+
+def test_parse_liquid_hours_skips_closed_days() -> None:
+    sessions = parse_liquid_hours(HOURS + ";garbage;20261201:0930-x", "US/Eastern")
+    # Thanksgiving is closed, the day after is a half day.
+    assert [(s.strftime("%m-%d %H:%M"), e.strftime("%H:%M")) for s, e in sessions] == [
+        ("11-25 09:30", "16:00"),
+        ("11-27 09:30", "13:00"),
+        ("11-30 09:30", "16:00"),
+    ]
+    assert sessions[0][0].utcoffset() == timedelta(hours=-5)
+    # An unknown time zone falls back to New York.
+    assert parse_liquid_hours(HOURS, "Nowhere/Else")[0][0].utcoffset() == timedelta(hours=-5)
+
+
+@pytest.mark.parametrize(
+    ("now", "is_open", "next_start"),
+    [
+        (datetime(2026, 11, 25, 16, 0, tzinfo=TZ), True, None),  # 10:00 New York
+        (datetime(2026, 11, 25, 15, 0, tzinfo=TZ), False, "11-25 15:30"),  # before the open
+        (datetime(2026, 11, 25, 21, 55, tzinfo=TZ), False, "11-27 15:30"),  # 5 minutes left, below the margin
+        (datetime(2026, 11, 26, 17, 0, tzinfo=TZ), False, "11-27 15:30"),  # Thanksgiving
+        (datetime(2026, 11, 27, 19, 0, tzinfo=TZ), False, "11-30 15:30"),  # half day, already closed at 19:00
+        (datetime(2026, 12, 1, 17, 0, tzinfo=TZ), False, None),  # past the calendar
+    ],
+)
+def test_market_open(now: datetime, is_open: bool, next_start: str | None) -> None:
+    got, session = market_open(parse_liquid_hours(HOURS, "US/Eastern"), now)
+    assert got is is_open
+    if not is_open:
+        assert (session[0].astimezone(TZ).strftime("%m-%d %H:%M") if session else None) == next_start
+
+
+def test_closed_message_names_the_hours_and_the_next_session() -> None:
+    _, session = market_open(parse_liquid_hours(HOURS, "US/Eastern"), datetime(2026, 11, 26, 17, 0, tzinfo=TZ))
+    text = closed_message(session)
+    assert "run during US regular hours (15:30–22:00 Amsterdam)" in text
+    assert "Next session: Fri 27-11 15:30–19:00 Amsterdam." in text
+    assert text.endswith("Nothing was placed.")
+    assert "Next session" not in closed_message(None)
+
+
+def test_next_session_in_a_week_the_clocks_differ() -> None:
+    # The US moved to summer time on 08-03-2026, Europe only on 29-03: the
+    # session is 14:30-21:00 in Amsterdam, which the message says.
+    sessions = parse_liquid_hours("20260310:0930-20260310:1600", "US/Eastern")
+    is_open, session = market_open(sessions, datetime(2026, 3, 10, 14, 0, tzinfo=TZ))
+    assert not is_open
+    assert "Next session: Tue 10-03 14:30–21:00 Amsterdam." in closed_message(session)
+    assert market_open(sessions, datetime(2026, 3, 10, 14, 45, tzinfo=TZ))[0] is True
+
+
+def test_weekday_sessions_without_a_calendar() -> None:
+    sessions = weekday_sessions(datetime(2026, 11, 21, 12, 0, tzinfo=TZ))  # Saturday
+    assert sessions[0][0].strftime("%a %H:%M") == "Mon 09:30"
+    assert all(s.weekday() < 5 for s, _ in sessions)

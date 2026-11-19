@@ -2,8 +2,15 @@
 
 From a container on the gateway's network, with the server's IB_* variables:
 
-    python -m broker.smoke_orders            # expiry check only, any time
-    python -m broker.smoke_orders --trade    # also the fill checks, during US regular hours
+    python -m broker.smoke_orders            # expiry check only
+    python -m broker.smoke_orders --trade    # also the fill checks
+
+Both checks need the US market open: IB refuses an entry that expires before
+the open, and a fill needs a session. Outside US regular hours the check
+places nothing and exits with code 3 and "run during US regular hours
+(15:30-22:00 Amsterdam)". The hours come from IBKR's own trading calendar for
+the symbol (holidays, half days, and the weeks the US and EU change clocks on
+different dates included).
 
 It uses its own client id (IB_CLIENT_ID + 101) and a throwaway journal, so it
 does not touch the server's connection or its daily count. Its orders carry an
@@ -20,7 +27,8 @@ order_ref starting with `smoke-`.
    with block"); closing the last share must leave no stop, take-profit or
    position. Anything left over is cancelled and flattened at the end.
 
-Exit code 0 when every check passed.
+Exit code 0 when every check passed, 1 when one failed, 2 on a bad setup, 3
+when the market is closed and nothing ran.
 """
 
 from __future__ import annotations
@@ -32,9 +40,10 @@ import os
 import sys
 import tempfile
 from dataclasses import replace
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, datetime, time, timedelta
 from pathlib import Path
 from typing import Any
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from ib_async import Contract, MarketOrder, Trade
 
@@ -46,6 +55,82 @@ from broker.orders import DONE, OCA_REDUCE_WITH_BLOCK, OrderRefused, Orders, bui
 
 CLIENT = "smoke"
 EXPIRY_SECONDS = 90
+
+AMSTERDAM = ZoneInfo("Europe/Amsterdam")
+NEW_YORK = ZoneInfo("America/New_York")
+EXIT_MARKET_CLOSED = 3
+REGULAR_HOURS = "run during US regular hours (15:30–22:00 Amsterdam)"
+# Room before the close for the expiry check (90 s plus its wait) and the
+# fill checks, so a session never ends halfway.
+CLOSE_MARGIN = timedelta(minutes=8)
+
+Session = tuple[datetime, datetime]
+
+
+def parse_liquid_hours(raw: str, tz_name: str) -> list[Session]:
+    """IBKR's `liquidHours`, e.g. `20261119:0930-20261119:1600;20261120:CLOSED`,
+    in the contract's time zone. Unreadable parts are skipped."""
+    try:
+        tz = ZoneInfo(tz_name) if tz_name else NEW_YORK
+    except (ZoneInfoNotFoundError, ValueError):
+        tz = NEW_YORK
+    sessions: list[Session] = []
+    for part in raw.split(";"):
+        start, sep, end = part.strip().partition("-")
+        if not sep:
+            continue  # e.g. 20261121:CLOSED
+        try:
+            s = datetime.strptime(start, "%Y%m%d:%H%M").replace(tzinfo=tz)
+            e = datetime.strptime(end, "%Y%m%d:%H%M").replace(tzinfo=tz)
+        except ValueError:
+            continue
+        if s < e:
+            sessions.append((s, e))
+    return sorted(sessions)
+
+
+def weekday_sessions(now: datetime) -> list[Session]:
+    """Without IBKR's calendar: Monday to Friday 09:30-16:00 New York, no holidays."""
+    out: list[Session] = []
+    day = now.astimezone(NEW_YORK).date()
+    for offset in range(8):
+        d = day + timedelta(days=offset)
+        if d.weekday() < 5:
+            out.append((datetime.combine(d, time(9, 30), NEW_YORK), datetime.combine(d, time(16, 0), NEW_YORK)))
+    return out
+
+
+def market_open(
+    sessions: list[Session], now: datetime, margin: timedelta = CLOSE_MARGIN
+) -> tuple[bool, Session | None]:
+    """Whether a session runs now with `margin` left, and else the next one."""
+    for s, e in sessions:
+        if s <= now and now + margin <= e:
+            return True, (s, e)
+    upcoming = [(s, e) for s, e in sessions if s > now]
+    return False, upcoming[0] if upcoming else None
+
+
+def closed_message(next_session: Session | None) -> str:
+    text = f"US market is closed (or closes within {int(CLOSE_MARGIN.total_seconds() // 60)} minutes): {REGULAR_HOURS}."
+    if next_session is not None:
+        s, e = (t.astimezone(AMSTERDAM) for t in next_session)
+        text += f" Next session: {s:%a %d-%m %H:%M}–{e:%H:%M} Amsterdam."
+    return text + " Nothing was placed."
+
+
+async def us_sessions(gateway: Gateway, contract: Contract, timeout: float) -> list[Session]:
+    """The symbol's regular-hours sessions from IBKR, else plain weekdays."""
+    ib = gateway.require()
+    try:
+        details = await tools.call(gateway, ib.reqContractDetailsAsync(contract), timeout)
+    except tools.BrokerError:
+        details = []
+    if details:
+        sessions = parse_liquid_hours(details[0].liquidHours or "", details[0].timeZoneId or "")
+        if sessions:
+            return sessions
+    return weekday_sessions(datetime.now(UTC))
 
 
 def show(name: str, ok: bool, detail: str) -> bool:
@@ -236,16 +321,27 @@ async def run(symbol: str, trade: bool, offset: int) -> int:
     await gateway.connect_once()
     with tempfile.TemporaryDirectory() as tmp:
         orders = Orders(gateway, settings, OrderJournal.open(Path(tmp) / "orders.jsonl"), settings.request_timeout)
-        q = await tools.get_quote(gateway, settings.request_timeout, symbol, None, "STK", "SMART", "USD")
+        ib = gateway.require()
+        contract = await tools.qualify(
+            gateway,
+            ib,
+            Contract(symbol=symbol, secType="STK", exchange="SMART", currency="USD"),
+            settings.request_timeout,
+        )
+        # Before the quote: outside hours a delayed quote can be empty too.
+        is_open, next_session = market_open(
+            await us_sessions(gateway, contract, settings.request_timeout), datetime.now(UTC)
+        )
+        if not is_open:
+            print(closed_message(next_session))
+            await gateway.stop()
+            return EXIT_MARKET_CLOSED
+        q = await tools.get_quote(gateway, settings.request_timeout, None, contract.conId, "STK", "SMART", "USD")
         price = q["last"] or q["close"] or q["ask"]
         if not price:
             print(f"no price for {symbol}", file=sys.stderr)
             await gateway.stop()
             return 2
-        ib = gateway.require()
-        contract = await tools.qualify(
-            gateway, ib, Contract(conId=q["con_id"], exchange="SMART"), settings.request_timeout
-        )
         start = position(orders, contract.conId)
         stamp = datetime.now(UTC).strftime("%Y%m%d%H%M%S")
         print(
