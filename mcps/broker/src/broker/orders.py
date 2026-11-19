@@ -2,16 +2,22 @@
 
 Every safety limit lives here, in the server, whatever the client checked
 before: the side of stop and target, the notional limit, the daily cap, the
-idempotent order_ref, never widening a stop and never cancelling one. Every
-request, accepted or refused, goes to the journal and to the log.
+idempotent order_ref, never widening a stop, and never cancelling a stop
+except when the position it protects is closed. Every request, accepted or
+refused, goes to the journal and to the log.
+
+A change to an open order counts only once IBKR shows it: IBKR refuses a
+change with an error and keeps the order as it was.
 """
 
 from __future__ import annotations
 
 import asyncio
+import copy
 import logging
 import math
 import re
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from typing import Any, Literal
@@ -28,17 +34,31 @@ log = logging.getLogger("broker.orders")
 
 Side = Literal["buy", "sell"]
 
-# Remaining orders of the group are reduced by the filled quantity, with
-# overfill protection: a take-profit for half the position shrinks the stop to
-# the other half instead of cancelling it.
-OCA_REDUCE_WITH_BLOCK = 2
-
 ORDER_REF = re.compile(r"^[A-Za-z0-9._:-]{1,40}$")
 DONE = frozenset({"Filled", "Cancelled", "ApiCancelled", "Inactive"})
+CANCELLED = frozenset({"Cancelled", "ApiCancelled"})
 
 
 class OrderRefused(BrokerError):
     """A request a safety rule refuses; the reason goes to the caller and the journal."""
+
+
+@dataclass
+class Bracket:
+    """The open stop and take-profit of one entry, for one position."""
+
+    parent_id: int
+    orders: list[Trade]
+
+    @property
+    def size(self) -> float:
+        return max(open_quantity(t) for t in self.orders)
+
+
+def open_quantity(trade: Trade) -> float:
+    """What is still to fill. ib_async updates totalQuantity from IBKR's echo
+    of the order, so this follows a resize."""
+    return max(float(trade.order.totalQuantity) - (num(trade.orderStatus.filled) or 0.0), 0.0)
 
 
 @dataclass
@@ -51,6 +71,9 @@ class Orders:
     # two calls with the same order_ref never both place.
     lock: asyncio.Lock = field(default_factory=asyncio.Lock)
     ecb: EcbRates = field(default_factory=EcbRates)
+    # How long to wait for IBKR to show a change or a cancel, and how often to look.
+    confirm_timeout: float = 5.0
+    confirm_poll: float = 0.5
 
     # --- shared ------------------------------------------------------------
 
@@ -94,6 +117,62 @@ class Orders:
     def _active(trade: Trade) -> bool:
         return trade.orderStatus.status not in DONE
 
+    async def _change(self, ib: Any, trade: Trade, what: str, **values: float) -> None:
+        """Send new values for an open order and wait until IBKR shows them.
+
+        The change goes out on a copy: ib_async's own copy of the order keeps
+        what IBKR last echoed, so a refused change is visible as the old value.
+        """
+        changed = copy.copy(trade.order)
+        for name, value in values.items():
+            setattr(changed, name, value)
+        mark = len(trade.log)
+        placed = ib.placeOrder(trade.contract, changed)
+
+        def shown(order: Order) -> bool:
+            return all(math.isclose(num(getattr(order, k)) or 0.0, v) for k, v in values.items())
+
+        await self._confirm(ib, placed, mark, what, shown)
+
+    async def _confirm(self, ib: Any, trade: Trade, mark: int, what: str, shown: Callable[[Order], bool]) -> None:
+        order_id = trade.order.orderId
+        loop = asyncio.get_running_loop()
+        deadline = loop.time() + self.confirm_timeout
+        while True:
+            await asyncio.sleep(self.confirm_poll)
+            # Asking for the open orders again also brings IBKR's status back
+            # where ib_async marked the order Cancelled on a refused change.
+            current = next((t for t in await self._open_trades(ib) if t.order.orderId == order_id), None)
+            if current is not None and self._active(current) and shown(current.order):
+                return
+            rejected = next((e for e in trade.log[mark:] if e.errorCode), None)
+            if rejected is not None:
+                raise OrderRefused(f"IBKR refused {what} of order {order_id}: {rejected.message}")
+            if current is None or not self._active(current):
+                raise OrderRefused(f"order {order_id} is no longer open at IBKR; {what} not done")
+            if loop.time() >= deadline:
+                raise BrokerError(
+                    f"IBKR did not confirm {what} of order {order_id} within {self.confirm_timeout:g} seconds; "
+                    "check the order"
+                )
+
+    async def _cancel(self, ib: Any, trade: Trade) -> str:
+        """Cancel an order and wait for IBKR's final status: Cancelled, or Filled
+        when it filled first."""
+        ib.cancelOrder(trade.order)
+        loop = asyncio.get_running_loop()
+        deadline = loop.time() + self.confirm_timeout
+        while True:
+            await asyncio.sleep(self.confirm_poll)
+            status = trade.orderStatus.status
+            if status in DONE:
+                return status
+            if loop.time() >= deadline:
+                raise BrokerError(
+                    f"IBKR did not confirm the cancel of order {trade.order.orderId} within "
+                    f"{self.confirm_timeout:g} seconds (status {status}); check the order"
+                )
+
     # --- place_bracket_order ----------------------------------------------
 
     async def place_bracket_order(
@@ -120,8 +199,7 @@ class Orders:
         }
 
         async def work() -> dict[str, Any]:
-            tq = quantity if target_quantity is None else target_quantity
-            validate_bracket(side, quantity, entry_limit, stop_price, target_price, tq, order_ref)
+            validate_bracket(side, quantity, entry_limit, stop_price, target_price, target_quantity, order_ref)
             existing = self.journal.placed(order_ref)
             if existing is not None:
                 return {"_outcome": "existing", **{k: existing.get(k) for k in BRACKET_KEYS}}
@@ -153,7 +231,6 @@ class Orders:
                 entry_limit,
                 stop_price,
                 target_price,
-                tq,
                 order_ref,
             )
             for order in (parent, take_profit, stop):
@@ -164,7 +241,6 @@ class Orders:
                 "parent_order_id": parent.orderId,
                 "take_profit_order_id": take_profit.orderId,
                 "stop_order_id": stop.orderId,
-                "oca_group": stop.ocaGroup,
                 "notional_pct": round(pct, 2),
             }
             return {"_outcome": "placed", "_journal": placed, "order_ref": order_ref, **placed}
@@ -249,8 +325,7 @@ class Orders:
                 raise OrderRefused(
                     f"a stop at {new_stop:g} would trigger at once (last price {last:g}); use close_position to exit"
                 )
-            order.auxPrice = new_stop
-            ib.placeOrder(trade.contract, order)
+            await self._change(ib, trade, f"the stop move to {new_stop:g}", auxPrice=new_stop)
             result = {"order_id": order_id, "order_ref": order.orderRef, "old_stop": old, "new_stop": new_stop}
             return {"_outcome": "modified", "_journal": {"order_ref": order.orderRef, "old_stop": old}, **result}
 
@@ -290,7 +365,14 @@ class Orders:
             if quantity > abs(held) + 1e-9:
                 raise OrderRefused(f"quantity {quantity:g} is more than the position of {abs(held):g}")
             action = "SELL" if held > 0 else "BUY"
-            group = self._protective_group(await self._open_trades(ib), con_id, action, quantity)
+            left = max(abs(held) - quantity, 0.0)
+            brackets = self._brackets(await self._open_trades(ib), con_id, action)
+            if brackets and limit_price is not None:
+                raise OrderRefused(
+                    "a limit close needs the stop resized before it fills, which leaves shares without a stop "
+                    "while the limit waits; close at market (no limit_price) or tighten the stop with modify_stop"
+                )
+            protection = await self._shrink(ib, brackets, left)
             ref = f"{ref_prefix}:{con_id}:{self.journal.clock().strftime('%Y%m%dT%H%M%S')}"
             order: Order = (
                 MarketOrder(action, quantity) if limit_price is None else LimitOrder(action, quantity, limit_price)
@@ -300,37 +382,64 @@ class Orders:
             order.outsideRth = False
             order.account = self.gateway.account
             order.orderRef = ref
-            if group:
-                # In the bracket's group, a fill shrinks its stop and target by
-                # the same quantity: no stop is left over to open a reverse position.
-                order.ocaGroup = group
-                order.ocaType = OCA_REDUCE_WITH_BLOCK
             ib.placeOrder(Contract(conId=con_id, exchange="SMART"), order)
-            placed = {"order_id": order.orderId, "order_ref": ref, "action": action, "oca_group": group or None}
+            placed = {"order_id": order.orderId, "order_ref": ref, "action": action, "protection": protection}
             return {"_outcome": "placed", "_journal": placed, **placed}
 
         return await self._run("close_position", client, details, work)
 
-    def _protective_group(self, trades: list[Trade], con_id: int, action: str, quantity: float) -> str:
-        """The OCA group of the open stop that protects this position, if it covers the quantity."""
-        stops = [
-            t
-            for t in trades
-            if t.contract.conId == con_id
-            and t.order.orderType == "STP"
-            and t.order.action == action
-            and t.order.ocaGroup
-            and self._active(t)
-        ]
-        if not stops:
-            return ""
-        best = max(stops, key=lambda t: num(t.orderStatus.remaining) or num(t.order.totalQuantity) or 0)
-        remaining = num(best.orderStatus.remaining) or num(best.order.totalQuantity) or 0
-        if remaining + 1e-9 < quantity and len(stops) > 1:
+    def _brackets(self, trades: list[Trade], con_id: int, action: str) -> list[Bracket]:
+        """This server's open stops and take-profits on the position, per entry, newest first.
+        Refuses while an entry is still working: what it adds is not known yet."""
+        by_parent: dict[int, list[Trade]] = {}
+        for t in trades:
+            o = t.order
+            if (
+                o.parentId
+                and self._ours(t)
+                and self._active(t)
+                and t.contract.conId == con_id
+                and o.action == action
+                and o.orderType in ("STP", "LMT")
+            ):
+                by_parent.setdefault(o.parentId, []).append(t)
+        working = [t.order.orderId for t in trades if t.order.orderId in by_parent and self._active(t)]
+        if working:
             raise OrderRefused(
-                f"con_id {con_id} has {len(stops)} brackets and none covers {quantity:g}; close them one by one"
+                f"entry order {working[0]} on con_id {con_id} is still working; cancel it first with cancel_order"
             )
-        return best.order.ocaGroup
+        return [Bracket(p, ts) for p, ts in sorted(by_parent.items(), reverse=True)]
+
+    async def _shrink(self, ib: Any, brackets: list[Bracket], left: float) -> list[dict[str, Any]]:
+        """Bring the stops and take-profits down to the `left` shares that stay
+        open, before the close goes out: what protects more than is held would
+        open a reverse position when it fills. A bracket cut to nothing is cancelled."""
+        excess = sum(b.size for b in brackets) - left
+        changes: list[dict[str, Any]] = []
+        try:
+            for b in brackets:
+                if excess <= 1e-9:
+                    break
+                size = max(b.size - excess, 0.0)
+                excess -= b.size - size
+                for t in b.orders:
+                    have = open_quantity(t)
+                    if size <= 1e-9:
+                        status = await self._cancel(ib, t)
+                        if status not in CANCELLED:
+                            raise OrderRefused(
+                                f"order {t.order.orderId} was {status} before it could be cancelled; "
+                                "the position changed, check it before closing"
+                            )
+                        changes.append({"order_id": t.order.orderId, "cancelled": True})
+                    elif have > size + 1e-9:
+                        filled = num(t.orderStatus.filled) or 0.0
+                        await self._change(ib, t, f"the resize to {size:g}", totalQuantity=filled + size)
+                        changes.append({"order_id": t.order.orderId, "quantity": size})
+        except BrokerError as error:
+            done = f"; already changed: {changes}" if changes else ""
+            raise type(error)(f"{error}{done}; no close was sent") from None
+        return changes
 
     # --- cancels ----------------------------------------------------------------
 
@@ -346,7 +455,7 @@ class Orders:
                 raise OrderRefused(
                     f"order {order_id} is not an entry order of this server; stops and take-profits are never cancelled"
                 )
-            result = self._cancel_entry(ib, trade, trades)
+            result = await self._cancel_entry(ib, trade, trades)
             return {"_outcome": "cancelled", "_journal": {"order_ref": ref}, "order_ref": ref, **result}
 
         return await self._run("cancel_order", client, {"order_id": order_id}, work)
@@ -359,7 +468,7 @@ class Orders:
             for t in trades:
                 ref = self._entry_ref(t) if self._ours(t) and self._active(t) else None
                 if ref is not None:
-                    cancelled.append({"order_ref": ref, **self._cancel_entry(ib, t, trades)})
+                    cancelled.append({"order_ref": ref, **(await self._cancel_entry(ib, t, trades))})
             refs = [c["order_ref"] for c in cancelled]
             return {
                 "_outcome": "cancelled",
@@ -378,23 +487,23 @@ class Orders:
             return None
         return ref
 
-    def _cancel_entry(self, ib: Any, entry: Trade, trades: list[Trade]) -> dict[str, Any]:
+    async def _cancel_entry(self, ib: Any, entry: Trade, trades: list[Trade]) -> dict[str, Any]:
         """Cancel what is left of an entry. When part of it filled, the stop and
-        take-profit shrink to the filled quantity, so they protect exactly what is held."""
+        take-profit shrink to the filled quantity, so they protect exactly what is
+        held. The filled quantity is read after IBKR confirms the cancel: more
+        can fill on the way."""
+        status = await self._cancel(ib, entry)
         filled = num(entry.orderStatus.filled) or 0.0
-        ib.cancelOrder(entry.order)
         resized = []
-        if filled > 0:
+        if filled > 0 and status in CANCELLED:
             for child in trades:
                 o = child.order
                 if o.parentId != entry.order.orderId or not self._active(child):
                     continue
-                size = filled if o.orderType == "STP" else min(filled, num(o.totalQuantity) or filled)
-                if (num(o.totalQuantity) or 0) > size:
-                    o.totalQuantity = size
-                    ib.placeOrder(child.contract, o)
-                    resized.append({"order_id": o.orderId, "quantity": size})
-        return {"order_id": entry.order.orderId, "filled": filled, "resized": resized}
+                if open_quantity(child) > filled + 1e-9:
+                    await self._change(ib, child, f"the resize to {filled:g}", totalQuantity=filled)
+                    resized.append({"order_id": o.orderId, "quantity": filled})
+        return {"order_id": entry.order.orderId, "status": status, "filled": filled, "resized": resized}
 
 
 BRACKET_KEYS = (
@@ -404,12 +513,17 @@ BRACKET_KEYS = (
     "parent_order_id",
     "take_profit_order_id",
     "stop_order_id",
-    "oca_group",
 )
 
 
 def validate_bracket(
-    side: str, quantity: float, entry: float, stop: float, target: float, target_quantity: float, order_ref: str
+    side: str,
+    quantity: float,
+    entry: float,
+    stop: float,
+    target: float,
+    target_quantity: float | None,
+    order_ref: str,
 ) -> None:
     """The pure checks of a bracket, before anything reaches IBKR."""
     if not ORDER_REF.match(order_ref):
@@ -419,8 +533,11 @@ def validate_bracket(
     for name, value in (("quantity", quantity), ("entry_limit", entry), ("stop_price", stop), ("target_price", target)):
         if not (math.isfinite(value) and value > 0):
             raise OrderRefused(f"{name} must be above 0")
-    if not (math.isfinite(target_quantity) and 0 < target_quantity <= quantity):
-        raise OrderRefused("target_quantity must be above 0 and at most quantity")
+    if target_quantity is not None and not math.isclose(target_quantity, quantity):
+        raise OrderRefused(
+            "target_quantity must equal quantity: IBKR gives a bracket's take-profit the size of the entry. "
+            "Take profit on part of it later with close_position"
+        )
     if side == "buy" and not stop < entry < target:
         raise OrderRefused("a buy needs stop_price < entry_limit < target_price")
     if side == "sell" and not target < entry < stop:
@@ -443,7 +560,6 @@ def build_bracket(
     entry: float,
     stop: float,
     target: float,
-    target_quantity: float,
     order_ref: str,
     entry_tif: str = "DAY",
     good_till: datetime | None = None,
@@ -451,16 +567,17 @@ def build_bracket(
     """Parent LMT, take-profit LMT and stop STP, transmitted together on the last.
 
     The entry is a DAY order; the stop and take-profit are GTC (the API's
-    default DAY would let the stop expire overnight), regular hours only, in
-    one OCA group that reduces on fill. A child of an entry that never fills
-    is never active and goes when the entry goes. `entry_tif` and
-    `good_till` exist for the paper smoke check of exactly that.
+    default DAY would let the stop expire overnight) and regular hours only.
+    IBKR links the children of a parent itself: when one fills, it cancels
+    the other (the smoke check's target check proves it). With an OCA group of
+    our own on top, IBKR refused a later stop move with error 10326. A child of an entry that never fills is
+    never active and goes when the entry goes. `entry_tif` and `good_till`
+    exist for the paper smoke check of exactly that.
     """
     action = side.upper()
     reverse = "SELL" if action == "BUY" else "BUY"
-    group = f"oca-{order_ref}"
     parent = LimitOrder(action, quantity, entry, orderId=next_id(), transmit=False)
-    take_profit = LimitOrder(reverse, target_quantity, target, orderId=next_id(), transmit=False)
+    take_profit = LimitOrder(reverse, quantity, target, orderId=next_id(), transmit=False)
     stop_loss = StopOrder(reverse, quantity, stop, orderId=next_id(), transmit=True)
     parent.tif = entry_tif
     if good_till is not None:
@@ -469,8 +586,6 @@ def build_bracket(
     for child in (take_profit, stop_loss):
         child.parentId = parent.orderId
         child.tif = "GTC"
-        child.ocaGroup = group
-        child.ocaType = OCA_REDUCE_WITH_BLOCK
     for o in (parent, take_profit, stop_loss):
         o.outsideRth = False
         o.account = account

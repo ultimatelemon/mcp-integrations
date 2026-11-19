@@ -64,20 +64,27 @@ claude.ai connection stays read-only. Stocks only.
 | `cancel_entry_orders` | Every open entry this server placed; never a stop or take-profit                                                              |
 
 **A bracket** is three orders transmitted together (only the last has
-`transmit=True`): a limit entry with `tif=DAY`, a take-profit limit for
-`target_quantity` (default all) and a stop for the whole `quantity`, both
-`tif=GTC` so the protection does not expire overnight. All are regular
-trading hours only (`outsideRth=False`), carry the `order_ref` and the
-account, and the two children share OCA group `oca-<order_ref>` with
-`ocaType=2` (reduce with block): when the take-profit fills half, the stop
-shrinks to the other half instead of being cancelled. The children of an
-entry that never fills are never active and go with it.
+`transmit=True`): a limit entry with `tif=DAY`, and a take-profit limit and a
+stop for the whole `quantity`, both `tif=GTC` so the protection does not
+expire overnight. All are regular trading hours only (`outsideRth=False`) and
+carry the `order_ref` and the account. IBKR links the two children itself:
+when one fills it cancels the other. There is no OCA group of our own: with
+one, IBKR refused a later stop move (error 10326), and a close in that group
+neither shrank the stop nor let a second close in ("OCA group is already
+filled"). The children of an entry that never fills are never active and go
+with it. IBKR sizes the take-profit to the entry, so `target_quantity` must
+equal `quantity`; take profit on part of a position with `close_position`.
+
+**Changes count once IBKR shows them.** IBKR refuses a change with an error
+and keeps the order as it was, so `modify_stop` and every resize or cancel
+wait (up to 5 seconds) until IBKR's echo of the order has the new values, and
+report IBKR's error otherwise.
 
 **The server refuses**, with the rule in the error:
 
 - a stop or target on the wrong side: a buy needs `stop < entry < target`, a
   sell `target < entry < stop`; `quantity` and prices above 0;
-  `0 < target_quantity <= quantity`; an `order_ref` of 1-40 of
+  a `target_quantity` other than `quantity`; an `order_ref` of 1-40 of
   `A-Z a-z 0-9 . _ : -`;
 - an entry above `MAX_ORDER_NOTIONAL_PCT` of net liquidation (quantity x
   entry limit, converted with IBKR's ExchangeRate account value, which IBKR
@@ -89,17 +96,24 @@ entry that never fills are never active and go with it.
   Exits, stop changes and cancels never count, so an exit is never blocked;
 - a stop move that widens, or that would trigger at once against the last
   (delayed) price: that is `close_position`;
-- closing more than the position; cancelling anything but an entry this
+- closing more than the position; a close with `limit_price` while this
+  server's stop or take-profit protects the position; a close while an entry
+  on the position is still working; cancelling anything but an entry this
   server placed.
 
 **Idempotent `order_ref`:** the same `order_ref` again returns the existing
 bracket (`outcome: existing`) instead of placing one, from the journal or,
 when the journal does not know it, from IBKR's open and completed orders.
 
-**Closing** joins the bracket's OCA group, so the stop and take-profit shrink
-by what is closed and no stop is left to open a reverse position. Cancelling
-an entry after a partial fill shrinks its stop and take-profit to the filled
-quantity.
+**Closing** first brings the stops and take-profits down to the shares that
+stay open, newest bracket first, and cancels them on a full close; only once
+IBKR confirms that does the close go out. So no stop is left to open a
+reverse position. A full market close is without a stop between the cancel
+and the fill; outside regular hours the close waits for the open, as the
+stop would. A limit close is refused while a bracket protects the position:
+its stop would have to shrink before the limit fills. Cancelling an entry
+after a partial fill shrinks its stop and take-profit to what filled, read
+after IBKR confirms the cancel.
 
 **Journal and log.** Every order request, accepted or refused, is a JSON line
 in `ORDER_JOURNAL` (default `/data/orders.jsonl`, fsynced) and in the log
@@ -293,12 +307,16 @@ New York.
    plus its GTC stop and take-profit. When the entry expires unfilled, the
    stop and take-profit must be gone too and no position left: what happens
    to a DAY entry that never fills by the close.
-2. **`--trade`**, 2 shares of `--symbol` (default `F`): a marketable bracket
-   with the take-profit for 1 share. After the fill the stop covers 2 and the
-   take-profit 1 in OCA type 2; a wider stop is refused and a tighter one
-   accepted; closing 1 share must shrink the stop to 1 (the `ocaType=2`
-   reduce); closing the last share must leave no stop, take-profit or
-   position. Whatever is left is cancelled and flattened at the end.
+2. **`--trade`**, 2 shares of `--symbol` (default `F`): a marketable bracket.
+   After the fill the stop and take-profit cover 2, GTC; a wider stop is
+   refused and a tighter one shows at IBKR; closing 1 share must shrink the
+   stop and take-profit to 1; closing the last share must leave no stop,
+   take-profit or position.
+3. **`--trade`, target:** a bracket of 1 share whose take-profit fills right
+   after the entry; IBKR must cancel the stop by itself and leave no position.
+
+Whatever is left is cancelled and flattened at the end, and the check says
+whether the position is back where it started.
 
 ## Development
 

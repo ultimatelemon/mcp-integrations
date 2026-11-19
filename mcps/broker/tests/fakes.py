@@ -19,6 +19,7 @@ from ib_async import (
     PortfolioItem,
     Ticker,
     Trade,
+    TradeLogEntry,
 )
 from ib_async.objects import BarData
 
@@ -215,13 +216,23 @@ class OrderIB(FakeIB):
         self.client = FakeClient()
         self.placed: list[tuple[Contract, Order]] = []
         self.cancelled: list[Order] = []
+        # order id -> (code, message): IBKR refuses a change to it and keeps the order as it was.
+        self.reject: dict[int, tuple[int, str]] = {}
+        # Order ids that fill before a cancel reaches them.
+        self.fills_first: set[int] = set()
 
     def placeOrder(self, contract: Contract, order: Order) -> Trade:
         self.placed.append((contract, order))
         order.clientId = 17
         for t in self.trades:
             if t.order.orderId == order.orderId:
+                if order.orderId in self.reject:
+                    code, message = self.reject[order.orderId]
+                    text = f"Error {code}, reqId {order.orderId}: {message}"
+                    t.log.append(TradeLogEntry(datetime.now(UTC), t.orderStatus.status, text, code))
+                    return t
                 t.order = order
+                t.orderStatus.remaining = float(order.totalQuantity) - (t.orderStatus.filled or 0)
                 return t
         t = trade(contract, order)
         self.trades.append(t)
@@ -229,7 +240,10 @@ class OrderIB(FakeIB):
 
     def cancelOrder(self, order: Order, manualCancelOrderTime: str = "") -> Trade | None:
         self.cancelled.append(order)
-        return None
+        t = next((t for t in self.trades if t.order.orderId == order.orderId), None)
+        if t is not None:
+            t.orderStatus.status = "Filled" if order.orderId in self.fills_first else "Cancelled"
+        return t
 
 
 def account_value(tag: str, value: str, currency: str = "EUR", account: str = ACCOUNT) -> AccountValue:

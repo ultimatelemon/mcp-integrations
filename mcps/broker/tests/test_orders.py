@@ -13,7 +13,7 @@ from broker.config import ConfigError, Settings
 from broker.ecb import EcbRates
 from broker.gateway import Gateway, GatewayUnavailable
 from broker.journal import TZ, JournalError, OrderJournal
-from broker.orders import OCA_REDUCE_WITH_BLOCK, OrderRefused, Orders, build_bracket
+from broker.orders import OrderRefused, Orders, build_bracket
 from broker.smoke_orders import (
     SMOKE_CLOSE,
     closed_message,
@@ -22,6 +22,7 @@ from broker.smoke_orders import (
     parse_liquid_hours,
     weekday_sessions,
 )
+from broker.tools import BrokerError
 from tests.fakes import ACCOUNT, ECB_XML, OrderIB, account_value, portfolio_item, settings, stock, trade
 
 NVDA = 4815747
@@ -65,7 +66,7 @@ async def orders(ib: OrderIB, journal: OrderJournal) -> Orders:
     s = order_settings()
     g = Gateway(s, ib_factory=lambda: ib)
     await g.connect_once()
-    return Orders(g, s, journal, 1.0, ecb=EcbRates(fetch=offline))
+    return Orders(g, s, journal, 1.0, ecb=EcbRates(fetch=offline), confirm_timeout=0.05, confirm_poll=0)
 
 
 async def offline() -> str:
@@ -81,7 +82,7 @@ async def bracket(orders: Orders, **overrides: Any) -> dict[str, Any]:
         "entry_limit": 20.0,
         "stop_price": 18.0,
         "target_price": 25.0,
-        "target_quantity": 25,
+        "target_quantity": None,
         "order_ref": "per66-nvda-1",
     }
     args.update(overrides)
@@ -93,6 +94,12 @@ def ticker(last: float) -> Ticker:
     t = Ticker(contract=stock("NVDA", con_id=NVDA))
     t.last = last
     return t
+
+
+def fill_entries(ib: OrderIB) -> None:
+    for t in ib.trades:
+        if not t.order.parentId:
+            t.orderStatus.status = "Filled"
 
 
 def lines(journal: OrderJournal) -> list[dict[str, Any]]:
@@ -108,12 +115,11 @@ async def test_bracket_is_three_linked_orders(orders: Orders, ib: OrderIB, journ
     assert [o.orderType for _, o in ib.placed] == ["LMT", "LMT", "STP"]
     parent, tp, sl = (o for _, o in ib.placed)
     assert (parent.action, parent.totalQuantity, parent.lmtPrice, parent.tif) == ("BUY", 50, 20.0, "DAY")
-    assert (tp.action, tp.totalQuantity, tp.lmtPrice, tp.tif) == ("SELL", 25, 25.0, "GTC")
+    assert (tp.action, tp.totalQuantity, tp.lmtPrice, tp.tif) == ("SELL", 50, 25.0, "GTC")
     assert (sl.action, sl.totalQuantity, sl.auxPrice, sl.tif) == ("SELL", 50, 18.0, "GTC")
     assert tp.parentId == sl.parentId == parent.orderId
-    assert tp.ocaGroup == sl.ocaGroup == "oca-per66-nvda-1"
-    assert tp.ocaType == sl.ocaType == OCA_REDUCE_WITH_BLOCK
-    assert parent.ocaGroup == ""
+    # IBKR links the children itself; an OCA group of our own made it refuse stop moves.
+    assert parent.ocaGroup == tp.ocaGroup == sl.ocaGroup == ""
     # Transmitted together: only the last order sends the bracket.
     assert [o.transmit for _, o in ib.placed] == [False, False, True]
     for _, o in ib.placed:
@@ -130,8 +136,8 @@ async def test_bracket_is_three_linked_orders(orders: Orders, ib: OrderIB, journ
     assert entry["day"] == "2026-11-19"
 
 
-async def test_target_quantity_defaults_to_all(orders: Orders, ib: OrderIB) -> None:
-    await bracket(orders, target_quantity=None)
+async def test_target_quantity_may_only_be_all(orders: Orders, ib: OrderIB) -> None:
+    await bracket(orders, target_quantity=50)
     assert ib.placed[1][1].totalQuantity == 50
 
 
@@ -151,8 +157,8 @@ async def test_short_bracket(orders: Orders, ib: OrderIB) -> None:
         ({"side": "sell", "stop_price": 22.0, "target_price": 21.0}, "target_price < entry_limit < stop_price"),
         ({"quantity": 0}, "quantity must be above 0"),
         ({"quantity": float("nan")}, "quantity must be above 0"),
-        ({"target_quantity": 0}, "target_quantity"),
-        ({"target_quantity": 51}, "target_quantity"),
+        ({"target_quantity": 25}, "target_quantity must equal quantity"),
+        ({"target_quantity": 51}, "target_quantity must equal quantity"),
         ({"entry_limit": -1}, "entry_limit must be above 0"),
         ({"order_ref": ""}, "order_ref"),
         ({"order_ref": "x" * 41}, "order_ref"),
@@ -258,6 +264,7 @@ async def test_daily_limit_counts_entries_only(orders: Orders, ib: OrderIB, cloc
     with pytest.raises(OrderRefused, match="daily limit reached: 5"):
         await bracket(orders, order_ref="r5")
     # Exits still work after the cap.
+    fill_entries(ib)
     ib.items = [portfolio_item(stock("NVDA", con_id=NVDA), 50, 21.0, 1050, 20.0, 50)]
     assert (await orders.close_position("mike", NVDA, 10, None))["outcome"] == "placed"
     # A refused order does not count; the next day starts again.
@@ -312,8 +319,38 @@ async def test_tighten_a_long_stop(orders: Orders, ib: OrderIB) -> None:
     resent = ib.placed[-1][1]
     assert resent.orderId == stop.orderId
     assert resent.auxPrice == 19.0
-    assert resent.ocaGroup == "oca-per66-nvda-1"
     assert resent.parentId == ib.placed[0][1].orderId
+    # Sent as a copy: ib_async's own order only changes when IBKR echoes it.
+    assert resent is not stop
+    assert stop.auxPrice == 18.0
+
+
+async def test_a_stop_move_ibkr_refuses_is_refused(orders: Orders, ib: OrderIB, journal: OrderJournal) -> None:
+    stop = await placed_stop(orders, ib)
+    ib.tickers = [ticker(21.0)]
+    ib.reject[stop.orderId] = (10326, "OCA group revision is not allowed.")
+    with pytest.raises(OrderRefused, match=r"IBKR refused the stop move to 19 of order \d+: Error 10326"):
+        await orders.modify_stop("mike", stop.orderId, 19.0)
+    entry = lines(journal)[-1]
+    assert (entry["tool"], entry["outcome"]) == ("modify_stop", "refused")
+    assert "10326" in entry["reason"]
+
+
+async def test_a_stop_move_ibkr_never_shows_is_an_error(orders: Orders, ib: OrderIB) -> None:
+    stop = await placed_stop(orders, ib)
+    ib.tickers = [ticker(21.0)]
+    open_trade = next(t for t in ib.trades if t.order.orderId == stop.orderId)
+    real_place = ib.placeOrder
+
+    def silent(contract: Contract, order: Order) -> Any:
+        # IBKR takes the change but its echo keeps the old stop, without an error.
+        real_place(contract, order)
+        open_trade.order = stop
+        return open_trade
+
+    ib.placeOrder = silent  # type: ignore[method-assign]
+    with pytest.raises(BrokerError, match="did not confirm the stop move"):
+        await orders.modify_stop("mike", stop.orderId, 19.0)
 
 
 @pytest.mark.parametrize("new_stop", [17.0, 18.0])
@@ -355,20 +392,105 @@ async def test_modify_only_open_stops_of_this_server(orders: Orders, ib: OrderIB
 # --- close_position ----------------------------------------------------------
 
 
-async def test_close_joins_the_bracket_group(orders: Orders, ib: OrderIB) -> None:
-    await bracket(orders)
-    ib.items = [portfolio_item(stock("NVDA", con_id=NVDA), 50, 21.0, 1050, 20.0, 50)]
-    r = await orders.close_position("mike", NVDA, 25, None)
-    close = ib.placed[-1][1]
-    assert (close.orderType, close.action, close.totalQuantity) == ("MKT", "SELL", 25)
-    assert close.ocaGroup == "oca-per66-nvda-1"
-    assert close.ocaType == OCA_REDUCE_WITH_BLOCK
+def held(ib: OrderIB, shares: float) -> None:
+    ib.items = [portfolio_item(stock("NVDA", con_id=NVDA), shares, 21.0, shares * 21.0, 20.0, shares)]
+
+
+def open_order(ib: OrderIB, order_id: int) -> Any:
+    return next(t for t in ib.trades if t.order.orderId == order_id)
+
+
+async def test_partial_close_shrinks_the_bracket_first(orders: Orders, ib: OrderIB) -> None:
+    r = await bracket(orders)
+    fill_entries(ib)
+    held(ib, 50)
+    c = await orders.close_position("mike", NVDA, 20, None)
+    # Stop and take-profit go to the 30 that stay open, then the close goes out.
+    *resizes, (_, close) = ib.placed[3:]
+    assert {(o.orderId, o.totalQuantity) for _, o in resizes} == {
+        (r["stop_order_id"], 30),
+        (r["take_profit_order_id"], 30),
+    }
+    assert (close.orderType, close.action, close.totalQuantity, close.tif) == ("MKT", "SELL", 20, "DAY")
+    assert close.ocaGroup == ""
     assert close.outsideRth is False
     assert close.account == ACCOUNT
-    assert close.tif == "DAY"
-    assert r["oca_group"] == "oca-per66-nvda-1"
+    assert sorted(x["order_id"] for x in c["protection"]) == sorted([r["stop_order_id"], r["take_profit_order_id"]])
+    assert ib.cancelled == []
+
+
+async def test_full_close_cancels_the_bracket_first(orders: Orders, ib: OrderIB, journal: OrderJournal) -> None:
+    r = await bracket(orders)
+    fill_entries(ib)
+    held(ib, 50)
+    c = await orders.close_position("mike", NVDA, 50, None)
+    assert {o.orderId for o in ib.cancelled} == {r["stop_order_id"], r["take_profit_order_id"]}
+    assert all(x.get("cancelled") for x in c["protection"])
+    assert ib.placed[-1][1].totalQuantity == 50
+    assert lines(journal)[-1]["protection"] == c["protection"]
+
+
+async def test_close_shrinks_the_newest_bracket_first(orders: Orders, ib: OrderIB) -> None:
+    old = await bracket(orders, quantity=30, order_ref="old")
+    new = await bracket(orders, quantity=20, order_ref="new")
+    fill_entries(ib)
+    held(ib, 50)
+    # 35 stay open: only the newest bracket shrinks, from 20 to 5.
+    c = await orders.close_position("mike", NVDA, 15, None)
+    assert {o.orderId for o in ib.cancelled} == set()
+    sizes = {x["order_id"]: x["quantity"] for x in c["protection"]}
+    assert sizes == {new["stop_order_id"]: 5, new["take_profit_order_id"]: 5}
+    # 10 of 35 stay open: the newest (5) is cancelled, the older one shrinks to 10.
+    held(ib, 35)
+    c = await orders.close_position("mike", NVDA, 25, None)
+    assert {o.orderId for o in ib.cancelled} == {new["stop_order_id"], new["take_profit_order_id"]}
+    assert open_order(ib, old["stop_order_id"]).order.totalQuantity == 10
+    assert open_order(ib, old["take_profit_order_id"]).order.totalQuantity == 10
+
+
+async def test_limit_close_only_without_a_bracket(orders: Orders, ib: OrderIB) -> None:
+    await bracket(orders)
+    fill_entries(ib)
+    held(ib, 50)
+    with pytest.raises(OrderRefused, match="close at market"):
+        await orders.close_position("mike", NVDA, 25, 21.5)
+    assert len(ib.placed) == 3
+    ib.trades.clear()
     await orders.close_position("mike", NVDA, 25, 21.5)
     assert (ib.placed[-1][1].orderType, ib.placed[-1][1].lmtPrice) == ("LMT", 21.5)
+
+
+async def test_close_refused_while_the_entry_works(orders: Orders, ib: OrderIB) -> None:
+    r = await bracket(orders)
+    held(ib, 20)
+    with pytest.raises(OrderRefused, match=f"entry order {r['parent_order_id']} .* still working"):
+        await orders.close_position("mike", NVDA, 20, None)
+    assert len(ib.placed) == 3
+    assert ib.cancelled == []
+
+
+async def test_no_close_when_ibkr_refuses_the_resize(orders: Orders, ib: OrderIB) -> None:
+    r = await bracket(orders)
+    fill_entries(ib)
+    held(ib, 50)
+    ib.reject[r["stop_order_id"]] = (10326, "OCA group revision is not allowed.")
+    with pytest.raises(OrderRefused, match="Error 10326") as error:
+        await orders.close_position("mike", NVDA, 20, None)
+    assert all(o.orderType != "MKT" for _, o in ib.placed)
+    # The take-profit went first; the error says so.
+    assert open_order(ib, r["take_profit_order_id"]).order.totalQuantity == 30
+    assert f"already changed: [{{'order_id': {r['take_profit_order_id']}, 'quantity': 30.0}}]" in str(error.value)
+    assert str(error.value).endswith("no close was sent")
+
+
+async def test_no_close_when_the_stop_filled_first(orders: Orders, ib: OrderIB) -> None:
+    r = await bracket(orders)
+    fill_entries(ib)
+    held(ib, 50)
+    ib.fills_first = {r["take_profit_order_id"], r["stop_order_id"]}
+    with pytest.raises(OrderRefused, match="was Filled before it could be cancelled"):
+        await orders.close_position("mike", NVDA, 50, None)
+    assert all(o.orderType != "MKT" for _, o in ib.placed)
 
 
 async def test_close_ref_prefix(orders: Orders, ib: OrderIB) -> None:
@@ -385,7 +507,7 @@ async def test_close_a_short_buys(orders: Orders, ib: OrderIB) -> None:
     ib.items = [portfolio_item(stock("NVDA", con_id=NVDA), -10, 21.0, -210, 20.0, -10)]
     r = await orders.close_position("mike", NVDA, 10, None)
     assert r["action"] == "BUY"
-    assert r["oca_group"] is None
+    assert r["protection"] == []
 
 
 async def test_gateway_down_is_journaled(orders: Orders, ib: OrderIB, journal: OrderJournal) -> None:
@@ -443,7 +565,7 @@ async def test_cancel_after_a_partial_fill_shrinks_the_protection(orders: Orders
     c = await orders.cancel_order("mike", r["parent_order_id"])
     assert c["filled"] == 20
     sizes = {x["order_id"]: x["quantity"] for x in c["resized"]}
-    # The stop covers the 20 held, the take-profit (25) shrinks to 20 too.
+    # The stop and the take-profit cover the 20 held.
     assert sizes == {r["stop_order_id"]: 20, r["take_profit_order_id"]: 20}
 
 
@@ -489,7 +611,7 @@ def test_journal_must_be_writable(tmp_path: Path) -> None:
 def test_build_bracket_for_the_expiry_check() -> None:
     ids = iter(range(1, 10))
     until = datetime(2026, 11, 19, 16, 5, tzinfo=TZ)
-    parent, _, _ = build_bracket(lambda: next(ids), ACCOUNT, "buy", 1, 10, 9, 12, 1, "smoke", "GTD", until)
+    parent, _, _ = build_bracket(lambda: next(ids), ACCOUNT, "buy", 1, 10, 9, 12, "smoke", "GTD", until)
     assert parent.tif == "GTD"
     assert parent.goodTillDate == "20261119-15:05:00"
 

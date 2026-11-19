@@ -20,12 +20,17 @@ order_ref starting with `smoke-`.
    GTC stop and take-profit. When the entry expires unfilled, the stop and
    take-profit must be gone too, with no position left: what happens to a DAY
    entry that never fills at the close.
-2. --trade, with 2 shares of --symbol (default F): a marketable bracket with the
-   take-profit for 1 share; after the fill the stop covers 2 and the take-profit 1,
-   in one OCA group of type 2. A wider stop is refused, a tighter one accepted.
-   Closing 1 share in the group must shrink the stop to 1 (ocaType=2, "reduce
-   with block"); closing the last share must leave no stop, take-profit or
-   position. Anything left over is cancelled and flattened at the end.
+2. --trade, with 2 shares of --symbol (default F): a marketable bracket; after
+   the fill the stop and take-profit cover 2, GTC. A wider stop is refused, a
+   tighter one shows at IBKR. Closing 1 share must shrink the stop and
+   take-profit to 1; closing the last share must leave no stop, take-profit or
+   position.
+3. --trade, target: a bracket of 1 share whose take-profit fills right after the
+   entry. IBKR must cancel the stop by itself and leave no position.
+
+Anything left over is cancelled and flattened at the end. Statuses are read
+from IBKR again each time: ib_async marks an order Cancelled locally on any
+error, also when IBKR keeps it.
 
 Exit code 0 when every check passed, 1 when one failed, 2 on a bad setup, 3
 when the market is closed and nothing ran.
@@ -51,7 +56,7 @@ from broker import tools
 from broker.config import ConfigError, Settings, load_settings
 from broker.gateway import Gateway
 from broker.journal import OrderJournal
-from broker.orders import DONE, OCA_REDUCE_WITH_BLOCK, OrderRefused, Orders, build_bracket
+from broker.orders import DONE, OrderRefused, Orders, build_bracket, open_quantity
 
 CLIENT = "smoke"
 # Every order of the check, closes included, has an order_ref starting with
@@ -193,7 +198,6 @@ async def expiry_check(orders: Orders, contract: Contract, price: float, stamp: 
         entry,
         round(entry * 0.9, 2),
         round(entry * 1.2, 2),
-        1,
         ref,
         entry_tif="GTD",
         good_till=until,
@@ -234,43 +238,46 @@ async def trade_check(orders: Orders, contract: Contract, price: float, stamp: s
     start = position(orders, contract.conId)
     entry = round(price * 1.02, 2)
     r = await orders.place_bracket_order(
-        CLIENT, contract.conId, "buy", 2, entry, round(price * 0.9, 2), round(price * 1.2, 2), 1, ref
+        CLIENT, contract.conId, "buy", 2, entry, round(price * 0.9, 2), round(price * 1.2, 2), None, ref
     )
-    ids = {r["parent_order_id"], r["take_profit_order_id"], r["stop_order_id"]}
+    stop_id, tp_id = r["stop_order_id"], r["take_profit_order_id"]
+    ids = {r["parent_order_id"], tp_id, stop_id}
     filled = await wait_for(lambda: _position_is(orders, contract.conId, start + 2), 90)
     results.append(show("trade: entry filled", filled, f"2 @ <= {entry}" if filled else "not filled: market closed?"))
     if not filled:
         return results
-    trades = {t.order.orderId: t for t in active(await open_trades(orders), ids)}
-    stop, tp = trades.get(r["stop_order_id"]), trades.get(r["take_profit_order_id"])
+    stop, tp = await _children(orders, stop_id, tp_id)
     ok = (
         stop is not None
         and tp is not None
-        and stop.order.totalQuantity == 2
-        and tp.order.totalQuantity == 1
-        and stop.order.ocaType == tp.order.ocaType == OCA_REDUCE_WITH_BLOCK
+        and open_quantity(stop) == open_quantity(tp) == 2
         and stop.order.tif == tp.order.tif == "GTC"
     )
-    results.append(show("trade: stop 2, target 1, OCA type 2", ok, _describe(stop, tp)))
+    results.append(show("trade: stop and target cover 2, GTC", ok, _describe(stop, tp)))
     try:
-        await orders.modify_stop(CLIENT, r["stop_order_id"], round(price * 0.85, 2))
+        await orders.modify_stop(CLIENT, stop_id, round(price * 0.85, 2))
         results.append(show("trade: wider stop refused", False, "a wider stop was accepted"))
     except OrderRefused as error:
         results.append(show("trade: wider stop refused", True, str(error)[:60]))
     tighter = round(price * 0.92, 2)
-    m = await orders.modify_stop(CLIENT, r["stop_order_id"], tighter)
-    results.append(show("trade: tighter stop accepted", m["new_stop"] == tighter, f"stop {m['old_stop']} -> {tighter}"))
+    try:
+        m = await orders.modify_stop(CLIENT, stop_id, tighter)
+        stop, _ = await _children(orders, stop_id, tp_id)
+        at_ibkr = tools.num(stop.order.auxPrice) if stop is not None else None
+        shown = at_ibkr is not None and math.isclose(at_ibkr, tighter)
+        results.append(show("trade: tighter stop shows at IBKR", shown, f"stop {m['old_stop']} -> {at_ibkr}"))
+    except tools.BrokerError as error:
+        results.append(show("trade: tighter stop shows at IBKR", False, str(error)[:100]))
 
-    await orders.close_position(CLIENT, contract.conId, 1, None, ref_prefix=SMOKE_CLOSE)
+    c = await orders.close_position(CLIENT, contract.conId, 1, None, ref_prefix=SMOKE_CLOSE)
     halved = await wait_for(lambda: _position_is(orders, contract.conId, start + 1), 60)
-    trades = {t.order.orderId: t for t in active(await open_trades(orders), ids)}
-    stop = trades.get(r["stop_order_id"])
-    reduced = stop is not None and _remaining(stop) == 1
+    stop, tp = await _children(orders, stop_id, tp_id)
+    reduced = stop is not None and tp is not None and open_quantity(stop) == open_quantity(tp) == 1
     results.append(
         show(
-            "trade: closing 1 shrinks the stop to 1",
+            "trade: closing 1 shrinks stop and target",
             halved and reduced,
-            _describe(stop, trades.get(r["take_profit_order_id"])),
+            f"{_describe(stop, tp)}, position {position(orders, contract.conId):g}, changed {c['protection']}",
         )
     )
     await orders.close_position(CLIENT, contract.conId, 1, None, ref_prefix=SMOKE_CLOSE)
@@ -282,17 +289,50 @@ async def trade_check(orders: Orders, contract: Contract, price: float, stamp: s
     return results
 
 
-def _remaining(t: Trade) -> float:
-    rem = tools.num(t.orderStatus.remaining)
-    return rem if rem is not None else float(t.order.totalQuantity)
+async def target_check(orders: Orders, contract: Contract, price: float, stamp: str) -> list[bool]:
+    """IBKR's own link between the children of a bracket: a take-profit that
+    fills cancels the stop. The take-profit sits below the entry so that it
+    fills at once; build_bracket does not check sides, the server does."""
+    ib = orders.gateway.require()
+    ref = f"smoke-tp-{stamp}"
+    start = position(orders, contract.conId)
+    parent, tp, sl = build_bracket(
+        ib.client.getReqId,
+        orders.gateway.account,
+        "buy",
+        1,
+        round(price * 1.05, 2),
+        round(price * 0.8, 2),
+        round(price * 0.95, 2),
+        ref,
+    )
+    for o in (parent, tp, sl):
+        ib.placeOrder(contract, o)
+
+    async def tp_filled() -> bool:
+        return any(f.execution.orderId == tp.orderId for f in ib.fills())
+
+    sold = await wait_for(tp_filled, 90)
+    results = [show("target: take-profit filled", sold, f"entry {parent.lmtPrice}, target {tp.lmtPrice}")]
+    gone = await wait_for(lambda: _none_active(orders, {sl.orderId}), 30)
+    flat = await wait_for(lambda: _position_is(orders, contract.conId, start), 30)
+    left = active(await open_trades(orders), {sl.orderId})
+    detail = f"position {position(orders, contract.conId):g}" + (
+        f", stop still {left[0].orderStatus.status}" if left else ""
+    )
+    results.append(show("target: IBKR cancels the stop, flat", gone and flat, detail))
+    return results
+
+
+async def _children(orders: Orders, stop_id: int, tp_id: int) -> tuple[Trade | None, Trade | None]:
+    trades = {t.order.orderId: t for t in active(await open_trades(orders), {stop_id, tp_id})}
+    return trades.get(stop_id), trades.get(tp_id)
 
 
 def _describe(stop: Trade | None, tp: Trade | None) -> str:
     parts = []
     for name, t in (("stop", stop), ("target", tp)):
-        parts.append(
-            f"{name} gone" if t is None else f"{name} {_remaining(t):g} {t.orderStatus.status} oca {t.order.ocaType}"
-        )
+        parts.append(f"{name} gone" if t is None else f"{name} {open_quantity(t):g} {t.orderStatus.status}")
     return ", ".join(parts)
 
 
@@ -309,9 +349,18 @@ async def cleanup(orders: Orders, contract: Contract, start: float) -> None:
     extra = position(orders, contract.conId) - start
     if extra:
         order = MarketOrder("SELL" if extra > 0 else "BUY", abs(extra))
+        # Without an explicit tif the account's order preset sets DAY with
+        # warning 10349, which ib_async reports as a cancel.
+        order.tif = "DAY"
         order.account, order.orderRef = orders.gateway.account, "smoke-cleanup"
         ib.placeOrder(contract, order)
-        print(f"cleanup: flattened {extra:g} {contract.symbol}")
+        back = await wait_for(lambda: _position_is(orders, contract.conId, start), 30)
+        now = position(orders, contract.conId)
+        print(
+            f"cleanup: flattened {extra:g} {contract.symbol}"
+            if back
+            else f"cleanup: position is {now:g}, not {start:g}: check the paper account"
+        )
 
 
 async def run(symbol: str, trade: bool, offset: int) -> int:
@@ -353,8 +402,8 @@ async def run(symbol: str, trade: bool, offset: int) -> int:
         )
         results: list[bool] = []
         try:
-            for name, check in (("expiry", expiry_check), ("trade", trade_check)):
-                if name == "trade" and not trade:
+            for name, check in (("expiry", expiry_check), ("trade", trade_check), ("target", target_check)):
+                if name != "expiry" and not trade:
                     continue
                 try:
                     results += await check(orders, contract, price, stamp)
@@ -370,7 +419,7 @@ async def run(symbol: str, trade: bool, offset: int) -> int:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--symbol", default="F", help="a cheap, liquid US stock (default F)")
-    parser.add_argument("--trade", action="store_true", help="also buy and sell 2 shares to check the OCA group")
+    parser.add_argument("--trade", action="store_true", help="also buy and sell a few shares to check fills")
     parser.add_argument("--client-id-offset", type=int, default=101)
     args = parser.parse_args()
     sys.exit(asyncio.run(run(args.symbol, args.trade, args.client_id_offset)))

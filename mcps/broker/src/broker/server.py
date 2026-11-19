@@ -206,13 +206,19 @@ def add_order_tools(mcp: MCPServer, orders: Orders) -> None:
             ),
         ],
         target_quantity: Annotated[
-            float | None, Field(description="Shares of the take-profit, e.g. half; default all.", gt=0)
+            float | None,
+            Field(
+                description="Must equal quantity if given: IBKR sizes a bracket's take-profit to the entry. "
+                "Take profit on part later with close_position.",
+                gt=0,
+            ),
         ] = None,
     ) -> dict[str, Any]:
-        """Place a bracket: a DAY limit entry with a GTC stop-loss and a GTC take-profit in one
-        OCA group that reduces on fill, regular trading hours only, transmitted together. The
-        server refuses a stop or target on the wrong side, an order above MAX_ORDER_NOTIONAL_PCT
-        of net liquidation and more than MAX_ORDERS_PER_DAY new orders a day."""
+        """Place a bracket: a DAY limit entry with a GTC stop-loss and a GTC take-profit for the
+        whole quantity, regular trading hours only, transmitted together; when the stop or the
+        take-profit fills, IBKR cancels the other. The server refuses a stop or target on the
+        wrong side, an order above MAX_ORDER_NOTIONAL_PCT of net liquidation and more than
+        MAX_ORDERS_PER_DAY new orders a day."""
         with guard("place_bracket_order"):
             return await orders.place_bracket_order(
                 client_label(ctx),
@@ -232,7 +238,8 @@ def add_order_tools(mcp: MCPServer, orders: Orders) -> None:
         order_id: OrderId,
         new_stop: Annotated[float, Field(description="The new stop price.", gt=0)],
     ) -> dict[str, Any]:
-        """Move a stop-loss closer to the price: higher for a long, lower for a short. Never wider."""
+        """Move a stop-loss closer to the price: higher for a long, lower for a short. Never wider.
+        Returns once IBKR shows the new stop; a change IBKR refuses is an error with its reason."""
         with guard("modify_stop"):
             return await orders.modify_stop(client_label(ctx), order_id, new_stop)
 
@@ -243,8 +250,11 @@ def add_order_tools(mcp: MCPServer, orders: Orders) -> None:
         quantity: Annotated[float, Field(description="Shares to close, at most the position.", gt=0)],
         limit_price: Annotated[float | None, Field(description="Limit price; without it a market order.", gt=0)] = None,
     ) -> dict[str, Any]:
-        """Close all or part of a position, e.g. when the thesis broke or the catalyst passed. Joins
-        the bracket's OCA group, so its stop and take-profit shrink by what is closed."""
+        """Close all or part of a position, e.g. when the thesis broke or the catalyst passed. First
+        the bracket's stop and take-profit shrink to what stays open (cancelled on a full close),
+        confirmed by IBKR, then the close goes out. With a stop or take-profit on the position,
+        only at market: a limit close would leave shares without a stop while it waits. Refused
+        while an entry on the position is still working."""
         with guard("close_position"):
             return await orders.close_position(client_label(ctx), con_id, quantity, limit_price)
 
