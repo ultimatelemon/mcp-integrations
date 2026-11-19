@@ -270,8 +270,9 @@ the bars while there is no subscription.
 `python -m broker.smoke_orders` places real orders on the **paper** account
 and refuses a live one. It uses `IB_CLIENT_ID + 101` and a throwaway journal,
 so it neither takes over the server's connection nor uses its daily count;
-its orders carry an `order_ref` starting with `smoke-`. Run it before a
-client relies on orders, in the container's terminal:
+its orders, closes included, carry an `order_ref` starting with `smoke-`, so
+a client can skip their fills. Run it before a client relies on orders, in the
+container's terminal:
 
 ```bash
 python -m broker.smoke_orders            # expiry check
