@@ -196,6 +196,8 @@ class Orders:
         (quoted in currency per base), the midpoint when there is one."""
         pair = Contract(secType="CASH", symbol=base, currency=currency, exchange="IDEALPRO")
         try:
+            # ib_async only quotes a qualified contract (it needs the conId).
+            pair = await qualify(self.gateway, ib, pair, self.timeout)
             tickers = await call(self.gateway, ib.reqTickersAsync(pair), self.timeout)
         except BrokerError:
             return None
