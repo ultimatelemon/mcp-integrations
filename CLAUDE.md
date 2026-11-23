@@ -2,7 +2,7 @@
 
 Public monorepo with UltimateLemon's MCP servers. Each server is served under
 its own path on `https://mcp.ultimatelemon.eu`: `/perron`, `/moneybird`,
-`/postbus`, `/broker`.
+`/postbus`.
 
 ## Layout
 
@@ -12,12 +12,6 @@ mcps/<name>/   one MCP server: own package.json, Dockerfile, tests, README
 
 - Every server is an npm workspace and its own deployable image. Servers do
   not import from each other.
-- Exception: `mcps/broker` is Python 3.13 (uv, ruff, pyright, pytest), because
-  the TWS API of Interactive Brokers has no good Node library. It has no
-  `package.json`, so npm skips it; `python-quality.yml` runs its checks. It
-  cannot use `@ultimatelemon-eu/mcp-http` and mirrors its HTTP surface
-  instead: MCP on `/<name>` and `/<name>/mcp`, `/<name>/healthz`, stateless,
-  bearer token.
 - One `package-lock.json` at the root. Root scripts (`lint`, `typecheck`,
   `build`, `test`, `format`, `format:check`) run in every workspace.
 - Docker builds from the repository root:
@@ -39,7 +33,6 @@ mcps/<name>/   one MCP server: own package.json, Dockerfile, tests, README
 | `perron`    | `/perron`    | NS API, OVapi GTFS, deelmobiliteit | Redis (optional), `/app/data` volume |
 | `moneybird` | `/moneybird` | Moneybird API                      | none                                 |
 | `postbus`   | `/postbus`   | IMAP/SMTP, Gmail API               | SQLite on volume `postbus-data`      |
-| `broker`    | `/broker`    | IB Gateway (TWS API), internal     | volume `broker-data` (order journal) |
 
 Env vars per server are in `mcps/<name>/.env.example` and the server's
 README.
@@ -86,19 +79,8 @@ else runs their own. App passwords go in through a one-time link that
 `add_mail_account` hands out, never through the chat: Claude refuses to type
 passwords into a tool. Keep new postbus features within that model.
 
-Exception: broker. It reads the owner's own Interactive Brokers account, so
-under ADR-0021 it takes static bearer tokens (`AUTH_TOKENS`, one per client:
-the owner and Mike), not a caller's upstream key or an OAuth sign-in. It talks
-to IB Gateway (`dealdome-ib-gateway-jykfo0` on `dokploy-network`, no domain, no
-published port) and refuses to serve when the gateway is logged in to another
-account than `IB_EXPECTED_ACCOUNT`. It is read-only (`readonly=True`, no order
-tools) unless `ORDERS_ENABLED=true`; a live account also needs
-`LIVE_ORDERS_ENABLED=true`. Every order limit (side of stop and target,
-notional, daily count, idempotent `order_ref`, never widening or cancelling a
-stop, `ORDER_CLIENTS`) is enforced in `src/broker/orders.py`, never only in a
-client, and every order request is journaled and logged. Never add an order
-tool outside that gate, an order type without a stop, or a way to widen or
-cancel a protective stop.
+Interactive Brokers trading moved out of this repository: `mcps/broker` was
+removed on 23-11-2026.
 
 Upstream rate limits: keep one limiter per key when the upstream counts per
 key (perron), and one shared limiter when it counts per IP (moneybird).
@@ -119,11 +101,7 @@ key (perron), and one shared limiter when it counts per IP (moneybird).
   `DOKPLOY_DEPLOY_URL_<NAME>` (the app's deploy webhook in Dokploy).
 - Dokploy project "Model Context Protocols": apps `perron` (with
   `perron-redis` and volume `perron-data` on `/app/data`), `moneybird`,
-  `postbus` (volume `postbus-data` on `/data`), and `broker` (on
-  `dokploy-network` next to the IB Gateway, volume `broker-data` on `/data`
-  for the order journal).
-- `broker-deployment.yml` calls `python-quality.yml` as `quality` instead of
-  `code-quality.yml`.
+  and `postbus` (volume `postbus-data` on `/data`).
 
 ## Node 26 and install scripts
 
